@@ -1,0 +1,179 @@
+/**
+ * @license Copyright (c) 2014-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+'use strict';
+
+/* eslint-env node */
+
+const path = require( 'path' );
+const webpack = require( 'webpack' );
+const {bundler, styles} = require( '@ckeditor/ckeditor5-dev-utils' );
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const shared = require("./webpack.shared")
+module.exports = (env, argv) => {
+    let _argv = argv || {};
+
+    let config = {
+        entry: {
+            main: path.resolve(__dirname, 'src/javascript/index')
+        },
+        output: {
+            path: path.resolve(__dirname, 'src/main/resources/javascript/apps/'),
+            filename: 'ckeditor.bundle.js',
+            chunkFilename: '[name].ckeditor.[chunkhash:6].js'
+        },
+        resolve: {
+            mainFields: ['module', 'main'],
+            extensions: ['.mjs', '.js', '.jsx', 'json', '.scss'],
+            alias: {
+                '~': path.resolve(__dirname, './src/javascript'),
+            },
+            fallback: { "url": false }
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.m?js$/,
+                    type: 'javascript/auto'
+                },
+                {
+                    test: /\.jsx?$/,
+                    include: [path.join(__dirname, 'src')],
+                    use: {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: [
+                                ['@babel/preset-env', {
+                                    modules: false,
+                                    targets: {chrome: '60', edge: '44', firefox: '54', safari: '12'}
+                                }],
+                                '@babel/preset-react'
+                            ],
+                            plugins: [
+                                'lodash',
+                                '@babel/plugin-syntax-dynamic-import'
+                            ]
+                        }
+                    }
+                },
+                {
+                    test: /\.scss$/i,
+                    include: [path.join(__dirname, 'src')],
+                    sideEffects: true,
+                    use: [
+                        'style-loader',
+                        // Translates CSS into CommonJS
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                modules: {
+                                    mode: 'local'
+                                }
+                            }
+                        },
+                        // Compiles Sass to CSS
+                        'sass-loader'
+                    ]
+                },
+                {
+                    test: /\.svg$/,
+                    use: [ 'raw-loader' ]
+                },
+                {
+                    test: /\.css$/,
+                    use: [
+                        {
+                            loader: 'style-loader',
+                            options: {
+                                injectType: 'singletonStyleTag',
+                                attributes: {
+                                    'data-cke': true
+                                }
+                            }
+                        },
+                        {
+                            loader: 'css-loader'
+                        },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                postcssOptions: styles.getPostCssConfig( {
+                                    themeImporter: {
+                                        themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+                                    },
+                                    minify: true
+                                } )
+                            }
+                        },
+                    ]
+                }
+            ]
+        },
+        plugins: [
+            new ModuleFederationPlugin({
+                name: "ckeditor5",
+                library: { type: "assign", name: "appShell.remotes.ckeditor5" },
+                filename: "remoteEntry.js",
+                exposes: {
+                    './init': './src/javascript/init'
+                },
+                remotes: {
+                    '@jahia/app-shell': 'appShellRemote',
+                    '@jahia/content-editor': 'appShell.remotes.contentEditor',
+                },
+                shared
+            }),
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: [`${path.resolve(__dirname, 'src/main/resources/javascript/apps/')}/**/*`],
+                verbose: false
+            }),
+            new CopyWebpackPlugin({
+                patterns: [{
+                    from: './package.json',
+                    to: ''
+                }]
+            }),
+            new CKEditorWebpackPlugin( {
+                // UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+                // When changing the built-in language, remember to also change it in the editor's configuration (src/ckeditor.js).
+                language: 'en',
+                additionalLanguages: 'all'
+            } ),
+            new webpack.BannerPlugin( {
+                banner: bundler.getLicenseBanner(),
+                raw: true
+            } )
+        ],
+        mode: 'development',
+        // optimization: {
+        //     minimizer: [
+        //         new TerserWebpackPlugin( {
+        //             sourceMap: true,
+        //             terserOptions: {
+        //                 output: {
+        //                     // Preserve CKEditor 5 license comments.
+        //                     comments: /^!/
+        //                 }
+        //             },
+        //             extractComments: false
+        //         } )
+        //     ]
+        // },
+    };
+
+    config.devtool = (_argv.mode === 'production') ? 'source-map' : 'eval-source-map';
+
+    if (_argv.analyze) {
+        config.devtool = 'source-map';
+        config.plugins.push(new BundleAnalyzerPlugin());
+    }
+
+    return config;
+};

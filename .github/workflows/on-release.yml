@@ -36,7 +36,7 @@ jobs:
       - uses: jahia/jahia-modules-action/release@v2
         name: Release Module
         with:
-          github_slug: Jahia/copy-to-other-languages
+          github_slug: Jahia/richtext-ckeditor5
           primary_release_branch: main
           release_id: ${{ github.event.release.id }}
           release_version: ${{ github.event.release.tag_name }}
@@ -54,7 +54,7 @@ jobs:
       - uses: jahia/jahia-modules-action/release-publication@v2
         name: Publish Module
         with:
-          module_id: copy-to-other-languages
+          module_id: richtext-ckeditor5
           release_version: ${{ github.event.release.tag_name }}
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}

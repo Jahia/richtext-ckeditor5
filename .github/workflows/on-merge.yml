@@ -37,7 +37,7 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
-          module_id: copy-to-other-languages
+          module_id: richtext-ckeditor5
 
   integration-tests-standalone:
     name: Integration Tests (Standalone)
@@ -55,12 +55,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
-          module_id: copy-to-other-languages
+          module_id: richtext-ckeditor5
           testrail_project: Copy to all languages Module
           tests_manifest: provisioning-manifest-build.yml
           jahia_image: jahia/jahia-discovery-dev:8-SNAPSHOT
           should_use_build_artifacts: true
-          github_artifact_name: copy-to-other-languages-standalone-artifacts-${{ github.run_number }}
+          github_artifact_name: richtext-ckeditor5-standalone-artifacts-${{ github.run_number }}
           bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}
           docker_username: ${{ secrets.DOCKERHUB_USERNAME }}

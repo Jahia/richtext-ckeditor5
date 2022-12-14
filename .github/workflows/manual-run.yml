@@ -29,7 +29,7 @@ jobs:
           node-version: 'lts/*'
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
-          module_id: copy-to-other-languages
+          module_id: richtext-ckeditor5
           testrail_project: Copy to all languages Module
           jahia_image: ${{ github.event.inputs.jahia_image }}
           should_use_build_artifacts: false
@@ -37,7 +37,7 @@ jobs:
           should_skip_notifications: true
           should_skip_testrail: true
           should_skip_zencrepes: false
-          github_artifact_name: copy-to-other-languages-standalone-artifacts-${{ github.run_number }}
+          github_artifact_name: richtext-ckeditor5-standalone-artifacts-${{ github.run_number }}
           bastion_ssh_private_key: ${{ secrets.BASTION_SSH_PRIVATE_KEY_JAHIACI }}
           tests_manifest: ${{ github.event.inputs.manifest }}
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}

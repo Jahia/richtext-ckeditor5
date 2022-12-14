@@ -3,7 +3,7 @@ import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import Editor from '../CKEditor/ckeditor';
 import styles from './RichTextCKEditor5.scss';
-import {ContentEditorContext} from '@jahia/content-editor';
+import {useContentEditorContext, useContentEditorConfigContext} from '@jahia/content-editor';
 import {useQuery} from 'react-apollo';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 function loadOption(selectorOptions, name) {
@@ -11,9 +11,8 @@ function loadOption(selectorOptions, name) {
 }
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
-    console.log(id);
-
     const editorRef = useRef();
+    const {lang, uilang} = useContentEditorConfigContext();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -25,7 +24,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         }
     }, [value]);
 
-    const editorContext = useContext(ContentEditorContext);
+    const editorContext = useContentEditorContext();
     const {data, error, loading} = useQuery(
         getCKEditorConfigurationPath,
         {
@@ -57,7 +56,13 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     console.log('config', ckeditorCustomConfig);
     console.log('toolbar', toolbar);
 
-    const customConfig = {};
+    const customConfig = {
+        picker: {
+            site: editorContext.site,
+            lang,
+            uilang
+        }
+    };
 
     return (
         <div className={styles.unreset}>

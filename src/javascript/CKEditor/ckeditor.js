@@ -51,6 +51,8 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 // Import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
 
+import {Picker} from './Picker/Picker';
+
 class Editor extends ClassicEditor {}
 
 // Plugins to include in the build.
@@ -100,8 +102,10 @@ Editor.builtinPlugins = [
     TableProperties,
     TableToolbar,
     TextTransformation,
-    Underline
+    Underline,
     // WProofreader
+
+    Picker
 ];
 
 // Editor configuration.
@@ -136,6 +140,7 @@ Editor.defaultConfig = {
             '|',
             'alignment',
             '|',
+            'jahiapicker',
             'link',
             'imageUpload',
             'mediaEmbed',

@@ -1,9 +1,12 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository'
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import {v4} from 'uuid';
+
+/* global jahia */
 
 export class PickerUploadAdapter extends Plugin {
     static get requires() {
-        return [ FileRepository ];
+        return [FileRepository];
     }
 
     static get pluginName() {
@@ -12,7 +15,7 @@ export class PickerUploadAdapter extends Plugin {
 
     init() {
         // Register CKFinderAdapter
-        this.editor.plugins.get( FileRepository ).createUploadAdapter = loader => new UploadAdapter(loader);
+        this.editor.plugins.get(FileRepository).createUploadAdapter = loader => new UploadAdapter(loader);
     }
 }
 
@@ -22,34 +25,38 @@ class UploadAdapter {
     }
 
     upload() {
-        console.log('upload')
-        return this.loader.file
-            .then( file => new Promise( ( resolve, reject ) => {
-                console.log('upload', file);
-                jahia.reduxStore.dispatch({
-                    type:"FILEUPLOAD_ADD_UPLOADS",
-                    payload: [{
-                        error: null,
-                        status: "QUEUED",
-                        path: "/sites/digitall/files",
-                        file: file,
-                        id: '971620cb-6500-4797-bdab-53444e950132',
-                        type: 'upload'
-                    }]
-                });
+        console.log('Upload');
+        return this.loader.file.then(file => new Promise((resolve, reject) => {
+            const store = jahia.reduxStore;
+            const path = '/sites/digitall/files';
+            const id = v4();
+            const unsubscribe = store.subscribe(() => {
+                const uploads = store.getState().jcontent?.fileUpload?.uploads;
+                const matchingUpload = uploads?.find(v => v.id === id);
+                if (matchingUpload && matchingUpload.status === 'UPLOADED') {
+                    unsubscribe();
+                    console.log('Uploaded node', matchingUpload.uuid);
+                    // Todo should get path from uuid
+                    resolve({default: '/files/default' + path + '/' + file.name});
+                } else if (!matchingUpload) {
+                    unsubscribe();
+                    reject();
+                }
+            });
 
-                jahia.reduxStore.dispatch({
-                    type: "FILEUPLOAD_TAKE_FROM_QUEUE",
-                    payload: 1
-                });
+            store.dispatch({
+                type: 'FILEUPLOAD_ADD_UPLOADS',
+                payload: [{error: null, status: 'QUEUED', path, file, id, type: 'upload'}]
+            });
 
-                resolve({default:"/files/default/sites/digitall/files/" + file.name});
-            }
-        ));
+            store.dispatch({
+                type: 'FILEUPLOAD_TAKE_FROM_QUEUE',
+                payload: 1
+            });
+        }));
     }
 
     abort() {
-        console.log('abort')
+        console.log('abort');
     }
-
 }

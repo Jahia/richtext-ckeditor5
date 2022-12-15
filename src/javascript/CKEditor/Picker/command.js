@@ -25,7 +25,7 @@ export class PickerCommand extends Command {
         const pickerConfig = editor.config.get('picker');
         const contentPicker = false;
 
-        console.log('execute picker',pickerConfig);
+        console.log('execute picker', pickerConfig);
 
         window.CE_API.openPicker({
             type: 'image',
@@ -38,7 +38,7 @@ export class PickerCommand extends Command {
                 console.log(pickerResults);
                 pickerResults.forEach(pickerResult => {
                     insertImages(editor, `${contentPicker ? contentPrefix : filePrefix}${pickerResult.path}${contentPicker ? '.html' : ''}`, {});
-                })
+                });
             },
             ...pickerConfig
         });

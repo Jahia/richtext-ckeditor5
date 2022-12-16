@@ -1,8 +1,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import {v4} from 'uuid';
-
-/* global jahia */
+import {getNode} from '~/CKEditor/Picker/uploadAdapter.gql-queries';
 
 export class PickerUploadAdapter extends Plugin {
     static get requires() {
@@ -15,20 +14,22 @@ export class PickerUploadAdapter extends Plugin {
 
     init() {
         // Register CKFinderAdapter
-        this.editor.plugins.get(FileRepository).createUploadAdapter = loader => new UploadAdapter(loader);
+        this.editor.plugins.get(FileRepository).createUploadAdapter = loader => new UploadAdapter(loader, this.editor);
     }
 }
 
 class UploadAdapter {
-    constructor(loader) {
+    constructor(loader, editor) {
         this.loader = loader;
+        this.editor = editor;
     }
 
     upload() {
         console.log('Upload');
         return this.loader.file.then(file => new Promise((resolve, reject) => {
-            const store = jahia.reduxStore;
-            const path = '/sites/digitall/files';
+            const pickerConfig = this.editor.config.get('picker');
+            const store = pickerConfig.store;
+            const path = '/sites/' + pickerConfig.site + '/files';
             const id = v4();
             const unsubscribe = store.subscribe(() => {
                 const uploads = store.getState().jcontent?.fileUpload?.uploads;
@@ -36,8 +37,10 @@ class UploadAdapter {
                 if (matchingUpload && matchingUpload.status === 'UPLOADED') {
                     unsubscribe();
                     console.log('Uploaded node', matchingUpload.uuid);
+                    pickerConfig.client.query({query: getNode, variables: {uuid: matchingUpload.uuid}}).then(({data}) => {
+                        resolve({default: '/files/{workspace}' + data.jcr.nodeById.path});
+                    });
                     // Todo should get path from uuid
-                    resolve({default: '/files/default' + path + '/' + file.name});
                 } else if (!matchingUpload) {
                     unsubscribe();
                     reject();

@@ -4,8 +4,9 @@ import {CKEditor} from '@ckeditor/ckeditor5-react';
 import Editor from '../CKEditor/ckeditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/content-editor';
-import {useQuery} from 'react-apollo';
+import {useApolloClient, useQuery} from 'react-apollo';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
+import {useStore} from 'react-redux';
 
 function loadOption(selectorOptions, name) {
     return selectorOptions && selectorOptions.find(option => option.name === name);
@@ -13,6 +14,8 @@ function loadOption(selectorOptions, name) {
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
+    const client = useApolloClient();
+    const store = useStore();
     const {lang, uilang} = useContentEditorConfigContext();
 
     useEffect(() => {
@@ -61,7 +64,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         picker: {
             site: editorContext.site,
             lang,
-            uilang
+            uilang,
+            client,
+            store
         }
     };
 

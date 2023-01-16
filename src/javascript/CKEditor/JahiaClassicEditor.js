@@ -53,18 +53,18 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 
 import {Picker} from './Picker/Picker';
 
-class Editor extends ClassicEditor {
-    static create ( sourceElementOrData, config = {} ) {
+export class JahiaClassicEditor extends ClassicEditor {
+    static create(sourceElementOrData, config = {}) {
         return ClassicEditor.create.call(this, sourceElementOrData, config).then(editor => {
-            const body = editor.ui.view.body._bodyCollectionContainer
-            body.remove()
-            editor.ui.view.element.appendChild(body)
+            const body = editor.ui.view.body._bodyCollectionContainer;
+            body.remove();
+            editor.ui.view.element.appendChild(body);
         });
     }
 }
 
 // Plugins to include in the build.
-Editor.builtinPlugins = [
+JahiaClassicEditor.builtinPlugins = [
     Alignment,
     Autoformat,
     BlockQuote,
@@ -117,7 +117,7 @@ Editor.builtinPlugins = [
 ];
 
 // Editor configuration.
-Editor.defaultConfig = {
+JahiaClassicEditor.defaultConfig = {
     toolbar: {
         items: [
             'sourceEditing',
@@ -185,5 +185,3 @@ Editor.defaultConfig = {
         ]
     }
 };
-
-export default Editor;

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
-import Editor from '../CKEditor/ckeditor';
+import {JahiaClassicEditor} from '../CKEditor/JahiaClassicEditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/content-editor';
 import {useApolloClient, useQuery} from 'react-apollo';
@@ -74,7 +74,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         <div className={styles.unreset}>
             <CKEditor
                 id={id}
-                editor={Editor}
+                editor={JahiaClassicEditor}
                 config={customConfig}
                 disabled={field.readOnly}
                 data={value}

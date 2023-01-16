@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import Editor from '../CKEditor/ckeditor';
@@ -17,6 +17,11 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const client = useApolloClient();
     const store = useStore();
     const {lang, uilang} = useContentEditorConfigContext();
+    const [renderEditor, setRenderEditor] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => setRenderEditor(true), 1000);
+    }, []);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -67,15 +72,24 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             uilang,
             client,
             store
+        },
+        userload: {
+            editorContext: editorContext,
+            lang,
+            uilang,
+            client,
+            ctx: window.contextJsParameters.contextPath
         }
     };
 
     return (
-        <div className={styles.unreset}>
-            <CKEditor
+        <div id="container" className={styles.unreset}>
+            { renderEditor && <CKEditor
                 id={id}
                 editor={Editor}
-                config={customConfig}
+                config={{...customConfig, sidebar: {
+                        container: document.querySelector('#sidebar')
+                    }}}
                 disabled={field.readOnly}
                 data={value}
                 onReady={editor => {
@@ -87,7 +101,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 onBlur={() => {
                     onBlur();
                 }}
-            />
+            />}
+            <div id="sidebar" className={styles.sideBar}/>
         </div>
     );
 };

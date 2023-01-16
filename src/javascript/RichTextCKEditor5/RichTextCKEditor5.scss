@@ -11,6 +11,8 @@
  */
 
 .unreset {
+  display: flex;
+
   html {
     box-sizing: content-box;
   }
@@ -289,4 +291,8 @@
   iframe {
     border: 2px inset;
   }
+}
+
+.sideBar {
+  min-width: 200px;
 }

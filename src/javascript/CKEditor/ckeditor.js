@@ -50,8 +50,12 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 // Import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
+import Comments from '@ckeditor/ckeditor5-comments/src/comments';
+import List from '@ckeditor/ckeditor5-list/src/list';
 
 import {Picker} from './Picker/Picker';
+import CommentsAdapter from './Comments/CommentsAdapter';
+import UserLoad from './UserLoad/UserLoad';
 
 class Editor extends ClassicEditor {}
 
@@ -63,6 +67,7 @@ Editor.builtinPlugins = [
     Bold,
     CloudServices,
     Code,
+    Comments,
     DocumentList,
     DocumentListProperties,
     Essentials,
@@ -105,13 +110,24 @@ Editor.builtinPlugins = [
     Underline,
     // WProofreader
 
-    Picker
+    Picker,
+    UserLoad
 ];
 
 // Editor configuration.
 Editor.defaultConfig = {
+    licenseKey: '1mceSmCJg73YYHF2lKbDiD7FdHU6x+ATfAONyu3lsj3RAZKsJWTHdhyl5A==',
+    extraPlugins: [CommentsAdapter],
+    // Provide the configuration for the comments feature.
+    comments: {
+        editorConfig: {
+            // The list of plugins that will be included in the comments editors.
+            extraPlugins: [Bold, Italic, List, Autoformat]
+        }
+    },
     toolbar: {
         items: [
+            'comment',
             'sourceEditing',
             'htmlEmbed',
             '|',

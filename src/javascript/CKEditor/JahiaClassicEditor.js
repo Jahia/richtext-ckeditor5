@@ -59,6 +59,7 @@ export class JahiaClassicEditor extends ClassicEditor {
             const body = editor.ui.view.body._bodyCollectionContainer;
             body.remove();
             editor.ui.view.element.appendChild(body);
+            return editor;
         });
     }
 }

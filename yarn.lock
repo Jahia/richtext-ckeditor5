@@ -1391,7 +1391,7 @@
   dependencies:
     ckeditor5 "^35.4.0"
 
-"@ckeditor/ckeditor5-react@^5.0.3":
+"@ckeditor/ckeditor5-react@^5.0.6":
   version "5.0.6"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-react/-/ckeditor5-react-5.0.6.tgz#bc48babb9b1cdfed96ac62a0045491950c2ee23f"
   integrity sha512-clfJWCsjYmpLLEaE3094icBOgHY8c+kreHRrZKyhhWeQl7w/FYCln/x/AACwzU0oPrvtRCJRBuZC3C5sC02GPA==

@@ -7,6 +7,7 @@ import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/con
 import {useApolloClient, useQuery} from 'react-apollo';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
+import {JahiaMarkdownEditor} from '~/CKEditor/JahiaMarkdownEditor';
 
 function loadOption(selectorOptions, name) {
     return selectorOptions && selectorOptions.find(option => option.name === name);
@@ -49,6 +50,15 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const toolbar = loadOption(field.selectorOptions, 'ckeditor.toolbar');
     const fieldCustomConfig = loadOption(field.selectorOptions, 'ckeditor.customConfig');
 
+    const getEditor = (field) => {
+        const markupLang = loadOption(field.selectorOptions, 'markupLang')?.value;
+        let editorImpl = JahiaClassicEditor;
+        if (markupLang === 'markdown') {
+            editorImpl = JahiaMarkdownEditor
+        }
+        return editorImpl;
+    }
+
     let ckeditorCustomConfig = '';
     if (fieldCustomConfig && fieldCustomConfig.value) {
         // Custom config from CND
@@ -74,7 +84,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         <div className={styles.unreset}>
             <CKEditor
                 id={id}
-                editor={JahiaClassicEditor}
+                editor={getEditor(field)}
                 config={customConfig}
                 disabled={field.readOnly}
                 data={value}

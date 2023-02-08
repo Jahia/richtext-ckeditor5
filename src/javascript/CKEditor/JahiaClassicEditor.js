@@ -194,5 +194,5 @@ JahiaClassicEditor.defaultConfig = {
                 styles: true
             }
         ]
-    },
+    }
 };

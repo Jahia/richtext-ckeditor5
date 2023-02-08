@@ -9,6 +9,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import CKBox from '@ckeditor/ckeditor5-ckbox/src/ckbox.js';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
+import GeneralHtmlSupport from "@ckeditor/ckeditor5-html-support/src/generalhtmlsupport";
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
@@ -37,6 +38,7 @@ JahiaBalloonEditor.builtinPlugins = [
     CKBox,
     CloudServices,
     Essentials,
+    GeneralHtmlSupport,
     Heading,
     Image,
     ImageCaption,
@@ -94,6 +96,16 @@ JahiaBalloonEditor.defaultConfig = {
             'tableColumn',
             'tableRow',
             'mergeTableCells'
+        ]
+    },
+    htmlSupport: {
+        allow: [
+            {
+                name: /.*/,
+                attributes: true,
+                classes: true,
+                styles: true
+            }
         ]
     }
 };

@@ -1,6 +1,27 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import browseFilesIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import linkIcon from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
+
+let createButton = function (editor, commandName, label, icon) {
+    return locale => {
+        const command = editor.commands.get(commandName);
+
+        const button = new ButtonView(locale);
+
+        button.set({label, icon, tooltip: true});
+
+        button.bind('isEnabled').to(command);
+        button.bind('isOn').to(command, 'value', value => Boolean(value));
+
+        button.on('execute', () => {
+            editor.execute(commandName);
+            editor.editing.view.focus();
+        });
+
+        return button;
+    };
+};
 
 export class PickerUI extends Plugin {
     static get pluginName() {
@@ -12,25 +33,7 @@ export class PickerUI extends Plugin {
         const componentFactory = editor.ui.componentFactory;
         const t = editor.t;
 
-        componentFactory.add('jahiapicker', locale => {
-            const command = editor.commands.get('jahiapicker');
-
-            const button = new ButtonView(locale);
-
-            button.set({
-                label: t('Insert image or file'),
-                icon: browseFilesIcon,
-                tooltip: true
-            });
-
-            button.bind('isEnabled').to(command);
-
-            button.on('execute', () => {
-                editor.execute('jahiapicker');
-                editor.editing.view.focus();
-            });
-
-            return button;
-        });
+        componentFactory.add('jahiaInsertImage', createButton(editor, 'jahiaInsertImage', t('Insert image or file'), browseFilesIcon));
+        componentFactory.add('jahiaLink', createButton(editor, 'jahiaLink', t('Insert link'), linkIcon));
     }
 }

@@ -2,7 +2,7 @@
  * @license Copyright (c) 2014-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
@@ -50,16 +50,19 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
 // Import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
+import {isElement} from 'lodash-es';
 
 import {Picker} from './Picker/Picker';
 
-export class JahiaClassicEditor extends ClassicEditor {
+export class JahiaClassicEditor extends DecoupledEditor {
     static create(sourceElementOrData, config = {}) {
-        return ClassicEditor.create.call(this, sourceElementOrData, config).then(editor => {
-            const body = editor.ui.view.body._bodyCollectionContainer;
-            body.remove();
-            editor.ui.view.element.appendChild(body);
-            return editor;
+        return new Promise(resolve => {
+            const editor = new this(sourceElementOrData, config);
+            resolve(editor.initPlugins()
+                .then(() => editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null))
+                .then(() => editor.data.init(editor.config.get('initialData')))
+                .then(() => editor.fire('ready'))
+                .then(() => editor));
         });
     }
 }
@@ -149,9 +152,9 @@ JahiaClassicEditor.defaultConfig = {
             '|',
             'alignment',
             '|',
-            'jahiapicker',
-            'link',
-            'imageUpload',
+            'jahiaInsertImage',
+            'jahiaLink',
+            'unlink',
             'mediaEmbed',
             'insertTable',
             'horizontalLine',

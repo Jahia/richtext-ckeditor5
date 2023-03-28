@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-core": "^35.3.2",
     "@ckeditor/ckeditor5-editor-balloon": "^35.3.2",
     "@ckeditor/ckeditor5-editor-classic": "^35.3.2",
+    "@ckeditor/ckeditor5-editor-decoupled": "^35.4.0",
     "@ckeditor/ckeditor5-essentials": "^35.3.2",
     "@ckeditor/ckeditor5-export-pdf": "^35.3.2",
     "@ckeditor/ckeditor5-export-word": "^35.3.2",

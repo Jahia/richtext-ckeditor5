@@ -19,6 +19,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const store = useStore();
     const {lang, uilang} = useContentEditorConfigContext();
     const [style, setStyle] = useState();
+    const toolbarContainer = useRef();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -31,7 +32,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     }, [value]);
 
     // Todo : load from config
-    const contentCss = '/modules/dx-base-demo-templates/css/app.css'
+    const contentCss = '/modules/dx-base-demo-templates/css/app.css';
 
     useEffect(() => {
         fetch(contentCss).then(css => css.text()).then(css => {
@@ -39,7 +40,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             const style = document.createElement('style');
             style.textContent = scoped;
             setStyle(style);
-        })
+        });
     }, [contentCss]);
 
     useEffect(() => {
@@ -48,9 +49,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
 
             return () => {
                 style.remove();
-            }
+            };
         }
-    }, [style])
+    }, [style]);
 
     const editorContext = useContentEditorContext();
     const {data, error, loading} = useQuery(
@@ -70,19 +71,15 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>loading...</span>;
     }
 
-    const toolbar = loadOption(field.selectorOptions, 'ckeditor.toolbar');
-    const fieldCustomConfig = loadOption(field.selectorOptions, 'ckeditor.customConfig');
-
-    let ckeditorCustomConfig = '';
-    if (fieldCustomConfig && fieldCustomConfig.value) {
-        // Custom config from CND
-        ckeditorCustomConfig = fieldCustomConfig.value.replace('$context', window.contextJsParameters.contextPath);
-    } else if (data.forms.ckeditorConfigPath) {
-        ckeditorCustomConfig = data.forms.ckeditorConfigPath.replace('$context', window.contextJsParameters.contextPath);
-    }
-
-    console.log('config', ckeditorCustomConfig);
-    console.log('toolbar', toolbar);
+    // Const fieldCustomConfig = loadOption(field.selectorOptions, 'ckeditor.customConfig');
+    //
+    // let ckeditorCustomConfig = '';
+    // if (fieldCustomConfig && fieldCustomConfig.value) {
+    //     // Custom config from CND
+    //     ckeditorCustomConfig = fieldCustomConfig.value.replace('$context', window.contextJsParameters.contextPath);
+    // } else if (data.forms.ckeditorConfigPath) {
+    //     ckeditorCustomConfig = data.forms.ckeditorConfigPath.replace('$context', window.contextJsParameters.contextPath);
+    // }
 
     const customConfig = {
         picker: {
@@ -131,19 +128,25 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 {name: 'Heading Dashed Style', element: 'div', classes: ['heading', 'heading-v5']},
                 {name: 'Heading Dotted Style', element: 'div', classes: ['heading', 'heading-v6']},
 
-
                 // Shadow effects
                 {name: 'Shadow effect 1', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-1']},
                 {name: 'Shadow effect 2', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-2']},
                 {name: 'Shadow effect 3', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-3']},
-                {name: 'Shadow effect 4', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-4']},
+                {name: 'Shadow effect 4', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-4']}
             ]
         }
     };
 
+    const toolbar = loadOption(field.selectorOptions, 'ckeditor.toolbar');
+    if (toolbar) {
+        customConfig.toolbar = toolbar;
+    }
+
     return (
-        <div className={styles.unreset}>
-            <CKEditor
+        <>
+            <div ref={toolbarContainer} className={styles.toolbar}/>
+            <div className={styles.unreset}>
+                <CKEditor
                 id={id}
                 editor={JahiaClassicEditor}
                 config={customConfig}
@@ -151,6 +154,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 data={value}
                 onReady={editor => {
                     editorRef.current = editor;
+                    toolbarContainer.current.appendChild(editor.ui.view.toolbar.element);
+                    toolbarContainer.current.appendChild(editor.ui.view.body._bodyCollectionContainer);
                 }}
                 onChange={(event, editor) => {
                     onChange(editor.getData());
@@ -159,7 +164,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                     onBlur();
                 }}
             />
-        </div>
+            </div>
+        </>
     );
 };
 

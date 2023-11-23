@@ -1,0 +1,25 @@
+{
+  "name": "jnt:bigText",
+  "priority": 1.1,
+  "fields": [
+    {
+      "name": "text",
+      "selectorOptionsMap": {
+        "ckEditorConfig": {
+          "toolbar": {
+            "items": [
+              "bold",
+              "italic",
+              "strikethrough",
+              "-",
+              "alignment",
+              "|",
+              "jahiaInsertImage",
+              "jahiaLink"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

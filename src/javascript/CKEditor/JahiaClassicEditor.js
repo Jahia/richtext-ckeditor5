@@ -3,56 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor.js';
-import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment.js';
-import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices.js';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code.js';
-import DocumentList from '@ckeditor/ckeditor5-list/src/documentlist.js';
-import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties.js';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
-import ExportPdf from '@ckeditor/ckeditor5-export-pdf/src/exportpdf.js';
-import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace.js';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport.js';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js';
-import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed.js';
-import Image from '@ckeditor/ckeditor5-image/src/image.js';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
-import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize.js';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
-import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar.js';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload.js';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent.js';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock.js';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic.js';
-import Link from '@ckeditor/ckeditor5-link/src/link.js';
-// Import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown.js';
-import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
-import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
-import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat.js';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting.js';
-import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters.js';
-import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials.js';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
-import Style from '@ckeditor/ckeditor5-style/src/style.js';
-import Table from '@ckeditor/ckeditor5-table/src/table.js';
-import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
-import TableColumnResize from '@ckeditor/ckeditor5-table/src/tablecolumnresize.js';
-import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
-import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
-import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
-// Import WProofreader from '@webspellchecker/wproofreader-ckeditor5/src/wproofreader.js';
 import {isElement} from 'lodash-es';
-
-import {Picker} from './Picker/Picker';
 
 export class JahiaClassicEditor extends DecoupledEditor {
     static create(sourceElementOrData, config = {}) {
@@ -67,59 +18,6 @@ export class JahiaClassicEditor extends DecoupledEditor {
     }
 }
 
-// Plugins to include in the build.
-JahiaClassicEditor.builtinPlugins = [
-    Alignment,
-    Autoformat,
-    BlockQuote,
-    Bold,
-    CloudServices,
-    Code,
-    DocumentList,
-    DocumentListProperties,
-    Essentials,
-    ExportPdf,
-    FindAndReplace,
-    FontBackgroundColor,
-    FontColor,
-    FontFamily,
-    FontSize,
-    GeneralHtmlSupport,
-    Heading,
-    HorizontalLine,
-    HtmlEmbed,
-    Image,
-    ImageCaption,
-    ImageResize,
-    ImageStyle,
-    ImageToolbar,
-    ImageUpload,
-    Indent,
-    IndentBlock,
-    Italic,
-    Link,
-    // Markdown,
-    MediaEmbed,
-    Paragraph,
-    PasteFromOffice,
-    RemoveFormat,
-    SourceEditing,
-    SpecialCharacters,
-    SpecialCharactersEssentials,
-    Strikethrough,
-    Style,
-    Table,
-    TableCellProperties,
-    TableColumnResize,
-    TableProperties,
-    TableToolbar,
-    TextTransformation,
-    Underline,
-    // WProofreader
-
-    Picker
-];
-
 // Editor configuration.
 JahiaClassicEditor.defaultConfig = {
     toolbar: {
@@ -128,7 +26,6 @@ JahiaClassicEditor.defaultConfig = {
             'htmlEmbed',
             '|',
             'exportPdf',
-            // 'wproofreader',
             '|',
             'undo',
             'redo',
@@ -168,6 +65,52 @@ JahiaClassicEditor.defaultConfig = {
             'fontFamily'
         ],
         shouldNotGroupWhenFull: true
+    },
+    style: {
+        definitions: [
+            // Todo : load from config
+
+            // Inline styles
+            {name: 'Paragraph lead', element: 'p', classes: ['lead']},
+            {name: 'Drop cap', element: 'span', classes: ['dropcap']},
+            {name: 'Drop cap inverse', element: 'span', classes: ['dropcap-bg']},
+            {name: 'Drop cap rounded', element: 'span', classes: ['dropcap-bg', 'rounded-x']},
+            {name: 'Drop cap dark', element: 'span', classes: ['dropcap', 'dropcap-bg', 'bg-color-dark']},
+            {name: 'Dotted divider', element: 'hr', classes: ['devider', 'deviser-dotted']},
+            {name: 'Dashed divider', element: 'hr', classes: ['devider', 'deviser-dashed']},
+
+            // Block styles
+            {name: 'Headline div', element: 'div', classes: ['headline']},
+            {name: 'Text right', element: 'span', classes: ['text-right']},
+            {name: 'Text center', element: 'span', classes: ['text-center']},
+            {name: 'Blockquote', element: 'blockquote', classes: []},
+            {name: 'Blockquote color border', element: 'blockquote', classes: ['bq-green']},
+            {name: 'Blockquote color border text right', element: 'blockquote', classes: ['text-right', 'bq-green']},
+            {name: 'Blockquote hero', element: 'blockquote', classes: ['hero']},
+            {name: 'Blockquote hero dark bg', element: 'blockquote', classes: ['hero', 'hero-dark']},
+            {name: 'Blockquote hero color bg', element: 'blockquote', classes: ['hero', 'hero-default']},
+            {name: 'Blockquote text right', element: 'blockquote', classes: ['text-right']},
+            {name: 'Tag box light border', element: 'div', classes: ['tag-box', 'tag-box-v3']},
+            {name: 'Tag box left border', element: 'div', classes: ['tag-box', 'tag-box-v2']},
+            {name: 'Tag box top border', element: 'div', classes: ['tag-box', 'tag-box-v1']},
+            {name: 'Paragraph BG primary', element: 'p', classes: ['bg-primary']},
+            {name: 'Paragraph BG success', element: 'p', classes: ['bg-success']},
+            {name: 'Paragraph BG info', element: 'p', classes: ['bg-info']},
+            {name: 'Paragraph BG warning', element: 'p', classes: ['bg-warning']},
+            {name: 'Paragraph BG danger', element: 'p', classes: ['bg-danger']},
+            {name: 'Heading Double Strip Style', element: 'div', classes: ['heading', 'heading-v1']},
+            {name: 'Heading Double Dashed Style', element: 'div', classes: ['heading', 'heading-v2']},
+            {name: 'Heading Double Dotted Style', element: 'div', classes: ['heading', 'heading-v3']},
+            {name: 'Heading Strip Style', element: 'div', classes: ['heading', 'heading-v4']},
+            {name: 'Heading Dashed Style', element: 'div', classes: ['heading', 'heading-v5']},
+            {name: 'Heading Dotted Style', element: 'div', classes: ['heading', 'heading-v6']},
+
+            // Shadow effects
+            {name: 'Shadow effect 1', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-1']},
+            {name: 'Shadow effect 2', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-2']},
+            {name: 'Shadow effect 3', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-3']},
+            {name: 'Shadow effect 4', element: 'div', classes: ['tag-box', 'tag-box-v3', 'box-shadow', 'shadow-effect-4']}
+        ]
     },
     language: 'en',
     image: {

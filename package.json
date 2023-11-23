@@ -1,5 +1,5 @@
 {
-  "name": "ckeditor5-custom-build",
+  "name": "ckeditor5",
   "description": "CKEditor 5 integration",
   "version": "0.0.1",
   "license": "SEE LICENSE IN LICENSE.md",
@@ -88,6 +88,7 @@
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^30.5.0",
     "@jahia/eslint-config": "^1.1.0",
     "@jahia/test-framework": "^1.2.1",
+    "@jahia/webpack-config": "^1.1.0",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-lodash": "^3.3.4",

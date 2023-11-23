@@ -29,7 +29,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.1.0.0</version>
+        <version>8.2.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>

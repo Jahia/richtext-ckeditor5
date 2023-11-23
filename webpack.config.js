@@ -16,7 +16,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
-const shared = require("./webpack.shared")
+const getModuleFederationConfig = require('@jahia/webpack-config/getModuleFederationConfig');
+const packageJson = require('./package.json');
+
 module.exports = (env, argv) => {
     let _argv = argv || {};
 
@@ -117,19 +119,11 @@ module.exports = (env, argv) => {
             ]
         },
         plugins: [
-            new ModuleFederationPlugin({
-                name: "ckeditor5",
-                library: { type: "assign", name: "appShell.remotes.ckeditor5" },
-                filename: "remoteEntry.js",
-                exposes: {
-                    './init': './src/javascript/init'
-                },
+            new ModuleFederationPlugin(getModuleFederationConfig(packageJson, {
                 remotes: {
-                    '@jahia/app-shell': 'appShellRemote',
-                    '@jahia/content-editor': 'appShell.remotes.contentEditor',
+                    '@jahia/jcontent': 'appShell.remotes.jcontent',
                 },
-                shared
-            }),
+            }, Object.keys(packageJson.dependencies))),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: [`${path.resolve(__dirname, 'src/main/resources/javascript/apps/')}/**/*`],
                 verbose: false

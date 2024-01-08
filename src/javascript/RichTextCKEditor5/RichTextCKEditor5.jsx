@@ -28,6 +28,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         }
     }, [value]);
 
+    // eslint-disable-next-line no-warning-comments
     // Todo : load from config
     const contentCss = '/modules/dx-base-demo-templates/css/app.css';
 

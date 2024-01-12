@@ -40,6 +40,7 @@ class UploadAdapter {
                     pickerConfig.client.query({query: getNode, variables: {uuid: matchingUpload.uuid}}).then(({data}) => {
                         resolve({default: '/files/{workspace}' + data.jcr.nodeById.path});
                     });
+                    // eslint-disable-next-line no-warning-comments
                     // Todo should get path from uuid
                 } else if (!matchingUpload) {
                     unsubscribe();

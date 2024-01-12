@@ -123,7 +123,7 @@ module.exports = (env, argv) => {
                 remotes: {
                     '@jahia/jcontent': 'appShell.remotes.jcontent',
                 },
-            }, Object.keys(packageJson.dependencies))),
+            })),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: [`${path.resolve(__dirname, 'src/main/resources/javascript/apps/')}/**/*`],
                 verbose: false

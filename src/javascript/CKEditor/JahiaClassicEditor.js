@@ -68,6 +68,7 @@ JahiaClassicEditor.defaultConfig = {
     },
     style: {
         definitions: [
+            // eslint-disable-next-line no-warning-comments
             // Todo : load from config
 
             // Inline styles

@@ -48,6 +48,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-module-signature>MC0CFQCMvFTgP35YLbX5eBYBwbaprvcb7wIUKEWx23+aJeqJPmO80u6uyx0LrFE=</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
+        <jahia-depends>jcontent=3</jahia-depends>
     </properties>
 
     <repositories>
@@ -99,7 +100,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.8.0</version>
+                <version>1.13.4</version>
                 <executions>
                     <execution>
                         <id>npm install node and yarn</id>
@@ -108,8 +109,8 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v16.15.0</nodeVersion>
-                            <yarnVersion>v1.22.10</yarnVersion>
+                            <nodeVersion>v20.11.0</nodeVersion>
+                            <yarnVersion>v1.22.21</yarnVersion>
                         </configuration>
                     </execution>
                     <execution>

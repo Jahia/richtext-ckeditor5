@@ -89,7 +89,7 @@
     "@babel/preset-react": "^7.9.4",
     "@ckeditor/ckeditor5-dev-translations": "^39.5.1",
     "@ckeditor/ckeditor5-dev-utils": "^39.5.1",
-    "@jahia/eslint-config": "^1.1.0",
+    "@jahia/eslint-config": "^2.1.0",
     "@jahia/webpack-config": "^1.1.0",
     "babel-jest": "^26.3.0",
     "babel-loader": "^8.1.0",

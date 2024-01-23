@@ -4,7 +4,7 @@ import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {JahiaClassicEditor} from '../CKEditor/JahiaClassicEditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/jcontent';
-import {useApolloClient, useQuery} from 'react-apollo';
+import {useApolloClient, useQuery} from '@apollo/client';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import scopeCss from 'scope-css';

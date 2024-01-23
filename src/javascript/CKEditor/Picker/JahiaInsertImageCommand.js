@@ -1,4 +1,4 @@
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import {Command} from '@ckeditor/ckeditor5-core';
 
 export class JahiaInsertImageCommand extends Command {
     constructor(editor, type) {

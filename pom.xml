@@ -33,7 +33,7 @@
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (richtext-ckeditor5) for running on a Jahia server.</description>
 
@@ -46,7 +46,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFQCMvFTgP35YLbX5eBYBwbaprvcb7wIUKEWx23+aJeqJPmO80u6uyx0LrFE=</jahia-module-signature>
+        <jahia-module-signature>MC0CFQCLDlgum/Bc+EtidkNll33maYcgOQIUAVkm2DQJnLtBtch/gK9u1FpR9uw=</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <jahia-depends>jcontent=3</jahia-depends>
     </properties>

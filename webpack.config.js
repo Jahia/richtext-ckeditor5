@@ -120,6 +120,9 @@ module.exports = (env, argv) => {
         },
         plugins: [
             new ModuleFederationPlugin(getModuleFederationConfig(packageJson, {
+                exposes: {
+                    '.': './src/javascript/shared',
+                },
                 remotes: {
                     '@jahia/jcontent': 'appShell.remotes.jcontent',
                 },

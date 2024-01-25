@@ -103,4 +103,4 @@ export const plugins = {
         TableToolbar,
         TextTransformation
     ]
-}
+};

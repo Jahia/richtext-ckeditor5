@@ -16,7 +16,7 @@ export function registerConfig() {
 
     /**
      * Make config override function available through registry (to be tested) e.g.
-     * 
+     *
      * ```
      * const defineConfig = window.jahia.uiExtender.registry.get('richtext-ckeditor5', 'init');
      * defineConfig('my-override', {...[config override]})
@@ -30,11 +30,13 @@ export function defineConfig(key, config) {
     if (registry.get(CONFIG_KEY, key)) {
         console.warn(`Config ${key} already exists. Overriding...`);
     }
+
     registry.addOrReplace(CONFIG_KEY, key, configProps);
 
     if (registry.get(PLUGINS_KEY, key)) {
         console.warn(`Plugin with ${key} already exists. Overriding...`);
     }
+
     registry.addOrReplace(PLUGINS_KEY, key, {targets: ['classic'], plugins: plugins?.classic || plugins || []});
     registry.addOrReplace(BALLOON_PLUGINS_KEY, key, {targets: ['balloon'], plugins: plugins?.balloon || []});
 

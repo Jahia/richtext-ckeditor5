@@ -16,13 +16,16 @@ export function registerConfig() {
 
     /**
      * Make config override function available through registry (to be tested) e.g.
-     *
      * ```
-     * const defineConfig = window.jahia.uiExtender.registry.get('richtext-ckeditor5', 'init');
+     * const {defineConfig} = window.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared');
      * defineConfig('my-override', {...[config override]})
      * ```
      */
-    registry.addOrReplace(MODULE_KEY, 'init', defineConfig);
+    // expose (some) shared functions through registry with registry.get('@jahia/ckeditor5', 'shared');
+    registry.addOrReplace(MODULE_KEY, 'shared', {
+        defineConfig, 
+        getDefaultConfig
+    });
 }
 
 export function defineConfig(key, config) {
@@ -41,6 +44,10 @@ export function defineConfig(key, config) {
     registry.addOrReplace(BALLOON_PLUGINS_KEY, key, {targets: ['balloon'], plugins: plugins?.balloon || []});
 
     initConfig();
+}
+
+export function getDefaultConfig() {
+    return registry.get('ckeditor5-config','default');
 }
 
 function initConfig() {

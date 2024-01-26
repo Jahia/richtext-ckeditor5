@@ -23,7 +23,7 @@ export function registerConfig() {
      */
     // expose (some) shared functions through registry with registry.get('@jahia/ckeditor5', 'shared');
     registry.addOrReplace(MODULE_KEY, 'shared', {
-        defineConfig, 
+        defineConfig,
         getDefaultConfig
     });
 }
@@ -47,7 +47,7 @@ export function defineConfig(key, config) {
 }
 
 export function getDefaultConfig() {
-    return registry.get('ckeditor5-config','default');
+    return registry.get('ckeditor5-config', 'default');
 }
 
 function initConfig() {

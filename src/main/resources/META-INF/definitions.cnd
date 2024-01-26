@@ -1,0 +1,8 @@
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<rtnt = 'http://www.jahia.org/jahia/rt/nt/1.0'>
+<rtmix = 'http://www.jahia.org/jahia/rt/mix/1.0'>
+
+[rtmix:ckEditorVersionSelector] mixin
+ - useCkEditor4 (boolean) = true indexed=no autocreated
+

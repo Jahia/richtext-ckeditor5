@@ -13,10 +13,10 @@ export const editorOnBeforeContextHook = async (editContext, client) => {
             query: getEditorVersionInfo,
             variables: {siteId: editContext.siteInfo.uuid}
         }).then(result => {
-            if (!result.data.jcr.nodeById?.property?.booleanValue) {
-                registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
-            } else {
+            if (result.data.jcr.nodeById?.property?.booleanValue) {
                 registry.addOrReplace('selectorType', 'RichText', originalRichText);
+            } else {
+                registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
             }
 
             resolve();

@@ -1,11 +1,11 @@
-import {getEditorVersionInfo} from "./RichTextCKEditor5.gql-queries";
-import {registry} from "@jahia/ui-extender";
+import {getEditorVersionInfo} from './RichTextCKEditor5.gql-queries';
+import {registry} from '@jahia/ui-extender';
 
 let originalRichText;
 
 export const editorOnBeforeContextHook = async (editContext, client) => {
     if (!originalRichText) {
-        originalRichText = registry.get('selectorType', 'RichText')
+        originalRichText = registry.get('selectorType', 'RichText');
     }
 
     return new Promise((resolve, reject) => {
@@ -18,16 +18,17 @@ export const editorOnBeforeContextHook = async (editContext, client) => {
             } else {
                 registry.addOrReplace('selectorType', 'RichText', originalRichText);
             }
-            resolve()
-        }).catch( e => {
+
+            resolve();
+        }).catch(e => {
             console.error(e);
             reject();
-        })
+        });
     });
-}
+};
 
 export const editorOnCloseHook = () => {
     if (originalRichText) {
         registry.addOrReplace('selectorType', 'RichText', originalRichText);
     }
-}
+};

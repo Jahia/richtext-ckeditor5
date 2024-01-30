@@ -2,7 +2,6 @@ import {Alignment} from '@ckeditor/ckeditor5-alignment';
 import {Autoformat} from '@ckeditor/ckeditor5-autoformat';
 import {BlockQuote} from '@ckeditor/ckeditor5-block-quote';
 import {Bold, Code, Italic, Strikethrough, Underline} from '@ckeditor/ckeditor5-basic-styles';
-import {CKBox} from '@ckeditor/ckeditor5-ckbox';
 import {CloudServices} from '@ckeditor/ckeditor5-cloud-services';
 import {DocumentList, DocumentListProperties} from '@ckeditor/ckeditor5-list';
 import {Essentials} from '@ckeditor/ckeditor5-essentials';
@@ -13,7 +12,7 @@ import {GeneralHtmlSupport} from '@ckeditor/ckeditor5-html-support';
 import {Heading} from '@ckeditor/ckeditor5-heading';
 import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line';
 import {HtmlEmbed} from '@ckeditor/ckeditor5-html-embed';
-import {Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload, PictureEditing} from '@ckeditor/ckeditor5-image';
+import {Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload} from '@ckeditor/ckeditor5-image';
 import {Indent, IndentBlock} from '@ckeditor/ckeditor5-indent';
 import {Link} from '@ckeditor/ckeditor5-link';
 import {List} from '@ckeditor/ckeditor5-list';
@@ -28,79 +27,51 @@ import {Table, TableCellProperties, TableColumnResize, TableProperties, TableToo
 import {TextTransformation} from '@ckeditor/ckeditor5-typing';
 import {Picker} from '~/CKEditor/Picker/Picker';
 
-export const plugins = {
-    classic: [
-        Alignment,
-        Autoformat,
-        BlockQuote,
-        Bold,
-        CloudServices,
-        Code,
-        DocumentList,
-        DocumentListProperties,
-        Essentials,
-        ExportPdf,
-        FindAndReplace,
-        FontBackgroundColor,
-        FontColor,
-        FontFamily,
-        FontSize,
-        GeneralHtmlSupport,
-        Heading,
-        HorizontalLine,
-        HtmlEmbed,
-        Image,
-        ImageCaption,
-        ImageResize,
-        ImageStyle,
-        ImageToolbar,
-        ImageUpload,
-        Indent,
-        IndentBlock,
-        Italic,
-        Link,
-        MediaEmbed,
-        Paragraph,
-        PasteFromOffice,
-        RemoveFormat,
-        SourceEditing,
-        SpecialCharacters,
-        SpecialCharactersEssentials,
-        Strikethrough,
-        Style,
-        Table,
-        TableCellProperties,
-        TableColumnResize,
-        TableProperties,
-        TableToolbar,
-        TextTransformation,
-        Underline,
-        Picker
-    ],
-    balloon: [
-        Autoformat,
-        BlockQuote,
-        Bold,
-        CKBox,
-        CloudServices,
-        Essentials,
-        GeneralHtmlSupport,
-        Heading,
-        Image,
-        ImageCaption,
-        ImageStyle,
-        ImageToolbar,
-        ImageUpload,
-        Indent,
-        Italic,
-        Link,
-        List,
-        MediaEmbed,
-        Paragraph,
-        PasteFromOffice,
-        PictureEditing,
-        Table,
-        TableToolbar,
-        TextTransformation
-    ]
-};
+export const plugins = [
+    Alignment,
+    Autoformat,
+    BlockQuote,
+    Bold,
+    CloudServices,
+    Code,
+    DocumentList,
+    DocumentListProperties,
+    Essentials,
+    ExportPdf,
+    FindAndReplace,
+    FontBackgroundColor,
+    FontColor,
+    FontFamily,
+    FontSize,
+    GeneralHtmlSupport,
+    Heading,
+    HorizontalLine,
+    HtmlEmbed,
+    Image,
+    ImageCaption,
+    ImageResize,
+    ImageStyle,
+    ImageToolbar,
+    ImageUpload,
+    Indent,
+    IndentBlock,
+    Italic,
+    Link,
+    MediaEmbed,
+    Paragraph,
+    PasteFromOffice,
+    RemoveFormat,
+    SourceEditing,
+    SpecialCharacters,
+    SpecialCharactersEssentials,
+    Strikethrough,
+    Style,
+    Table,
+    TableCellProperties,
+    TableColumnResize,
+    TableProperties,
+    TableToolbar,
+    TextTransformation,
+    Underline,
+    Picker
+];

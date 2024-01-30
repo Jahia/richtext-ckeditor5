@@ -15,6 +15,15 @@ export class PickerUploadAdapter extends Plugin {
     init() {
         // Register CKFinderAdapter
         this.editor.plugins.get(FileRepository).createUploadAdapter = loader => new UploadAdapter(loader, this.editor);
+
+        // Disable drag and drop in editor
+        const stopEvent = (evt, data) => {
+            evt.stop();
+            data.preventDefault();
+        };
+        this.editor.editing.view.document.on( 'dragover', stopEvent, {priority: 'high'});
+        this.editor.editing.view.document.on( 'dragstart', stopEvent, {priority: 'high'});
+        this.editor.editing.view.document.on( 'drop', stopEvent, {priority: 'high'});
     }
 }
 

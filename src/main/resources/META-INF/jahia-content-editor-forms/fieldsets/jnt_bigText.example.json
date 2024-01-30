@@ -1,5 +1,5 @@
 {
-  "name": "jnt:bigText",
+  "name": "jnt:bigText*remove to enable json override*",
   "priority": 1.1,
   "fields": [
     {

@@ -7,13 +7,12 @@ import {isElement} from 'lodash-es';
 
 export class JahiaClassicEditor extends DecoupledEditor {
     static create(sourceElementOrData, config = {}) {
-        return new Promise(resolve => {
-            const editor = new this(sourceElementOrData, config);
-            resolve(editor.initPlugins()
-                .then(() => editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null))
-                .then(() => editor.data.init(editor.config.get('initialData')))
-                .then(() => editor.fire('ready'))
-                .then(() => editor));
+        const editor = new this(sourceElementOrData, config);
+        return editor.initPlugins().then(() => {
+            editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null);
+            editor.data.init(editor.config.get('initialData'));
+            editor.fire('ready');
+            return editor;
         });
     }
 }

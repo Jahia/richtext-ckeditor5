@@ -1,14 +1,12 @@
 import {registry} from '@jahia/ui-extender';
 import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
-import {JahiaBalloonEditor} from '~/CKEditor/JahiaBalloonEditor';
 import {config} from '~/CKEditor/configurations';
 import Constants from '~/RichTextCKEditor5.constants';
 
 const {
     MODULE_KEY,
     CONFIG_KEY,
-    PLUGINS_KEY,
-    BALLOON_PLUGINS_KEY
+    PLUGINS_KEY
 } = Constants.registry;
 
 export function registerConfig() {
@@ -40,8 +38,7 @@ export function defineConfig(key, config) {
         console.warn(`Plugin with ${key} already exists. Overriding...`);
     }
 
-    registry.addOrReplace(PLUGINS_KEY, key, {targets: ['classic'], plugins: plugins?.classic || plugins || []});
-    registry.addOrReplace(BALLOON_PLUGINS_KEY, key, {targets: ['balloon'], plugins: plugins?.balloon || []});
+    registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
 
     initConfig();
 }
@@ -52,7 +49,6 @@ export function getDefaultConfig() {
 
 function initConfig() {
     JahiaClassicEditor.builtinPlugins = registry.find({type: PLUGINS_KEY}).map(m => m.plugins).flat();
-    JahiaBalloonEditor.builtinPlugins = registry.find({type: BALLOON_PLUGINS_KEY}).map(m => m.plugins).flat();
 
     const defaultConfig = registry.get(CONFIG_KEY, 'default');
     // TODO how do we deal with global overrides

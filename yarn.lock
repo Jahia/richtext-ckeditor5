@@ -1139,13 +1139,6 @@
   dependencies:
     ckeditor5 "^37.1.0"
 
-"@ckeditor/ckeditor5-ckbox@^37.1.0":
-  version "37.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-ckbox/-/ckeditor5-ckbox-37.1.0.tgz#f4940fdbe90f113e5542dba677e30f1600238e2a"
-  integrity sha512-XcbQPFkGevxKLilM28szORH/PZyR39cLwogZgothLXX4aPiiBGox8ldN6uI7cTaDkGjxzvaBF1AvHhcAPGs5pA==
-  dependencies:
-    ckeditor5 "^37.1.0"
-
 "@ckeditor/ckeditor5-clipboard@40.2.0":
   version "40.2.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-clipboard/-/ckeditor5-clipboard-40.2.0.tgz#74daa4c9d1ae664338e9d14da6052febc3b933c4"
@@ -1240,14 +1233,6 @@
     style-loader "^2.0.0"
     terser-webpack-plugin "^4.2.3"
     through2 "^3.0.1"
-
-"@ckeditor/ckeditor5-editor-balloon@^37.1.0":
-  version "37.1.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-editor-balloon/-/ckeditor5-editor-balloon-37.1.0.tgz#9eefc35e97c0ff713b87ebf21ce29caf160234dc"
-  integrity sha512-n2FktR7e2kS1nKJJS3NV2XcqDfY5LvGxrqu5Qkx+26TlSlIwr0Bs+apvlTqWWQw4maYHOb3JvKHNur4xBKl1eQ==
-  dependencies:
-    ckeditor5 "^37.1.0"
-    lodash-es "^4.17.15"
 
 "@ckeditor/ckeditor5-editor-classic@^37.1.0":
   version "37.1.0"

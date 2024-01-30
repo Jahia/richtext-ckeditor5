@@ -1,1 +1,1 @@
-export {defineConfig} from '../CKEditor/registerConfig';
+export * from '../CKEditor/registerConfig';

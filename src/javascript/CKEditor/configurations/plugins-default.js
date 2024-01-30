@@ -15,7 +15,6 @@ import {HtmlEmbed} from '@ckeditor/ckeditor5-html-embed';
 import {Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload} from '@ckeditor/ckeditor5-image';
 import {Indent, IndentBlock} from '@ckeditor/ckeditor5-indent';
 import {Link} from '@ckeditor/ckeditor5-link';
-import {List} from '@ckeditor/ckeditor5-list';
 import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed';
 import {Paragraph} from '@ckeditor/ckeditor5-paragraph';
 import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office';

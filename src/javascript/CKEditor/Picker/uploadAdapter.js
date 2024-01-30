@@ -21,9 +21,10 @@ export class PickerUploadAdapter extends Plugin {
             evt.stop();
             data.preventDefault();
         };
-        this.editor.editing.view.document.on( 'dragover', stopEvent, {priority: 'high'});
-        this.editor.editing.view.document.on( 'dragstart', stopEvent, {priority: 'high'});
-        this.editor.editing.view.document.on( 'drop', stopEvent, {priority: 'high'});
+
+        this.editor.editing.view.document.on('dragover', stopEvent, {priority: 'high'});
+        this.editor.editing.view.document.on('dragstart', stopEvent, {priority: 'high'});
+        this.editor.editing.view.document.on('drop', stopEvent, {priority: 'high'});
     }
 }
 

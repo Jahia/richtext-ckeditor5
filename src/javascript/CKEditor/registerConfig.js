@@ -31,11 +31,13 @@ export function defineConfig(key, config) {
     if (registry.get(CONFIG_KEY, key)) {
         console.warn(`Config ${key} already exists. Overriding...`);
     }
+
     registry.addOrReplace(CONFIG_KEY, key, configProps);
 
     if (registry.get(PLUGINS_KEY, key)) {
         console.warn(`Plugin with ${key} already exists. Overriding...`);
     }
+
     registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
 
     initConfig();

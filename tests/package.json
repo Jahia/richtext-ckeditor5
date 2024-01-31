@@ -1,0 +1,54 @@
+{
+  "name": "@jahia/richtext-ckeditor5-cypress",
+  "private": false,
+  "version": "1.0.0",
+  "scripts": {
+    "instrument": "nyc instrument --compact=false cypress instrumented",
+    "e2e:ci": "cypress run --browser chrome",
+    "e2e:debug": "cypress open",
+    "lint": "eslint . -c .eslintrc.json --ext .ts",
+    "report:merge": "mochawesome-merge results/reports/mochawesome*.json > results/reports/report.json && rm results/reports/mochawesome*.json",
+    "report:html": "marge --inline results/reports/report.json --reportDir results/reports/",
+    "build": "tsc -p ./lib-tsconfig.json",
+    "publish-tests": "yarn version --prerelease --preid=tests && git push --follow-tags && npm publish --access public",
+    "lint:js": "eslint --ext js,ts cypress",
+    "lint:js:fix": "yarn lint:js --fix cypress",
+    "lint:fix": "yarn lint:js:fix --resolve-plugins-relative-to ."
+  },
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@4tw/cypress-drag-drop": "^2.2.1",
+    "@jahia/cypress": "^3.17.4",
+    "@jahia/jahia-reporter": "^1.0.30",
+    "@jahia/jcontent-cypress": "^3.0.0-tests.8",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "cypress": "^13.6.4",
+    "cypress-iframe": "^1.0.1",
+    "cypress-multi-reporters": "^1.6.4",
+    "cypress-slow-down": "^1.3.1",
+    "cypress-terminal-report": "^5.3.12",
+    "cypress-wait-until": "^3.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-chai-friendly": "^0.7.4",
+    "eslint-plugin-cypress": "^2.15.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^4.3.0",
+    "mochawesome-report-generator": "^6.2.0",
+    "prettier": "^3.2.4",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "cypress-real-events": "^1.11.0"
+  }
+}

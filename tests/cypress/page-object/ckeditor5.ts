@@ -13,4 +13,11 @@ export class RichTextCKeditor5Field extends Field {
             ckeditorInstance.setData(text);
         });
     }
+
+    getData(): Cypress.Chainable<string> {
+        return this.get().find('.ck-editor__editable').then($myElement => {
+            const ckeditorInstance = $myElement.prop('ckeditorInstance');
+            return ckeditorInstance.getData();
+        });
+    }
 }

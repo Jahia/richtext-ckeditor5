@@ -20,4 +20,12 @@ export class RichTextCKeditor5Field extends Field {
             return ckeditorInstance.getData();
         });
     }
+
+    getToolbarButton(buttonName: string): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().find('.ck-toolbar__items').find(`button[data-cke-tooltip-text^="${buttonName}"]`);
+    }
+
+    selectHeading(heading: string) {
+        this.get().find('.ck-heading-dropdown').find('.ck-list__item').contains(heading).click();
+    }
 }

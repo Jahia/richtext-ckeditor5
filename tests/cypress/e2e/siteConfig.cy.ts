@@ -1,4 +1,4 @@
-import {JContent, ContentEditor, } from '@jahia/jcontent-cypress/dist/page-object';
+import {JContent, ContentEditor} from '@jahia/jcontent-cypress/dist/page-object';
 import {createSite, deleteSite} from '@jahia/cypress';
 import {Ckeditor5} from '../page-object/ckeditor5';
 

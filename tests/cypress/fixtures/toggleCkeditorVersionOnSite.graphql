@@ -1,0 +1,10 @@
+mutation toggleCkeditorVersionOnSite ($sitePath: String!, $ckeditor4: String!) {
+    jcr(workspace: EDIT) {
+        mutateNode(pathOrId: $sitePath) {
+            addMixins(mixins: ["rtmix:ckEditorVersionSelector"])
+            mutateProperty(name: "useCkEditor4") {
+                setValue(value: $ckeditor4, type: BOOLEAN)
+            }
+        }
+    }
+}

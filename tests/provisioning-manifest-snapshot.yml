@@ -1,10 +1,5 @@
 - addMavenRepository: 'https://devtools.jahia.com/nexus/content/groups/public/@snapshots@noreleases@id=JahiaPublicSnapshots'
 - installBundle:
     - 'mvn:org.jahia.modules/richtext-ckeditor5'
-    - 'mvn:org.jahia.modules/jahia-page-composer'
-    - 'mvn:org.jahia.modules/jahia-administration'
-    - 'mvn:org.jahia.modules/graphql-dxm-provider'
-    - 'mvn:org.jahia.modules/jahia-ui-root'
   autoStart: true
   uninstallPreviousVersion: true
-- include: 'provisioning.yml'

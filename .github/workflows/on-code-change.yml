@@ -73,7 +73,7 @@ jobs:
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: richtext-ckeditor5
-          testrail_project: richtext-ckeditor5
+          testrail_project: CKEditor 5 Module
           tests_manifest: provisioning-manifest-build.yml
           jahia_image: jahia/jahia-discovery-dev:8-SNAPSHOT
           should_use_build_artifacts: true

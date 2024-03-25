@@ -3,7 +3,7 @@ import {Autoformat} from '@ckeditor/ckeditor5-autoformat';
 import {BlockQuote} from '@ckeditor/ckeditor5-block-quote';
 import {Bold, Code, Italic, Strikethrough, Underline} from '@ckeditor/ckeditor5-basic-styles';
 import {CloudServices} from '@ckeditor/ckeditor5-cloud-services';
-import {DocumentList, DocumentListProperties} from '@ckeditor/ckeditor5-list';
+import {List, ListProperties} from '@ckeditor/ckeditor5-list';
 import {Essentials} from '@ckeditor/ckeditor5-essentials';
 import {ExportPdf} from '@ckeditor/ckeditor5-export-pdf';
 import {FindAndReplace} from '@ckeditor/ckeditor5-find-and-replace';
@@ -33,8 +33,8 @@ export const plugins = [
     Bold,
     CloudServices,
     Code,
-    DocumentList,
-    DocumentListProperties,
+    List,
+    ListProperties,
     Essentials,
     ExportPdf,
     FindAndReplace,

@@ -26,6 +26,22 @@ However if you want to remove or add a plugin to the build you need to follow th
 
 Note that it is also possible to go back to the [Online builder tool](https://ckeditor.com/ckeditor-5/online-builder) and pick other set of plugins. But we encourage you to try the harder way and to learn the principles of Node.js and CKEditor 5 ecosystems that will allow you to do more cool things in the future!
 
+## Updating/Adding CKEditor5 plugins
+
+When updating version ckeditor 5 version and its plugins, or adding new plugins, we need to make sure that all ckeditor5 versions across the plugins (including any 3rd party plugins) have the same version numbers, otherwise we will run into [ckeditor-duplicated-modules](https://support.ckeditor.com/hc/en-us/articles/10515221487388-How-can-I-fix-the-duplicated-modules-error-in-CKEditor-5) error, which is shown in the console log during ckeditor5 module init.
+
+Specifically need to make sure that ckeditor dependencies are synced across plugins and we do not run into conflicts like these in `yarn.lock` (as in the case of `@webspellchecker/wproofreader-ckeditor5 plugin` for example):
+
+```
+ckeditor5@>=16.0.0:
+  version "40.2.0"
+  [...]
+
+ckeditor5@^37.1.0:
+  version "37.1.0"
+  [...]
+```
+
 ### Installation
 
 In order to rebuild the application you need to install all dependencies first. To do it, open the terminal in the project directory and type:

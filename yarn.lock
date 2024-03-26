@@ -1222,14 +1222,6 @@
     ckeditor5 "41.2.1"
     lodash-es "4.17.21"
 
-"@ckeditor/ckeditor5-editor-decoupled@^41.2.1":
-  version "41.2.1"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-editor-decoupled/-/ckeditor5-editor-decoupled-41.2.1.tgz#db6d8d94f33d9633c23fa2c377b73c314569b923"
-  integrity sha512-FDuWrEOf8CBIPMhFncmou9p2/0XO7HMhzlCxRHuq8erTuC1ON7t4uveQVl1Xtxskjt3DPJeR4Dw+hJJ+B/lQZQ==
-  dependencies:
-    ckeditor5 "41.2.1"
-    lodash-es "4.17.21"
-
 "@ckeditor/ckeditor5-engine@41.2.1":
   version "41.2.1"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-engine/-/ckeditor5-engine-41.2.1.tgz#e385298975b607feb9600c55d270ad0d06dbb36a"

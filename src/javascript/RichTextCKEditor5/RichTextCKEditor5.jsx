@@ -87,7 +87,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     };
 
     return (
-        <div>
+        <div className={styles.wrapper}>
             <div ref={toolbarContainer} className={styles.toolbar}/>
             <div className={styles.unreset}>
                 <CKEditor

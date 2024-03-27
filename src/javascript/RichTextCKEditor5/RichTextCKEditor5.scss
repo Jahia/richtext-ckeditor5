@@ -1,7 +1,13 @@
+.wrapper {
+  overflow-y: scroll;
+  min-height: 20vh;
+  max-height: 40vh;
+}
+
 .toolbar {
   z-index: 2;
   position: sticky;
-  top: 40px;
+  top: 0;
 }
 
 /**

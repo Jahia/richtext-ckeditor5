@@ -24,11 +24,6 @@
 
 .unreset {
 
-  // Fix for missing border for now until we replace DecoupledEditor
-  div[class*="ck-editor__editable_inline"] {
-    border: 1px solid var(--ck-color-base-border);
-  }
-
   html {
     box-sizing: content-box;
   }

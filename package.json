@@ -32,7 +32,6 @@
     "@ckeditor/ckeditor5-code-block": "^41.2.1",
     "@ckeditor/ckeditor5-core": "^41.2.1",
     "@ckeditor/ckeditor5-editor-classic": "^41.2.1",
-    "@ckeditor/ckeditor5-editor-decoupled": "^41.2.1",
     "@ckeditor/ckeditor5-essentials": "^41.2.1",
     "@ckeditor/ckeditor5-export-pdf": "^41.2.1",
     "@ckeditor/ckeditor5-export-word": "^41.2.1",

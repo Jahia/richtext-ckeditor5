@@ -19,9 +19,9 @@ describe('Licence tests', () => {
         jcontent = JContent.visit(siteKey, 'en', 'content-folders/contents');
     });
 
-    it('should not load productivity licence given that it is absent', () => {
+    it('should have licenseKey set to community', () => {
+        jcontent.createContent('Rich text');
         cy.window().then(win => {
-            jcontent.createContent('Rich text');
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const config = win.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').getDefaultConfig();

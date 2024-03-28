@@ -18,6 +18,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
 const getModuleFederationConfig = require('@jahia/webpack-config/getModuleFederationConfig');
 const packageJson = require('./package.json');
+require('dotenv').config({ path: './.env' });
 
 module.exports = (env, argv) => {
     let _argv = argv || {};
@@ -146,9 +147,12 @@ module.exports = (env, argv) => {
             new webpack.BannerPlugin( {
                 banner: bundler.getLicenseBanner(),
                 raw: true
-            } )
+            }),
+            new webpack.DefinePlugin({
+                CKEDITOR_PRODUCTIVITY_LICENSE: JSON.stringify(process.env.CKEDITOR_PRODUCTIVITY_LICENSE)
+            })
         ],
-        mode: 'development',
+        mode: _argv.mode ?  _argv.mode : 'development',
         // optimization: {
         //     minimizer: [
         //         new TerserWebpackPlugin( {

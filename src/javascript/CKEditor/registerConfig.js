@@ -9,6 +9,15 @@ const {
     PLUGINS_KEY
 } = Constants.registry;
 
+const productivityPluginsNameAndKey = {
+    "FormatPainter": true,
+    'formatPainter': true,
+    'ExportPdf': true,
+    'exportPdf': true,
+    'ExportWord': true,
+    'exportWord': true
+}
+
 export function registerConfig() {
     defineConfig('default', config);
 
@@ -51,6 +60,15 @@ function initConfig() {
     JahiaClassicEditor.builtinPlugins = registry.find({type: PLUGINS_KEY}).map(m => m.plugins).flat();
 
     const defaultConfig = registry.get(CONFIG_KEY, 'default');
+
+    const isProductivityEnabled = window?.contextJsParameters?.valid && CKEDITOR_PRODUCTIVITY_LICENSE;
+    defaultConfig.licenseKey = isProductivityEnabled ? CKEDITOR_PRODUCTIVITY_LICENSE : 'CKEDITOR_COMMUNITY';
+
+    if (!isProductivityEnabled) {
+        JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins.filter(p => !productivityPluginsNameAndKey[p.pluginName]);
+        defaultConfig.toolbar.items = defaultConfig.toolbar.items.filter(i => !productivityPluginsNameAndKey[i]);
+    }
+
     // TODO how do we deal with global overrides
     JahiaClassicEditor.defaultConfig = defaultConfig;
 }

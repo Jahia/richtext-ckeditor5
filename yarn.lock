@@ -1077,6 +1077,13 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@babel/runtime@^7.21.0":
+  version "7.24.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.1.tgz#431f9a794d173b53720e69a6464abc6f0e2a5c57"
+  integrity sha512-+BIznRzyqBf+2wCTxcKE3wDjfGeCoVE61KSHGpkzqrLi8qxqFwBeUFyId2cxkTmm55fzDGnm0+yCxaxygrLUnQ==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/template@^7.22.15", "@babel/template@^7.3.3":
   version "7.22.15"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.22.15.tgz#09576efc3830f0430f4548ef971dde1350ef2f38"
@@ -1164,6 +1171,14 @@
   integrity sha512-NCt2sQA5IZSpPXqk8vL5YladmMznBuLvWgJ2CuxHU8UmRZ7lCR6STmdzmrgPqK5rUiMSSx0aDq7vHSG/d9a3qA==
   dependencies:
     ckeditor5 "41.2.1"
+
+"@ckeditor/ckeditor5-collaboration-core@41.2.1":
+  version "41.2.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-collaboration-core/-/ckeditor5-collaboration-core-41.2.1.tgz#4e21cb796a6a5bbed8ecd3e8a5db80d51b189980"
+  integrity sha512-drHHbTeT+ZkiEtFyE9aMOAXrXpb55u3Ty0fTfj7uRz0jfWolg87Belhiuml629Uj003YOBH2M0Cw/P2DViKQFQ==
+  dependencies:
+    ckeditor5 "41.2.1"
+    date-fns "2.30.0"
 
 "@ckeditor/ckeditor5-core@41.2.1", "@ckeditor/ckeditor5-core@^41.2.1":
   version "41.2.1"
@@ -1275,6 +1290,14 @@
   integrity sha512-X6q+GhWILFaMyjYyA8refHdGyjF2SUbHblxJ+TtYD22qkcBSRL4rxlrOOC32fZEWXMVS2MZuB+Z1Ie3HStAWRA==
   dependencies:
     ckeditor5 "41.2.1"
+
+"@ckeditor/ckeditor5-format-painter@^41.2.1":
+  version "41.2.1"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-format-painter/-/ckeditor5-format-painter-41.2.1.tgz#6c446da58435de513bc634c6dd1234828c74d6e3"
+  integrity sha512-//CPJAuU21AIrrGAK8XYkaMNMKSU6cI550jlpeQTaujm323v29pOebyksHNnqrgmqX7MamX/KkqnR9Bt3IS9GA==
+  dependencies:
+    ckeditor5 "41.2.1"
+    ckeditor5-collaboration "41.2.1"
 
 "@ckeditor/ckeditor5-heading@^41.2.1":
   version "41.2.1"
@@ -3019,6 +3042,13 @@ ci-info@^2.0.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
 
+ckeditor5-collaboration@41.2.1:
+  version "41.2.1"
+  resolved "https://registry.yarnpkg.com/ckeditor5-collaboration/-/ckeditor5-collaboration-41.2.1.tgz#ae8f4cf25a3d3fbc52824d622014bf0854e30f78"
+  integrity sha512-iy4vx217s7s3hJlavt4jTXCCxJ7EzVmK4w78o01rTLE+C2GqxL/YJJpa006ciAx55VVJjKVHHdwHiI8X9T8Gsg==
+  dependencies:
+    "@ckeditor/ckeditor5-collaboration-core" "41.2.1"
+
 ckeditor5@41.2.1, ckeditor5@>=16.0.0:
   version "41.2.1"
   resolved "https://registry.yarnpkg.com/ckeditor5/-/ckeditor5-41.2.1.tgz#e15773e78705b516acae6c4eac6392bb69cb312c"
@@ -3384,6 +3414,13 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
+date-fns@2.30.0:
+  version "2.30.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
+  integrity sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==
+  dependencies:
+    "@babel/runtime" "^7.21.0"
+
 debounce@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
@@ -3554,6 +3591,11 @@ domutils@^2.8.0:
     dom-serializer "^1.0.1"
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
+
+dotenv@^16.4.5:
+  version "16.4.5"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
 duplexer@^0.1.2:
   version "0.1.2"

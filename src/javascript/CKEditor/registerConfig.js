@@ -10,13 +10,13 @@ const {
 } = Constants.registry;
 
 const productivityPluginsNameAndKey = {
-    "FormatPainter": true,
-    'formatPainter': true,
-    'ExportPdf': true,
-    'exportPdf': true,
-    'ExportWord': true,
-    'exportWord': true
-}
+    FormatPainter: true,
+    formatPainter: true,
+    ExportPdf: true,
+    exportPdf: true,
+    ExportWord: true,
+    exportWord: true
+};
 
 export function registerConfig() {
     defineConfig('default', config);
@@ -61,7 +61,9 @@ function initConfig() {
 
     const defaultConfig = registry.get(CONFIG_KEY, 'default');
 
+    // eslint-disable-next-line
     const isProductivityEnabled = window?.contextJsParameters?.valid && CKEDITOR_PRODUCTIVITY_LICENSE;
+    // eslint-disable-next-line
     defaultConfig.licenseKey = isProductivityEnabled ? CKEDITOR_PRODUCTIVITY_LICENSE : 'CKEDITOR_COMMUNITY';
 
     if (!isProductivityEnabled) {

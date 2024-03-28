@@ -25,6 +25,7 @@ import {Style} from '@ckeditor/ckeditor5-style';
 import {Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar} from '@ckeditor/ckeditor5-table';
 import {TextTransformation} from '@ckeditor/ckeditor5-typing';
 import {Picker} from '~/CKEditor/Picker/Picker';
+import {FormatPainter} from '@ckeditor/ckeditor5-format-painter';
 
 export const plugins = [
     Alignment,
@@ -42,6 +43,7 @@ export const plugins = [
     FontColor,
     FontFamily,
     FontSize,
+    FormatPainter,
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,

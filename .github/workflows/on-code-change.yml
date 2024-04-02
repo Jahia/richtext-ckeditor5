@@ -41,6 +41,7 @@ jobs:
         shell: bash
         run: |
           echo "CKEDITOR_PRODUCTIVITY_LICENSE="${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }} > .env
+          ls -l
       - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/build@v2
         with:

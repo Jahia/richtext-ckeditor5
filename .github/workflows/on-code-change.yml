@@ -40,8 +40,7 @@ jobs:
       - name: Create .env file
         shell: bash
         run: |
-          echo $ROOT_PATH
-          echo "CKEDITOR_PRODUCTIVITY_LICENSE="${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }} > $ROOT_PATH/${{ inputs.module_path }}/.env
+          pwd
       - uses: actions/checkout@v4
       - uses: jahia/jahia-modules-action/build@v2
         with:

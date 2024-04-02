@@ -5,22 +5,18 @@ import {Bold, Code, Italic, Strikethrough, Underline} from '@ckeditor/ckeditor5-
 import {CloudServices} from '@ckeditor/ckeditor5-cloud-services';
 import {List, ListProperties} from '@ckeditor/ckeditor5-list';
 import {Essentials} from '@ckeditor/ckeditor5-essentials';
-import {ExportPdf} from '@ckeditor/ckeditor5-export-pdf';
 import {FindAndReplace} from '@ckeditor/ckeditor5-find-and-replace';
 import {FontBackgroundColor, FontColor, FontFamily, FontSize} from '@ckeditor/ckeditor5-font';
 import {GeneralHtmlSupport} from '@ckeditor/ckeditor5-html-support';
 import {Heading} from '@ckeditor/ckeditor5-heading';
 import {HorizontalLine} from '@ckeditor/ckeditor5-horizontal-line';
-import {HtmlEmbed} from '@ckeditor/ckeditor5-html-embed';
 import {Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload} from '@ckeditor/ckeditor5-image';
 import {Indent, IndentBlock} from '@ckeditor/ckeditor5-indent';
 import {Link} from '@ckeditor/ckeditor5-link';
-import {MediaEmbed} from '@ckeditor/ckeditor5-media-embed';
 import {Paragraph} from '@ckeditor/ckeditor5-paragraph';
 import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
 import {SourceEditing} from '@ckeditor/ckeditor5-source-editing';
-import {SpecialCharacters, SpecialCharactersEssentials} from '@ckeditor/ckeditor5-special-characters';
 import {Style} from '@ckeditor/ckeditor5-style';
 import {Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar} from '@ckeditor/ckeditor5-table';
 import {TextTransformation} from '@ckeditor/ckeditor5-typing';
@@ -37,7 +33,6 @@ export const plugins = [
     List,
     ListProperties,
     Essentials,
-    ExportPdf,
     FindAndReplace,
     FontBackgroundColor,
     FontColor,
@@ -47,7 +42,6 @@ export const plugins = [
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,
-    HtmlEmbed,
     Image,
     ImageCaption,
     ImageResize,
@@ -58,13 +52,10 @@ export const plugins = [
     IndentBlock,
     Italic,
     Link,
-    MediaEmbed,
     Paragraph,
     PasteFromOffice,
     RemoveFormat,
     SourceEditing,
-    SpecialCharacters,
-    SpecialCharactersEssentials,
     Strikethrough,
     Style,
     Table,

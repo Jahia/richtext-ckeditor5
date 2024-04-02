@@ -41,6 +41,8 @@ jobs:
         shell: bash
         run: |
           echo "CKEDITOR_PRODUCTIVITY_LICENSE="${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }} > .env
+          chmod 755 .env
+          chown circleci:127 .env
           ls -la
           pwd
           cat .env

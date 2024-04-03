@@ -16,7 +16,6 @@ const productivityPluginsNameAndKey = {
 
 export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {
-
         config = {...JahiaClassicEditor.defaultConfig, ...config};
 
         // eslint-disable-next-line

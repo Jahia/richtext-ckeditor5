@@ -18,6 +18,8 @@
     - 'mvn:org.jahia.modules/bookmarks/3.1.0'
     - 'mvn:org.jahia.modules/article/3.0.0'
     - 'mvn:org.jahia.modules/digitall/2.3.0'
+    - 'mvn:org.jahia.modules/skins'
+    - 'mvn:org.jahia.modules/default-skins'
     - 'mvn:org.jahia.modules/richtext-ckeditor5'
   autoStart: true
   uninstallPreviousVersion: true

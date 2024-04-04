@@ -18,5 +18,7 @@
     - 'mvn:org.jahia.modules/bookmarks/3.1.0'
     - 'mvn:org.jahia.modules/article/3.0.0'
     - 'mvn:org.jahia.modules/digitall/2.3.0'
+    - 'mvn:org.jahia.modules/skins'
+    - 'mvn:org.jahia.modules/default-skins'
   autoStart: true
   uninstallPreviousVersion: true

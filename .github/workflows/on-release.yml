@@ -51,6 +51,13 @@ jobs:
           nexus_enterprise_releases_url: ${{ secrets.NEXUS_ENTERPRISE_RELEASES_URL }}
           force_signature: true
 
+      - name: Create .env file
+        shell: bash
+        env:
+          CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
+        run: |
+          echo "CKEDITOR_PRODUCTIVITY_LICENSE=${CKEDITOR_PRODUCTIVITY_LICENSE}" > .env
+
       - uses: jahia/jahia-modules-action/release-publication@v2
         name: Publish Module
         with:

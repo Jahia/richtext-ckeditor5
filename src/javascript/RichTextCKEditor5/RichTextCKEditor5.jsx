@@ -70,7 +70,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 data={value}
                 onReady={editor => {
                     editorRef.current = editor;
-                    editor.editing.view.change((writer) => {
+                    editor.editing.view.change(writer => {
                         writer.addClass(styles.wrapper, editor.editing.view.document.getRoot());
                     });
                 }}

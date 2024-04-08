@@ -14,7 +14,6 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const client = useApolloClient();
     const store = useStore();
     const {lang, uilang} = useContentEditorConfigContext();
-    const toolbarContainer = useRef();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -62,10 +61,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     };
 
     return (
-        <div className={styles.wrapper}>
-            <div ref={toolbarContainer} className={styles.toolbar}/>
-            <div className={styles.unreset}>
-                <CKEditor
+        <div className={styles.unreset}>
+            <CKEditor
                 id={id}
                 editor={JahiaClassicEditor}
                 config={customConfig}
@@ -73,8 +70,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 data={value}
                 onReady={editor => {
                     editorRef.current = editor;
-                    toolbarContainer.current.appendChild(editor.ui.view.toolbar.element);
-                    toolbarContainer.current.appendChild(editor.ui.view.body._bodyCollectionContainer);
+                    editor.editing.view.change((writer) => {
+                        writer.addClass(styles.wrapper, editor.editing.view.document.getRoot());
+                    });
                 }}
                 onChange={(event, editor) => {
                     onChange(editor.getData());
@@ -83,7 +81,6 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                     onBlur();
                 }}
             />
-            </div>
         </div>
     );
 };

@@ -16,7 +16,7 @@ import {Link} from '@ckeditor/ckeditor5-link';
 import {Paragraph} from '@ckeditor/ckeditor5-paragraph';
 import {PasteFromOffice} from '@ckeditor/ckeditor5-paste-from-office';
 import {RemoveFormat} from '@ckeditor/ckeditor5-remove-format';
-import {SourceEditing} from '@ckeditor/ckeditor5-source-editing';
+// Import {SourceEditing} from '@ckeditor/ckeditor5-source-editing';
 import {Style} from '@ckeditor/ckeditor5-style';
 import {Table, TableCellProperties, TableColumnResize, TableProperties, TableToolbar} from '@ckeditor/ckeditor5-table';
 import {TextTransformation} from '@ckeditor/ckeditor5-typing';
@@ -55,7 +55,8 @@ export const plugins = [
     Paragraph,
     PasteFromOffice,
     RemoveFormat,
-    SourceEditing,
+    // Temporary removal, issues to be fixed in later versions
+    // SourceEditing,
     Strikethrough,
     Style,
     Table,

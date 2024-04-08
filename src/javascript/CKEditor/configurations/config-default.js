@@ -25,7 +25,8 @@ export const config = {
             'outdent',
             'indent',
             '|',
-            'sourceEditing',
+            // Temporary removal, issues to be fixed in later versions
+            // 'sourceEditing',
             'formatPainter'
         ],
         shouldNotGroupWhenFull: true

@@ -55,7 +55,8 @@ export const plugins = [
     Paragraph,
     PasteFromOffice,
     RemoveFormat,
-    SourceEditing,
+    // Temporary removal, issues to be fixed in later versions
+    // SourceEditing,
     Strikethrough,
     Style,
     Table,

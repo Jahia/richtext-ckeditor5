@@ -9,21 +9,14 @@ export const editorOnBeforeContextHook = async (editContext, client) => {
     }
 
     return new Promise((resolve, reject) => {
-        client.query({
-            query: getEditorVersionInfo,
-            variables: {siteId: editContext.siteInfo.uuid}
-        }).then(result => {
-            if (result.data.jcr.nodeById?.property?.booleanValue) {
-                registry.addOrReplace('selectorType', 'RichText', originalRichText);
-            } else {
-                registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
-            }
+        if ((contextJsParameters.config.ckeditor5.enabledByDefault && !contextJsParameters.config.ckeditor5.exclude.includes(editContext.siteInfo.path.split('/')[2])) ||
+            (!contextJsParameters.config.ckeditor5.enabledByDefault && contextJsParameters.config.ckeditor5.include.includes(editContext.siteInfo.path.split('/')[2]))) {
+            registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
+        } else {
+            registry.addOrReplace('selectorType', 'RichText', originalRichText);
+        }
 
-            resolve();
-        }).catch(e => {
-            console.error(e);
-            reject();
-        });
+        resolve();
     });
 };
 

@@ -9,17 +9,3 @@ export const getCKEditorConfigurationPath = gql`
         }
     }
 `;
-
-export const getEditorVersionInfo = gql`
-    query getEditorVersionInfo($siteId: String!) {
-      jcr {
-        nodeById(uuid: $siteId) {
-          property(name: "useCkEditor4") {
-            booleanValue
-          }
-          ...NodeCacheRequiredFields
-        }
-      }
-    }
-    ${PredefinedFragments.nodeCacheRequiredFields.gql}
-`;

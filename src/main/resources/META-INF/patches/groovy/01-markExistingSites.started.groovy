@@ -28,6 +28,7 @@ void excludeExistingSites() {
             if (configService != null) {
                 Config config = configService.getConfig("org.jahia.modules.ckeditor5");
                 PropertiesValues values = config.getValues();
+                values.setProperty("enabledByDefault", "true");
                 values.setProperty("exclude", siteService.getSitesNodeList(jcrSessionWrapper)
                         .stream()
                         .filter(n -> !"systemsite".equals(n.getSiteKey()))

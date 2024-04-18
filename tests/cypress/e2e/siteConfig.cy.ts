@@ -18,6 +18,22 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         createSite(siteKey);
 
         cy.loginAndStoreSession(); // Edit in chief
+
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'true'}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey: ''}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
+        });
+
     });
 
     after(function () {
@@ -42,6 +58,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'updateExcludeSites.graphql',
             variables: {siteKey: siteKey}
         });
+        cy.wait(1000);
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.createContent('Rich text');
         const ckeditor4 = new ContentEditor();
@@ -63,6 +80,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'updateExcludeSites.graphql',
             variables: {siteKey: ''}
         });
+        cy.wait(1000);
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor4).contextMenu().select('Edit');
         const ckeditor5 = new Ckeditor5();
@@ -75,6 +93,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'updateExcludeSites.graphql',
             variables: {siteKey: ''}
         });
+        cy.wait(1000);
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor5).contextMenu().select('Edit');
         const ckeditor5 = new Ckeditor5();
@@ -91,6 +110,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'updateExcludeSites.graphql',
             variables: {siteKey: ''}
         });
+        cy.wait(1000);
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert image').click();
@@ -105,6 +125,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'updateExcludeSites.graphql',
             variables: {siteKey: ''}
         });
+        cy.wait(1000);
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert link').click();
@@ -118,6 +139,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             mutationFile: 'disableEnableCK5.graphql',
             variables: {isEnabled: 'false'}
         });
+        cy.wait(1000);
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.createContent('Rich text');
         const ckeditor4 = new ContentEditor();
@@ -137,6 +159,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             variables: {siteKey: siteKey}
         });
 
+        cy.wait(1000);
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();

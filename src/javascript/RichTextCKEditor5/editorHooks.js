@@ -2,7 +2,7 @@ import {registry} from '@jahia/ui-extender';
 
 let originalRichText;
 
-export const editorOnBeforeContextHook = async (editContext) => {
+export const editorOnBeforeContextHook = async editContext => {
     if (!originalRichText) {
         originalRichText = registry.get('selectorType', 'RichText');
     }

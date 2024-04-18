@@ -1,7 +1,5 @@
 // Copy from Picker.utils.js
 
-import ParseInt from "lodash-es/parseInt";
-
 export const set = (target, path, value) => {
     const splitRes = path.split('.');
     const regex = /(\[\d+])$/;
@@ -11,12 +9,12 @@ export const set = (target, path, value) => {
     let match;
     let current = target;
     while ((splitRes.length > 1) && (key = splitRes.shift())) {
-        // case items[0].key = 'something'
+        // Case items[0].key = 'something'
         match = regex.exec(key);
 
         if (match) {
             key = key.replace(match[0], '');
-            position = ParseInt(match[0].replace(/[\[\]]/g, ''));
+            position = parseInt(match[0].replace(/[\[\]]/g, ''), 10);
         }
 
         if (!current[key]) {
@@ -42,12 +40,12 @@ export const set = (target, path, value) => {
 
     key = splitRes.shift();
 
-    // case items[0] = 'something'
+    // Case items[0] = 'something'
     match = regex.exec(key);
 
     if (match) {
         key = key.replace(match[0], '');
-        position = ParseInt(match[0].replace(/[\[\]]/g, ''));
+        position = parseInt(match[0].replace(/[\[\]]/g, ''), 10);
 
         if (!current[key]) {
             current[key] = [];

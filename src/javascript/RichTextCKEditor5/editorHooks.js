@@ -11,11 +11,11 @@ export const editorOnBeforeContextHook = async editContext => {
         const siteKey = editContext.siteInfo.path.split('/')[2];
         const config = contextJsParameters.config.ckeditor5;
 
-        if (config.excludeSites.includes(siteKey) && config.ckeditor5.includeSites.includes(siteKey)) {
+        if (config.excludeSites.includes(siteKey) && config.includeSites.includes(siteKey)) {
             console.warn('The site is marked to be used with both CKEditor 4 and 5, version 5 will be used. See configuration for details.');
         }
 
-        if ((config.enabledByDefault && !config.excludeSites.includes(siteKey)) || config.ckeditor5.includeSites.includes(siteKey)) {
+        if ((config.enabledByDefault && !config.excludeSites.includes(siteKey)) || config.includeSites.includes(siteKey)) {
             registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
         } else {
             registry.addOrReplace('selectorType', 'RichText', originalRichText);

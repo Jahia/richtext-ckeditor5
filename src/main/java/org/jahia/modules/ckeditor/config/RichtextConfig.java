@@ -12,15 +12,18 @@ import java.util.Dictionary;
 import java.util.List;
 
 @Component(service = {ManagedService.class, RichtextConfig.class}, property = {
-    "service.pid=org.jahia.modules.ckeditor5",
+    "service.pid=org.jahia.modules.richtext-ckeditor5",
     "service.description=Richtext configuration service",
     "service.vendor=Jahia Solutions Group SA"
 }, immediate = true)
 public class RichtextConfig implements ManagedService {
 
+    private final static String INCLUDE_SITES = "includeSites";
+    private final static String EXCLUDE_SITES = "excludeSites";
+    private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
     private boolean enabledByDefault = false;
-    private List<String> include = new ArrayList<>();
-    private List<String> exclude = new ArrayList<>();
+    private List<String> includeSites = new ArrayList<>();
+    private List<String> excludeSites = new ArrayList<>();
 
     public RichtextConfig() {
         super();
@@ -28,9 +31,9 @@ public class RichtextConfig implements ManagedService {
 
     @Override
     public void updated(Dictionary<String, ?> dictionary) throws ConfigurationException {
-        enabledByDefault = getBoolean(dictionary, "enabledByDefault");
-        include = getList(dictionary, "include");
-        exclude = getList(dictionary, "exclude");
+        enabledByDefault = getBoolean(dictionary, ENABLED_BY_DEFAULT);
+        includeSites = getList(dictionary, INCLUDE_SITES);
+        excludeSites = getList(dictionary, EXCLUDE_SITES);
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {
@@ -61,9 +64,9 @@ public class RichtextConfig implements ManagedService {
 
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("enabledByDefault", enabledByDefault);
-        obj.put("include", new JSONArray(include));
-        obj.put("exclude", new JSONArray(exclude));
+        obj.put(ENABLED_BY_DEFAULT, enabledByDefault);
+        obj.put(INCLUDE_SITES, new JSONArray(includeSites));
+        obj.put(EXCLUDE_SITES, new JSONArray(excludeSites));
         return obj;
     }
 }

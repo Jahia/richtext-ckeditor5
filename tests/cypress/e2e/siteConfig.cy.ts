@@ -40,7 +40,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
     it('Switches to CKEditor 4', function () {
         cy.apollo({
             mutationFile: 'updateExcludeSites.graphql',
-            variables: {siteKey : siteKey}
+            variables: {siteKey: siteKey}
         });
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.createContent('Rich text');

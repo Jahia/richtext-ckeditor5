@@ -112,4 +112,36 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         cy.get('button[data-sel-picker-dialog-action="cancel"]').click();
         ckeditor5.cancel();
     });
+
+    it('Switches to CKEditor 4 if not enabled by default', function () {
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'false'}
+        });
+        jcontent = visitContentFolders(siteKey, jcontent);
+        jcontent.createContent('Rich text');
+        const ckeditor4 = new ContentEditor();
+        ckeditor4.getRichTextField('jnt:bigText_text').type(newlyCreatedContentCKEditor4);
+        ckeditor4.create();
+        jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor4).should('exist').and('be.visible');
+    });
+
+    it('Can create content with CKEditor 5 if disabled by default but included in site list', function () {
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'false'}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey: siteKey}
+        });
+
+        jcontent = visitContentFolders(siteKey, jcontent);
+        jcontent.createContent('Rich text');
+        const ckeditor5 = new Ckeditor5();
+        ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').type(newlyCreatedContentCKEditor5);
+        ckeditor5.create();
+        jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor5).should('exist').and('be.visible');
+    });
 });

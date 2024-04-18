@@ -1,0 +1,9 @@
+mutation disableEnable($isEnabled: String!) {
+  admin {
+    jahia {
+      configuration(pid: "org.jahia.modules.richtext-ckeditor5") {
+        value(name: "enabledByDefault", value: $isEnabled)
+      }
+    }
+  }
+}

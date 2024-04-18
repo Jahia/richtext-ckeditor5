@@ -1,0 +1,9 @@
+mutation updateIncludeSites($siteKey: String) {
+  admin {
+    jahia {
+      configuration(pid: "org.jahia.modules.richtext-ckeditor5") {
+        value(name: "includeSites", value: $siteKey)
+      }
+    }
+  }
+}

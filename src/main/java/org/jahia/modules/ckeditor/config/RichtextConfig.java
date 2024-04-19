@@ -12,7 +12,7 @@ import java.util.Dictionary;
 import java.util.List;
 
 @Component(service = {ManagedService.class, RichtextConfig.class}, property = {
-    "service.pid=org.jahia.modules.richtext-ckeditor5",
+    "service.pid=org.jahia.modules.richtext_ckeditor5",
     "service.description=Richtext configuration service",
     "service.vendor=Jahia Solutions Group SA"
 }, immediate = true)

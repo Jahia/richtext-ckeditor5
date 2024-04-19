@@ -1,29 +1,27 @@
-import {getEditorVersionInfo} from './RichTextCKEditor5.gql-queries';
 import {registry} from '@jahia/ui-extender';
 
 let originalRichText;
 
-export const editorOnBeforeContextHook = async (editContext, client) => {
+export const editorOnBeforeContextHook = async editContext => {
     if (!originalRichText) {
         originalRichText = registry.get('selectorType', 'RichText');
     }
 
-    return new Promise((resolve, reject) => {
-        client.query({
-            query: getEditorVersionInfo,
-            variables: {siteId: editContext.siteInfo.uuid}
-        }).then(result => {
-            if (result.data.jcr.nodeById?.property?.booleanValue) {
-                registry.addOrReplace('selectorType', 'RichText', originalRichText);
-            } else {
-                registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
-            }
+    return new Promise(resolve => {
+        const siteKey = editContext.siteInfo.path.split('/')[2];
+        const config = contextJsParameters.config.ckeditor5;
 
-            resolve();
-        }).catch(e => {
-            console.error(e);
-            reject();
-        });
+        if (config.excludeSites.includes(siteKey) && config.includeSites.includes(siteKey)) {
+            console.warn('The site is marked to be used with both CKEditor 4 and 5, version 5 will be used. See configuration for details.');
+        }
+
+        if ((config.enabledByDefault && !config.excludeSites.includes(siteKey)) || config.includeSites.includes(siteKey)) {
+            registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
+        } else {
+            registry.addOrReplace('selectorType', 'RichText', originalRichText);
+        }
+
+        resolve();
     });
 };
 

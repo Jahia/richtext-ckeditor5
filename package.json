@@ -20,6 +20,9 @@
   "jahia": {
     "remotes": {
       "jahia": "javascript/apps/remoteEntry.js"
+    },
+    "apps": {
+      "jahia": "configs/richtext-ckeditor5.jsp"
     }
   },
   "dependencies": {

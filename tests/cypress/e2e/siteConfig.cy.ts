@@ -18,6 +18,21 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         createSite(siteKey);
 
         cy.loginAndStoreSession(); // Edit in chief
+
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'true'}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey: ''}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
+        });
     });
 
     after(function () {
@@ -39,9 +54,10 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Switches to CKEditor 4', function () {
         cy.apollo({
-            mutationFile: 'toggleCkeditorVersionOnSite.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, ckeditor4: 'true'}
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: siteKey}
         });
+
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.createContent('Rich text');
         const ckeditor4 = new ContentEditor();
@@ -60,9 +76,10 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Opens previously saved content from Ckeditor 4 in CKEditor 5', function () {
         cy.apollo({
-            mutationFile: 'toggleCkeditorVersionOnSite.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, ckeditor4: 'false'}
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
         });
+
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor4).contextMenu().select('Edit');
         const ckeditor5 = new Ckeditor5();
@@ -72,9 +89,10 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Opens previously saved content from Ckeditor 5 and formats it to Heading 2', function () {
         cy.apollo({
-            mutationFile: 'toggleCkeditorVersionOnSite.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, ckeditor4: 'false'}
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
         });
+
         jcontent = visitContentFolders(siteKey, jcontent);
         jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor5).contextMenu().select('Edit');
         const ckeditor5 = new Ckeditor5();
@@ -88,9 +106,10 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
     it('Opens image picker when insert an image', function () {
         jcontent = visitContentFolders(siteKey, jcontent);
         cy.apollo({
-            mutationFile: 'toggleCkeditorVersionOnSite.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, ckeditor4: 'false'}
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
         });
+
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert image').click();
@@ -102,14 +121,48 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
     it('Opens link picker when insert a link', function () {
         jcontent = visitContentFolders(siteKey, jcontent);
         cy.apollo({
-            mutationFile: 'toggleCkeditorVersionOnSite.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, ckeditor4: 'false'}
+            mutationFile: 'updateExcludeSites.graphql',
+            variables: {siteKey: ''}
         });
+
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert link').click();
         cy.get('div[data-sel-role="picker-dialog"][data-sel-type="editoriallink"]').should('be.visible');
         cy.get('button[data-sel-picker-dialog-action="cancel"]').click();
         ckeditor5.cancel();
+    });
+
+    it('Switches to CKEditor 4 if not enabled by default', function () {
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'false'}
+        });
+
+        jcontent = visitContentFolders(siteKey, jcontent);
+        jcontent.createContent('Rich text');
+        const ckeditor4 = new ContentEditor();
+        ckeditor4.getRichTextField('jnt:bigText_text').type(newlyCreatedContentCKEditor4);
+        ckeditor4.create();
+        jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor4).should('exist').and('be.visible');
+    });
+
+    it('Can create content with CKEditor 5 if disabled by default but included in site list', function () {
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'false'}
+        });
+
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey: siteKey}
+        });
+
+        jcontent = visitContentFolders(siteKey, jcontent);
+        jcontent.createContent('Rich text');
+        const ckeditor5 = new Ckeditor5();
+        ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').type(newlyCreatedContentCKEditor5);
+        ckeditor5.create();
+        jcontent.getTable().getRowByLabel(newlyCreatedContentCKEditor5).should('exist').and('be.visible');
     });
 });

@@ -37,7 +37,6 @@ describe('Toolbar tests', () => {
         ck5field.getToolbarButton('Insert link').click();
         picker = getComponentByRole(Picker, 'picker-dialog');
         picker.cancel();
-
     });
 
     // To be reenabled once source saving is fixed properly

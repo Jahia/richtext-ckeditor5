@@ -26,9 +26,9 @@ describe('Toolbar tests', () => {
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');
-        ck5field.getToolbarButton('Bold (⌘B)').click();
-        ck5field.getToolbarButton('Italic (⌘I)').click();
-        ck5field.getToolbarButton('Strikethrough (⌘⇧X)').click();
+        ck5field.getToolbarButton('Bold').click();
+        ck5field.getToolbarButton('Italic').click();
+        ck5field.getToolbarButton('Remove Format').click();
         ck5field.getToolbarButton('Heading').click().click();
         ck5field.getToolbarButton('Text alignment').click().click();
         ck5field.getToolbarButton('Insert image or file').click();

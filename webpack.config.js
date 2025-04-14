@@ -11,7 +11,6 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const {bundler, styles} = require( '@ckeditor/ckeditor5-dev-utils' );
 const {CKEditorTranslationsPlugin} = require( '@ckeditor/ckeditor5-dev-translations' );
-const TerserWebpackPlugin = require( 'terser-webpack-plugin' );
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -154,20 +153,6 @@ module.exports = (env, argv) => {
             })
         ],
         mode: _argv.mode ?  _argv.mode : 'development',
-        // optimization: {
-        //     minimizer: [
-        //         new TerserWebpackPlugin( {
-        //             sourceMap: true,
-        //             terserOptions: {
-        //                 output: {
-        //                     // Preserve CKEditor 5 license comments.
-        //                     comments: /^!/
-        //                 }
-        //             },
-        //             extractComments: false
-        //         } )
-        //     ]
-        // },
     };
 
     config.devtool = (_argv.mode === 'production') ? 'source-map' : 'eval-source-map';

@@ -1,7 +1,7 @@
 import {Plugin} from '@ckeditor/ckeditor5-core';
 import {ButtonView} from '@ckeditor/ckeditor5-ui';
-import browseFilesIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import linkIcon from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
+import browseFilesIcon from '@ckeditor/ckeditor5-icons/theme/icons/image.svg';
+import linkIcon from '@ckeditor/ckeditor5-icons/theme/icons/link.svg';
 
 let createButton = function (editor, commandName, label, icon) {
     return locale => {

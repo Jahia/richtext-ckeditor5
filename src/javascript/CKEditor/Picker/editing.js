@@ -1,7 +1,9 @@
-import {Plugin} from '@ckeditor/ckeditor5-core';
-import {ImageEditing} from '@ckeditor/ckeditor5-image';
-import {LinkEditing} from '@ckeditor/ckeditor5-link';
-import {Notification} from '@ckeditor/ckeditor5-ui';
+import {
+    ImageEditing,
+    LinkEditing,
+    Notification,
+    Plugin
+} from 'ckeditor5';
 import {JahiaInsertImageCommand} from '~/CKEditor/Picker/JahiaInsertImageCommand';
 import {JahiaLinkCommand} from '~/CKEditor/Picker/JahiaLinkCommand';
 

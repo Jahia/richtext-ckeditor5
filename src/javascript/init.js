@@ -8,7 +8,7 @@ export default function () {
         callback: registerRichTextCKEditor5
     });
 
-    registry.add('callback', 'richtext-ckeditor5-plugins', {
+    registry.add('callback', 'richtext-ckeditor5-config', {
         targets: ['jahiaApp-init:99'],
         callback: registerConfig
     });

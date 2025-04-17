@@ -26,6 +26,13 @@ export function registerConfig() {
     });
 }
 
+export function getDefaultConfig() {
+    return registry.get('ckeditor5-config', 'default');
+}
+
+/**
+ * Define ckeditor5 config and plugins in the registry, and initialize them in the editor.
+ */
 export function defineConfig(key, config) {
     const {plugins, ...configProps} = config;
     if (registry.get(CONFIG_KEY, key)) {
@@ -41,10 +48,6 @@ export function defineConfig(key, config) {
     registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
 
     initConfig();
-}
-
-export function getDefaultConfig() {
-    return registry.get('ckeditor5-config', 'default');
 }
 
 function initConfig() {

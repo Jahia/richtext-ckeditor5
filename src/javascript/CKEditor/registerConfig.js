@@ -55,6 +55,6 @@ function initConfig() {
 
     const defaultConfig = registry.get(CONFIG_KEY, 'default');
 
-    // TODO how do we deal with global overrides
+    // Need to figure out how to we deal with global overrides
     JahiaClassicEditor.defaultConfig = defaultConfig;
 }

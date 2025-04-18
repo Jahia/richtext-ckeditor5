@@ -22,7 +22,6 @@ require('dotenv').config({ path: './.env' });
 module.exports = (env, argv) => {
     let _argv = argv || {};
 
-    console.log(process.env);
     let config = {
         entry: {
             main: path.resolve(__dirname, 'src/javascript/index')
@@ -38,7 +37,11 @@ module.exports = (env, argv) => {
             alias: {
                 '~': path.resolve(__dirname, './src/javascript'),
             },
-            fallback: { "url": false }
+            fallback: {
+                "os": false,
+                "tty": false,
+                "url": false,
+            }
         },
         module: {
             rules: [

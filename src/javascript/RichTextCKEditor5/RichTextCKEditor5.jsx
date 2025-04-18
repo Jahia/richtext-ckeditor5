@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
-import {JahiaClassicEditor} from '../CKEditor/JahiaClassicEditor';
+import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/jcontent';
 import {useApolloClient, useQuery} from '@apollo/client';

@@ -1,5 +1,4 @@
-import {Plugin} from '@ckeditor/ckeditor5-core';
-import {FileRepository} from '@ckeditor/ckeditor5-upload';
+import {FileRepository, Plugin} from 'ckeditor5';
 import {v4} from 'uuid';
 import {getNode} from '~/CKEditor/Picker/uploadAdapter.gql-queries';
 

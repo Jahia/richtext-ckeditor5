@@ -1,4 +1,4 @@
-import {LinkCommand} from '@ckeditor/ckeditor5-link';
+import {LinkCommand} from 'ckeditor5';
 
 export class JahiaLinkCommand extends LinkCommand {
     constructor(editor, type) {

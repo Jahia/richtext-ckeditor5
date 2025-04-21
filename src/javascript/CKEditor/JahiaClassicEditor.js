@@ -2,8 +2,10 @@
  * @license Copyright (c) 2014-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
-import {ClassicEditor} from '@ckeditor/ckeditor5-editor-classic';
+import {ClassicEditor} from 'ckeditor5';
 import {isElement} from 'lodash-es';
+
+import 'ckeditor5/ckeditor5.css';
 
 const productivityPluginsNameAndKey = {
     FormatPainter: true,

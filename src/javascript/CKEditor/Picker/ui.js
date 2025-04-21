@@ -1,7 +1,9 @@
-import {Plugin} from '@ckeditor/ckeditor5-core';
-import {ButtonView} from '@ckeditor/ckeditor5-ui';
-import browseFilesIcon from '@ckeditor/ckeditor5-icons/theme/icons/image.svg';
-import linkIcon from '@ckeditor/ckeditor5-icons/theme/icons/link.svg';
+import {
+    ButtonView,
+    IconBrowseFiles,
+    IconLink,
+    Plugin
+} from 'ckeditor5';
 
 let createButton = function (editor, commandName, label, icon) {
     return locale => {
@@ -33,7 +35,7 @@ export class PickerUI extends Plugin {
         const componentFactory = editor.ui.componentFactory;
         const t = editor.t;
 
-        componentFactory.add('jahiaInsertImage', createButton(editor, 'jahiaInsertImage', t('Insert image or file'), browseFilesIcon));
-        componentFactory.add('jahiaLink', createButton(editor, 'jahiaLink', t('Insert link'), linkIcon));
+        componentFactory.add('jahiaInsertImage', createButton(editor, 'jahiaInsertImage', t('Insert image or file'), IconBrowseFiles));
+        componentFactory.add('jahiaLink', createButton(editor, 'jahiaLink', t('Insert link'), IconLink));
     }
 }

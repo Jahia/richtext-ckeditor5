@@ -86,7 +86,6 @@ jobs:
           testrail_project: CKEditor 5 Module
           tests_manifest: provisioning-manifest-build.yml
           jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
-          should_use_build_artifacts: true
           should_skip_testrail: true
           github_artifact_name: richtext-ckeditor5-standalone-artifacts-${{ github.run_number }}
           jahia_license: ${{ secrets.JAHIA_LICENSE_8X_FULL }}

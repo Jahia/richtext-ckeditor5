@@ -4,6 +4,10 @@ export const config = {
     plugins,
     toolbar: {
         items: [
+            'sourceEditing',
+            'showBlocks',
+            'fullscreen',
+            '|',
             'undo',
             'redo',
             'findAndReplace',
@@ -12,24 +16,30 @@ export const config = {
             '|',
             'bold',
             'italic',
-            'removeFormat',
             '|',
             'alignment',
             '|',
             'jahiaInsertImage',
             'jahiaLink',
+            'bookmark',
+            'insertTemplate',
+            'specialCharacters',
+            'blockQuote',
+            'horizontalLine',
+            'codeBlock',
             '|',
             'bulletedList',
             'numberedList',
-            '|',
-            'outdent',
+            'multiLevelList',
             'indent',
-            '|',
-            // Temporary removal, issues to be fixed in later versions
-            // 'sourceEditing',
-            'formatPainter'
+            'outdent',
+            'caseChange',
+            'removeFormat'
         ],
         shouldNotGroupWhenFull: true
+    },
+    menuBar: {
+        isVisible: true
     },
     heading: {
         options: [

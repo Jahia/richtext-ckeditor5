@@ -21,7 +21,7 @@ export const config = {
             '|',
             'bulletedList',
             'indent',
-            'outdent',
+            'outdent'
         ],
         shouldNotGroupWhenFull: false
     },

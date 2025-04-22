@@ -33,7 +33,6 @@ import {
     PasteFromOffice,
     RemoveFormat,
     ShowBlocks,
-    SourceEditing,
     SpecialCharacters,
     SpecialCharactersEssentials,
     Strikethrough,
@@ -49,7 +48,7 @@ import {
 import {
     CaseChange,
     SourceEditingEnhanced,
-    Template,
+    Template
 } from 'ckeditor5-premium-features';
 import {Picker} from '~/CKEditor/Picker/Picker';
 

@@ -8,6 +8,10 @@
       "@jahia/cypress",
       "cypress-iframe",
       "cypress-wait-until"
+    ],
+    "lib": [
+      "es5",
+      "es2015.collection"
     ]
   },
 }

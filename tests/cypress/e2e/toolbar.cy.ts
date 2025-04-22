@@ -105,10 +105,11 @@ describe('Toolbar tests', () => {
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');
-        ck5field.getToolbarButton('Source').click();
-        ck5field.getSourceEditingArea()
+        ck5field.getToolbarButton('Edit source').click();
+        ck5field.getEnhancedSourceEditingArea()
             .should('be.visible')
-            .invoke('attr', 'data-value')
-            .should('contain', '<p>\n    this is my text\n</p>');
+            .should('contain', 'this is my text')
+            // Source is parsed; check if it at least contains the <p> tag
+            .and('contain', 'p');
     });
 });

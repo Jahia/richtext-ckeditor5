@@ -25,6 +25,10 @@ export class RichTextCKeditor5Field extends Field {
         return this.get().find('.ck-source-editing-area');
     }
 
+    getEnhancedSourceEditingArea(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return cy.get('.ck-dialog-overlay').find('.ck-source-editing-enhanced-dialog');
+    }
+
     getToolbarButton(buttonName: string): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('.ck-toolbar__items').find(`button[data-cke-tooltip-text^="${buttonName}"]`);
     }

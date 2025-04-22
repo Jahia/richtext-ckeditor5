@@ -35,8 +35,7 @@ module.exports = (env, argv) => {
             mainFields: ['module', 'main'],
             extensions: ['.mjs', '.js', '.jsx', 'json', '.scss'],
             alias: {
-                '~': path.resolve(__dirname, './src/javascript'),
-                'socket.io-client/build/esm-debug': 'socket.io-client/build/esm',
+                '~': path.resolve(__dirname, './src/javascript')
             },
             fallback: {
                 "os": false,

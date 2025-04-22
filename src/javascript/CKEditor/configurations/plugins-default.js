@@ -48,7 +48,8 @@ import {
 } from 'ckeditor5';
 import {
     CaseChange,
-    Template
+    SourceEditingEnhanced,
+    Template,
 } from 'ckeditor5-premium-features';
 import {Picker} from '~/CKEditor/Picker/Picker';
 
@@ -87,7 +88,7 @@ export const plugins = [
     Paragraph,
     PasteFromOffice,
     RemoveFormat,
-    SourceEditing,
+    SourceEditingEnhanced,
     ShowBlocks,
     Strikethrough,
     Style,

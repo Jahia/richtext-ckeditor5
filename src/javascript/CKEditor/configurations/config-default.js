@@ -4,39 +4,26 @@ export const config = {
     plugins,
     toolbar: {
         items: [
-            'sourceEditing',
+            'sourceEditingEnhanced',
             'showBlocks',
-            'fullscreen',
-            '|',
-            'undo',
-            'redo',
-            'findAndReplace',
             '|',
             'heading',
             '|',
             'bold',
             'italic',
+            'removeFormat',
             '|',
             'alignment',
             '|',
             'jahiaInsertImage',
             'jahiaLink',
-            'bookmark',
-            'insertTemplate',
-            'specialCharacters',
-            'blockQuote',
-            'horizontalLine',
-            'codeBlock',
+            'insertTable',
             '|',
             'bulletedList',
-            'numberedList',
-            'multiLevelList',
             'indent',
             'outdent',
-            'caseChange',
-            'removeFormat'
         ],
-        shouldNotGroupWhenFull: true
+        shouldNotGroupWhenFull: false
     },
     menuBar: {
         isVisible: true
@@ -124,7 +111,7 @@ export const config = {
     },
     list: {
         properties: {
-            styles: false,
+            styles: true,
             startIndex: true,
             reversed: false
         }

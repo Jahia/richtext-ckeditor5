@@ -39,8 +39,68 @@ describe('Toolbar tests', () => {
         picker.cancel();
     });
 
-    // To be reenabled once source saving is fixed properly
-    it.skip('should have source button working', () => {
+    it('should have full toolbar visible', () => {
+        jcontent.createContent('Rich text');
+        const ckeditor5 = new Ckeditor5();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.type('this is my text');
+
+        const menuItems = new Map<string, string[]>();
+        menuItems.set('Edit', ['Undo', 'Redo', 'Select all', 'Find and replace']);
+        menuItems.set('View', ['Edit source', 'Show blocks', 'Fullscreen mode']);
+        menuItems.set('Insert', [
+            'Image',
+            'Table',
+            'Link',
+            'Bookmark',
+            'Template',
+            'Special characters',
+            'Block quote',
+            'Code block',
+            'Horizontal line'
+        ]);
+        menuItems.set('Format', [
+            'Text',
+            'Font',
+            'Heading',
+            'Bulleted List',
+            'Numbered List',
+            'Text alignment',
+            'Increase indent',
+            'Decrease indent',
+            'Case change',
+            'Remove Format'
+        ]);
+        menuItems.set('Help', ['Accessibility']);
+
+        cy.log('Validate full menu items');
+        for (const [menuItem, subItems] of menuItems) {
+            ck5field.clickMenuItemByLabel(menuItem);
+            subItems.forEach(subItem => {
+                ck5field.getMenuSubItemByLabel(subItem).should('be.visible');
+            });
+            ck5field.clickMenuItemByLabel(menuItem, false);
+        }
+
+        cy.log('Validate full toolbar items');
+        [
+            'Edit source',
+            'Show blocks',
+            'Heading',
+            'Bold',
+            'Italic',
+            'Remove Format',
+            'Text alignment',
+            'Insert link',
+            'Insert image or file',
+            'Insert table',
+            'Bulleted List',
+            'Increase indent',
+            'Decrease indent'
+        ].forEach(item => ck5field.getToolbarButton(item).should('be.visible'));
+    });
+
+    it('should have source button working', () => {
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');

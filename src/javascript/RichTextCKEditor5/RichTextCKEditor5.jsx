@@ -8,12 +8,14 @@ import {useApolloClient, useQuery} from '@apollo/client';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
+import {useTranslation} from './RichTextCKEditor5.hooks';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
     const client = useApolloClient();
     const store = useStore();
     const {lang, uilang} = useContentEditorConfigContext();
+    const {loading: translationsLoading, translations} = useTranslation(uilang);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -44,7 +46,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>error</span>;
     }
 
-    if (loading || !data || !data.forms) {
+    if (loading || translationsLoading || !data || !data.forms) {
         return <span>loading...</span>;
     }
 
@@ -59,6 +61,10 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             store
         }
     };
+
+    if (translations.length > 0) {
+        customConfig.translations = translations.slice();
+    }
 
     return (
         <div className={styles.unreset}>

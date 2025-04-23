@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
@@ -8,7 +8,7 @@ import {useApolloClient, useQuery} from '@apollo/client';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
-import {useTranslation} from "./RichTextCKEditor5.hooks";
+import {useTranslation} from './RichTextCKEditor5.hooks';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();

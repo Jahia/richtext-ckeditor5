@@ -1,5 +1,5 @@
-import {isProductivityMode} from "./RichTextCKEditor5.utils";
-import {useEffect, useState} from "react";
+import {isProductivityMode} from './RichTextCKEditor5.utils';
+import {useEffect, useState} from 'react';
 
 export const useTranslation = lang => {
     const [translations, setTranslations] = useState([]);
@@ -21,9 +21,9 @@ export const useTranslation = lang => {
                             .catch(() => {
                                 console.debug(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
                             }).finally(() => {
-                            setTranslations(trans);
-                            setLoading(false);
-                        });
+                                setTranslations(trans);
+                                setLoading(false);
+                            });
                     } else {
                         setTranslations(trans);
                         setLoading(false);

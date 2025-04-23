@@ -21,5 +21,6 @@
     - 'mvn:org.jahia.modules/digitall/2.3.0'
     - 'mvn:org.jahia.modules/skins'
     - 'mvn:org.jahia.modules/default-skins'
+    - 'mvn:org.jahia.modules/jcontent'
   autoStart: true
   uninstallPreviousVersion: true

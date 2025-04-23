@@ -6,6 +6,7 @@ import {ClassicEditor} from 'ckeditor5';
 import {isElement} from 'lodash-es';
 
 import 'ckeditor5/ckeditor5.css';
+import {isProductivityMode} from "../RichTextCKEditor5/RichTextCKEditor5.utils";
 
 const productivityPluginsNameAndKey = {
     FormatPainter: true,
@@ -21,9 +22,9 @@ export class JahiaClassicEditor extends ClassicEditor {
         config = {...JahiaClassicEditor.defaultConfig, ...config};
 
         // eslint-disable-next-line
-        const isProductivityEnabled = window?.contextJsParameters?.valid && CKEDITOR_PRODUCTIVITY_LICENSE;
+        const isProductivityEnabled = isProductivityMode();
         // eslint-disable-next-line
-        config.licenseKey = isProductivityEnabled ? CKEDITOR_PRODUCTIVITY_LICENSE : 'GPL';
+        config.licenseKey = isProductivityEnabled ? window.CKEDITOR_PRODUCTIVITY_LICENSE : 'GPL';
 
         if (!isProductivityEnabled) {
             JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins.filter(p => !productivityPluginsNameAndKey[p.pluginName]);

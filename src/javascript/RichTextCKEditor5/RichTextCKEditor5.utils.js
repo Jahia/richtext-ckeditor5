@@ -92,3 +92,5 @@ export const arrayValue = value => {
 export const booleanValue = v => typeof v === 'string' ? v === 'true' : Boolean(v);
 
 export const toArray = value => (Array.isArray(value) ? value : [value]);
+
+export const isProductivityMode = () => window?.contextJsParameters?.valid && window.CKEDITOR_PRODUCTIVITY_LICENSE;

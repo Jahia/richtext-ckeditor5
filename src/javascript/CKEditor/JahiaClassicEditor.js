@@ -24,7 +24,7 @@ export class JahiaClassicEditor extends ClassicEditor {
         // eslint-disable-next-line
         const isProductivityEnabled = isProductivityMode();
         // eslint-disable-next-line
-        config.licenseKey = isProductivityEnabled ? window.CKEDITOR_PRODUCTIVITY_LICENSE : 'GPL';
+        config.licenseKey = isProductivityEnabled ? CKEDITOR_PRODUCTIVITY_LICENSE : 'GPL';
 
         if (!isProductivityEnabled) {
             JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins.filter(p => !productivityPluginsNameAndKey[p.pluginName]);

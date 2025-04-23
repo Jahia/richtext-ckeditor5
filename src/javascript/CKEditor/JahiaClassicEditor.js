@@ -13,6 +13,7 @@ export class JahiaClassicEditor extends ClassicEditor {
         config = {...JahiaClassicEditor.defaultConfig, ...config};
 
         if (isProductivityMode()) {
+            // eslint-disable-next-line no-undef
             config.licenseKey = CKEDITOR_PRODUCTIVITY_LICENSE;
         } else {
             config.licenseKey = 'GPL';

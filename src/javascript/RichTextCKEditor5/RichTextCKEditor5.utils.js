@@ -93,4 +93,5 @@ export const booleanValue = v => typeof v === 'string' ? v === 'true' : Boolean(
 
 export const toArray = value => (Array.isArray(value) ? value : [value]);
 
+// eslint-disable-next-line
 export const isProductivityMode = () => window?.contextJsParameters?.valid && CKEDITOR_PRODUCTIVITY_LICENSE;

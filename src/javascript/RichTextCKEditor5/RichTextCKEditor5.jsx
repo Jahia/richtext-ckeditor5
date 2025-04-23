@@ -8,9 +8,9 @@ import {useApolloClient, useQuery} from '@apollo/client';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
-import {isProductivityMode} from "./RichTextCKEditor5.utils";
+import {isProductivityMode} from './RichTextCKEditor5.utils';
 
-const useTranslation = (lang) => {
+const useTranslation = lang => {
     const [translations, setTranslations] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,7 @@ const useTranslation = (lang) => {
                             .then(module => {
                                 trans.push(module.default);
                             })
-                            .catch(e => {
+                            .catch(() => {
                                 console.debug(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
                             }).finally(() => {
                                 setTranslations(trans);
@@ -38,16 +38,16 @@ const useTranslation = (lang) => {
                         setLoading(false);
                     }
                 })
-                .catch(e => {
+                .catch(() => {
                     console.debug(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
-                    setTranslations([])
+                    setTranslations([]);
                     setLoading(false);
                 });
         }
     }, [lang]);
 
     return {loading, translations};
-}
+};
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();

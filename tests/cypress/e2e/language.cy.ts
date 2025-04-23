@@ -1,6 +1,5 @@
 import {JContent} from '@jahia/jcontent-cypress/dist/page-object';
-import {Picker} from '@jahia/jcontent-cypress/dist/page-object/picker';
-import {createSite, deleteSite, getComponentByRole} from '@jahia/cypress';
+import {createSite, deleteSite} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 
 describe('Language tests', () => {

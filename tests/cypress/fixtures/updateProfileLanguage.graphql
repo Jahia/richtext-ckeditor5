@@ -1,0 +1,9 @@
+mutation updateProfileLanguage($lang: String!) {
+  jcr {
+      mutateNode(pathOrId: "/users/root") {
+        mutateProperty(name: "preferredLanguage") {
+          setValue(value: $lang)
+        }
+      }
+    }
+}

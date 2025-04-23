@@ -8,46 +8,7 @@ import {useApolloClient, useQuery} from '@apollo/client';
 import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
-import {isProductivityMode} from './RichTextCKEditor5.utils';
-
-const useTranslation = lang => {
-    const [translations, setTranslations] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (lang && lang !== '') {
-            setLoading(true);
-
-            import(`ckeditor5/translations/${lang}.js`)
-                .then(module => {
-                    const trans = [module.default];
-
-                    if (isProductivityMode()) {
-                        import(`ckeditor5-premium-features/translations/${lang}.js`)
-                            .then(module => {
-                                trans.push(module.default);
-                            })
-                            .catch(() => {
-                                console.debug(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
-                            }).finally(() => {
-                                setTranslations(trans);
-                                setLoading(false);
-                            });
-                    } else {
-                        setTranslations(trans);
-                        setLoading(false);
-                    }
-                })
-                .catch(() => {
-                    console.debug(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
-                    setTranslations([]);
-                    setLoading(false);
-                });
-        }
-    }, [lang]);
-
-    return {loading, translations};
-};
+import {useTranslation} from "./RichTextCKEditor5.hooks";
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();

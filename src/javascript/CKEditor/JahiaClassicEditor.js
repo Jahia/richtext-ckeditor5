@@ -21,6 +21,14 @@ export class JahiaClassicEditor extends ClassicEditor {
                 .filter(p => Boolean(p.isPremiumPlugin));
         }
 
+        if (!config.templates?.definitions) {
+            // There are no template definitions; Remove Templates plugin if it exists
+            const index = JahiaClassicEditor.builtinPlugins.findIndex(p => p.pluginName === 'Template');
+            if (index !== -1) {
+                JahiaClassicEditor.builtinPlugins.splice(index, 1);
+            }
+        }
+
         const editor = new this(sourceElementOrData, config);
         return editor.initPlugins().then(() => {
             editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null);

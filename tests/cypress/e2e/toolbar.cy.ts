@@ -53,7 +53,6 @@ describe('Toolbar tests', () => {
             'Table',
             'Link',
             'Bookmark',
-            'Template',
             'Special characters',
             'Block quote',
             'Code block',

@@ -4,7 +4,7 @@ export const config = {
     plugins,
     toolbar: {
         items: [
-            'sourceEditingEnhanced',
+            'sourceEditing',
             'showBlocks',
             '|',
             'heading',

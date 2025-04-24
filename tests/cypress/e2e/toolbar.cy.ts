@@ -47,7 +47,12 @@ describe('Toolbar tests', () => {
 
         const menuItems = new Map<string, string[]>();
         menuItems.set('Edit', ['Undo', 'Redo', 'Select all', 'Find and replace']);
-        menuItems.set('View', ['Edit source', 'Show blocks', 'Fullscreen mode']);
+        menuItems.set('View', [
+            'Show source', // For basic version
+            // 'Edit source',   // for enhanced version
+            'Show blocks',
+            'Fullscreen mode'
+        ]);
         menuItems.set('Insert', [
             'Image',
             'Table',
@@ -83,7 +88,8 @@ describe('Toolbar tests', () => {
 
         cy.log('Validate full toolbar items');
         [
-            'Edit source',
+            // 'Edit source',   // for enhanced version
+            'Source', // For basic version
             'Show blocks',
             'Heading',
             'Bold',
@@ -99,7 +105,20 @@ describe('Toolbar tests', () => {
         ].forEach(item => ck5field.getToolbarButton(item).should('be.visible'));
     });
 
-    it('should have source button working', () => {
+    it('should have basic edit source working', () => {
+        jcontent.createContent('Rich text');
+        const ckeditor5 = new Ckeditor5();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.type('this is my text');
+        ck5field.getToolbarButton('Source').click();
+        ck5field.getSourceEditingArea()
+            .should('be.visible')
+            .invoke('attr', 'data-value')
+            .should('contain', '<p>\n    this is my text\n</p>');
+    });
+
+    // Enable when enhanced edit source is enabled in config
+    it.skip('should have enhanced edit source working', () => {
         jcontent.createContent('Rich text');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');

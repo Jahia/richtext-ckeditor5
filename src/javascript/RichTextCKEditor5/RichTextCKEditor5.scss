@@ -4,7 +4,11 @@
   max-height: 40vh;
 }
 
-
+// only way to override z-index of ckeditor5 for now
+:root {
+  --ck-z-default: 10555 !important;
+  --ck-z-modal: calc(var(--ck-z-default) + 999) !important;
+}
 
 /**
  * Unreset CSS

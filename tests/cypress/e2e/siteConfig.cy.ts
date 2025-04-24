@@ -45,7 +45,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Can create content in content folders', function () {
         jcontent = visitContentFolders(siteKey, jcontent);
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').type(newlyCreatedContentCKEditor5);
         ckeditor5.create();
@@ -59,7 +59,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         });
 
         jcontent = visitContentFolders(siteKey, jcontent);
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor4 = new ContentEditor();
         ckeditor4.getRichTextField('jnt:bigText_text').type(newlyCreatedContentCKEditor4);
         ckeditor4.create();
@@ -110,7 +110,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             variables: {siteKey: ''}
         });
 
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert image').click();
         cy.get('div[data-sel-role="picker-dialog"][data-sel-type="image"]').should('be.visible');
@@ -125,7 +125,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
             variables: {siteKey: ''}
         });
 
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').getToolbarButton('Insert link').click();
         cy.get('div[data-sel-role="picker-dialog"][data-sel-type="editoriallink"]').should('be.visible');
@@ -140,7 +140,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         });
 
         jcontent = visitContentFolders(siteKey, jcontent);
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor4 = new ContentEditor();
         ckeditor4.getRichTextField('jnt:bigText_text').type(newlyCreatedContentCKEditor4);
         ckeditor4.create();
@@ -159,7 +159,7 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
         });
 
         jcontent = visitContentFolders(siteKey, jcontent);
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text').type(newlyCreatedContentCKEditor5);
         ckeditor5.create();

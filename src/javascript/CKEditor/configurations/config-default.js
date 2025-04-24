@@ -115,5 +115,18 @@ export const config = {
             startIndex: true,
             reversed: false
         }
+    },
+    link: {
+        decorators: {
+            openInNewTab: {
+                mode: 'manual',
+                label: 'Open in a new tab',
+                defaultValue: false,
+                attributes: {
+                    target: '_blank',
+                    rel: 'noopener noreferrer'
+                }
+            }
+        }
     }
 };

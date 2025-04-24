@@ -25,7 +25,6 @@ jobs:
           testrail_project: CKEditor 5 Module
           tests_manifest: provisioning-manifest-snapshot.yml
           jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT
-          should_use_build_artifacts: false
           should_skip_artifacts: true
           should_skip_notifications: false
           should_skip_testrail: false

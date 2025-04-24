@@ -25,8 +25,28 @@ export class RichTextCKeditor5Field extends Field {
         return this.get().find('.ck-source-editing-area');
     }
 
+    getEnhancedSourceEditingArea(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return cy.get('.ck-dialog-overlay').find('.ck-source-editing-enhanced-dialog');
+    }
+
     getToolbarButton(buttonName: string): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('.ck-toolbar__items').find(`button[data-cke-tooltip-text^="${buttonName}"]`);
+    }
+
+    getMenuItemByLabel(label: string): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().find('div.ck-menu-bar__menu_top-level > button.ck-menu-bar__menu__button')
+            .contains('button.ck-menu-bar__menu__button', label);
+    }
+
+    clickMenuItemByLabel(label: string, open: boolean = true) {
+        const menuItem = this.getMenuItemByLabel(label);
+        menuItem.should('be.visible');
+        menuItem.click();
+        menuItem.should('have.attr', 'aria-expanded', open.toString());
+    }
+
+    getMenuSubItemByLabel(label: string): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().find('.ck-menu-bar').find('ul.ck-list li.ck-list__item button.ck-list-item-button').contains(label);
     }
 
     selectHeading(heading: string) {

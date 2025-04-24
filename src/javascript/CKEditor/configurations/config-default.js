@@ -4,9 +4,8 @@ export const config = {
     plugins,
     toolbar: {
         items: [
-            'undo',
-            'redo',
-            'findAndReplace',
+            'sourceEditing',
+            'showBlocks',
             '|',
             'heading',
             '|',
@@ -18,18 +17,16 @@ export const config = {
             '|',
             'jahiaInsertImage',
             'jahiaLink',
+            'insertTable',
             '|',
             'bulletedList',
-            'numberedList',
-            '|',
-            'outdent',
             'indent',
-            '|',
-            // Temporary removal, issues to be fixed in later versions
-            // 'sourceEditing',
-            'formatPainter'
+            'outdent'
         ],
-        shouldNotGroupWhenFull: true
+        shouldNotGroupWhenFull: false
+    },
+    menuBar: {
+        isVisible: true
     },
     heading: {
         options: [
@@ -114,7 +111,7 @@ export const config = {
     },
     list: {
         properties: {
-            styles: false,
+            styles: true,
             startIndex: true,
             reversed: false
         }

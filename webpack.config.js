@@ -35,7 +35,7 @@ module.exports = (env, argv) => {
             mainFields: ['module', 'main'],
             extensions: ['.mjs', '.js', '.jsx', 'json', '.scss'],
             alias: {
-                '~': path.resolve(__dirname, './src/javascript'),
+                '~': path.resolve(__dirname, './src/javascript')
             },
             fallback: {
                 "os": false,

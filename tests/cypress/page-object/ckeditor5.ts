@@ -7,15 +7,19 @@ export class Ckeditor5 extends ContentEditor {
 }
 
 export class RichTextCKeditor5Field extends Field {
+    getEditArea() {
+        return this.get().find('.ck-editor__editable');
+    }
+
     type(text: string) {
-        this.get().find('.ck-editor__editable').then($myElement => {
+        this.getEditArea().then($myElement => {
             const ckeditorInstance = $myElement.prop('ckeditorInstance');
             ckeditorInstance.setData(text);
         });
     }
 
     getData(): Cypress.Chainable<string> {
-        return this.get().find('.ck-editor__editable').then($myElement => {
+        return this.getEditArea().then($myElement => {
             const ckeditorInstance = $myElement.prop('ckeditorInstance');
             return ckeditorInstance.getData();
         });
@@ -31,6 +35,22 @@ export class RichTextCKeditor5Field extends Field {
 
     getToolbarButton(buttonName: string): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('.ck-toolbar__items').find(`button[data-cke-tooltip-text^="${buttonName}"]`);
+    }
+
+    getBalloonToolbarButton(buttonName: string) {
+        return this.get().get('.ck-balloon-panel > .ck-balloon-rotator')
+            .should('be.visible')
+            .find(`button.ck-button[data-cke-tooltip-text="${buttonName}"]`);
+    }
+
+    getBalloonToggleButton(label: string) {
+        return this.get()
+            .get('.ck-balloon-panel > .ck-balloon-rotator')
+            .should('be.visible')
+            .find('button.ck-switchbutton')
+            .contains(label)
+            .should('be.visible')
+            .closest('button');
     }
 
     getMenuItemByLabel(label: string): Cypress.Chainable<JQuery<HTMLElement>> {

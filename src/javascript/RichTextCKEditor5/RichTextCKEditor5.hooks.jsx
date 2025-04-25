@@ -6,7 +6,6 @@ export const useTranslation = lang => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        console.log(lang);
         if (lang) {
             import(`ckeditor5/translations/${lang}.js`)
                 .then(module => {
@@ -18,7 +17,7 @@ export const useTranslation = lang => {
                                 trans.push(module.default);
                             })
                             .catch(() => {
-                                console.info(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
+                                console.debug(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
                             }).finally(() => {
                                 setTranslations(trans);
                                 setLoading(false);
@@ -29,7 +28,7 @@ export const useTranslation = lang => {
                     }
                 })
                 .catch(() => {
-                    console.info(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
+                    console.debug(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
                     setTranslations([]);
                     setLoading(false);
                 });

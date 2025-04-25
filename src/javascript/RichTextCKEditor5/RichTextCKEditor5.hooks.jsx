@@ -3,12 +3,11 @@ import {useEffect, useState} from 'react';
 
 export const useTranslation = lang => {
     const [translations, setTranslations] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        console.log(lang);
         if (lang) {
-            setLoading(true);
-
             import(`ckeditor5/translations/${lang}.js`)
                 .then(module => {
                     const trans = [module.default];
@@ -19,7 +18,7 @@ export const useTranslation = lang => {
                                 trans.push(module.default);
                             })
                             .catch(() => {
-                                console.debug(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
+                                console.info(`Did not find premium translations for CK5 in language: ${lang}. Will used default translations.`);
                             }).finally(() => {
                                 setTranslations(trans);
                                 setLoading(false);
@@ -30,7 +29,7 @@ export const useTranslation = lang => {
                     }
                 })
                 .catch(() => {
-                    console.debug(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
+                    console.info(`Did not find translations for CK5 in language: ${lang}. Will use default translations.`);
                     setTranslations([]);
                     setLoading(false);
                 });

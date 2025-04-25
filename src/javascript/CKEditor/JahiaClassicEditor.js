@@ -12,11 +12,11 @@ export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {
         config = {...JahiaClassicEditor.defaultConfig, ...config};
 
-        if (isProductivityMode()) {
-            // eslint-disable-next-line no-undef
-            config.licenseKey = CKEDITOR_PRODUCTIVITY_LICENSE;
-        } else {
-            config.licenseKey = 'GPL';
+        const isProductivityEnabled = isProductivityMode();
+        // eslint-disable-next-line no-undef
+        config.licenseKey = isProductivityEnabled ? CKEDITOR_PRODUCTIVITY_LICENSE : 'GPL';
+
+        if (!isProductivityEnabled) {
             JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins
                 .filter(p => !p.isPremiumPlugin);
         }

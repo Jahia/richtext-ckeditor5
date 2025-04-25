@@ -57,12 +57,10 @@ export const set = (target, path, value) => {
     }
 };
 
-export const isProductivityMode = () => {
-    /**
-     * CKEDITOR_PRODUCTIVITY_LICENSE is inserted as a literal string by webpack using define plugin.
-     * We cannot use it directly in the return boolean logic code because it is optimized out by webpack before the insertion.
-     * As workaround we call toString() function so that it is not optimized out.
-     */
-    // eslint-disable-next-line no-undef
-    return window?.contextJsParameters?.valid && Boolean(CKEDITOR_PRODUCTIVITY_LICENSE?.toString());
-};
+/**
+ * CKEDITOR_PRODUCTIVITY_LICENSE is inserted as a literal string by webpack using define plugin.
+ * We cannot use it directly in the return boolean logic code because it is optimized out by webpack before the insertion.
+ * As workaround we call toString() function so that it is not optimized out.
+ */
+// eslint-disable-next-line
+export const isProductivityMode = () => window?.contextJsParameters?.valid && CKEDITOR_PRODUCTIVITY_LICENSE;

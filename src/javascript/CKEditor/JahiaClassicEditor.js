@@ -18,7 +18,7 @@ export class JahiaClassicEditor extends ClassicEditor {
         } else {
             config.licenseKey = 'GPL';
             JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins
-                .filter(p => Boolean(p.isPremiumPlugin));
+                .filter(p => !p.isPremiumPlugin);
         }
 
         if (!config.templates?.definitions) {

@@ -57,5 +57,7 @@ export const set = (target, path, value) => {
     }
 };
 
-// eslint-disable-next-line no-undef
-export const isProductivityMode = () => window?.contextJsParameters?.valid && Boolean(CKEDITOR_PRODUCTIVITY_LICENSE);
+export const isProductivityMode = () => {
+    // eslint-disable-next-line no-undef
+    return window?.contextJsParameters?.valid && (typeof CKEDITOR_PRODUCTIVITY_LICENSE !== 'undefined') && CKEDITOR_PRODUCTIVITY_LICENSE !== '';
+};

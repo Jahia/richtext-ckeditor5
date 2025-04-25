@@ -3,12 +3,10 @@ import {useEffect, useState} from 'react';
 
 export const useTranslation = lang => {
     const [translations, setTranslations] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (lang) {
-            setLoading(true);
-
             import(`ckeditor5/translations/${lang}.js`)
                 .then(module => {
                     const trans = [module.default];

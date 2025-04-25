@@ -1,4 +1,4 @@
-import {JContent} from '@jahia/jcontent-cypress/dist/page-object';
+import {JContent, ContentEditor} from '@jahia/jcontent-cypress/dist/page-object';
 import {createSite, deleteSite} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 
@@ -38,9 +38,19 @@ describe('Language tests', () => {
             variables: {lang: 'fr'}
         });
         jcontent = JContent.visit(siteKeyEn, 'en', 'content-folders/contents');
-        jcontent.createContent('Texte riche');
+        let contentEditor = jcontent.createContent('Texte riche');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.type('Texte riche');
+        ck5field.getToolbarButton('Gras').should('exist');
+        ck5field.getToolbarButton('Italique').should('exist');
+
+        contentEditor.createUnchecked();
+
+        jcontent.getTable().getRowByLabel('Texte riche').contextMenu().select('Editer');
+        contentEditor = new ContentEditor();
+        contentEditor.switchToAdvancedMode();
+
         ck5field.getToolbarButton('Gras').should('exist');
         ck5field.getToolbarButton('Italique').should('exist');
     });

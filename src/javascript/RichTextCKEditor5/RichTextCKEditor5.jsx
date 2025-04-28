@@ -9,6 +9,7 @@ import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
+import {resolveToolbar} from '../CKEditor/configurations/toolbars';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -59,7 +60,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             uilang,
             client,
             store
-        }
+        },
+        ...resolveToolbar(data.forms.ckeditorToolbar)
     };
 
     if (translations.length > 0) {

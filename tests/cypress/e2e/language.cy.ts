@@ -25,7 +25,7 @@ describe('Language tests', () => {
 
     it('should have labels in English', () => {
         jcontent = JContent.visit(siteKeyEn, 'en', 'content-folders/contents');
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.getToolbarButton('Bold').should('exist');
@@ -38,7 +38,7 @@ describe('Language tests', () => {
             variables: {lang: 'fr'}
         });
         jcontent = JContent.visit(siteKeyEn, 'en', 'content-folders/contents');
-        let contentEditor = jcontent.createContent('Texte riche');
+        let contentEditor = jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('Texte riche');

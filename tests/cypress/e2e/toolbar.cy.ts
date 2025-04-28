@@ -22,7 +22,7 @@ describe('Toolbar tests', () => {
     });
 
     it('should have buttons visible and clickable', () => {
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');
@@ -40,7 +40,7 @@ describe('Toolbar tests', () => {
     });
 
     it('should have full toolbar visible', () => {
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');
@@ -106,7 +106,7 @@ describe('Toolbar tests', () => {
     });
 
     it('should have basic edit source working', () => {
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');
@@ -119,7 +119,7 @@ describe('Toolbar tests', () => {
 
     // Enable when enhanced edit source is enabled in config
     it.skip('should have enhanced edit source working', () => {
-        jcontent.createContent('Rich text');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.type('this is my text');

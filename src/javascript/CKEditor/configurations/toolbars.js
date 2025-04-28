@@ -55,7 +55,7 @@ export const minimalToolbar = {
         'removeFormat',
         'alignment:left',
         'alignment:center',
-        'alignment:right',
+        'alignment:right'
     ]
 };
 

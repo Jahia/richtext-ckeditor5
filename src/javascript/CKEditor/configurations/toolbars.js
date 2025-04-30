@@ -1,68 +1,78 @@
 export const advancedToolbar = {
-    toolbar: [
-        'undo',
-        'redo',
-        'sourceEditing',
-        'showBlocks',
-        'fullScreen',
-        '|',
-        'heading',
-        'style',
-        'bold',
-        'italic',
-        'removeFormat',
-        '|',
-        'alignment',
-        '|',
-        'jahiaInsertImage',
-        'jahiaLink',
-        'insertTable',
-        '|',
-        'bulletedList',
-        'numberedList',
-        'indent',
-        'outdent'
-    ],
+    toolbar: {
+        items: [
+            'undo',
+            'redo',
+            'sourceEditing',
+            'showBlocks',
+            'fullScreen',
+            '|',
+            'heading',
+            'style',
+            '|',
+            'bold',
+            'italic',
+            'removeFormat',
+            '|',
+            'alignment',
+            '|',
+            'jahiaInsertImage',
+            'jahiaLink',
+            'insertTable',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'indent',
+            'outdent'
+        ],
+        shouldNotGroupWhenFull: true
+    },
     menuBar: {
         isVisible: false
     }
 };
 
 export const lightToolbar = {
-    toolbar: [
-        'undo',
-        'redo',
-        'heading',
-        'bold',
-        'italic',
-        'removeFormat',
-        '|',
-        'alignment',
-        '|',
-        'jahiaInsertImage',
-        'jahiaLink',
-        'insertTable',
-        '|',
-        'bulletedList',
-        'numberedList',
-        'indent',
-        'outdent'
-    ],
+    toolbar: {
+        items: [
+            'undo',
+            'redo',
+            'heading',
+            'bold',
+            'italic',
+            'removeFormat',
+            '|',
+            'alignment',
+            '|',
+            'jahiaInsertImage',
+            'jahiaLink',
+            'insertTable',
+            '|',
+            'bulletedList',
+            'numberedList',
+            'indent',
+            'outdent'
+        ],
+        shouldNotGroupWhenFull: true
+    },
     menuBar: {
         isVisible: false
     }
 };
 
 export const minimalToolbar = {
-    toolbar: [
-        'bold',
-        'italic',
-        'underline',
-        'removeFormat',
-        'alignment:left',
-        'alignment:center',
-        'alignment:right'
-    ],
+    toolbar: {
+        items: [
+            'bold',
+            'italic',
+            'underline',
+            'removeFormat',
+            'alignment:left',
+            'alignment:center',
+            'alignment:right'
+        ],
+        shouldNotGroupWhenFull: true
+    },
     menuBar: {
         isVisible: false
     }

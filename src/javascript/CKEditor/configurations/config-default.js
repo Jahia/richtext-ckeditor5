@@ -28,7 +28,9 @@ export const config = {
             'indent',
             'outdent'
         ],
-        shouldNotGroupWhenFull: false
+        // Set to true to wrap the toolbar items
+        // Set to false if we want to group items
+        shouldNotGroupWhenFull: true
     },
     menuBar: {
         isVisible: true

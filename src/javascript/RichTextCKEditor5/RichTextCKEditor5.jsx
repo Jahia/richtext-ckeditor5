@@ -52,6 +52,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     }
 
     const customConfig = {
+        ...resolveToolbar(),
         ...parsedOptions.ckEditorConfig,
         language: uilang,
         picker: {
@@ -60,8 +61,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             uilang,
             client,
             store
-        },
-        ...resolveToolbar(data.forms.ckeditorToolbar)
+        }
     };
 
     if (translations.length > 0) {

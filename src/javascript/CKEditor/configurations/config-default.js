@@ -4,10 +4,14 @@ export const config = {
     plugins,
     toolbar: {
         items: [
+            'undo',
+            'redo',
             'sourceEditing',
             'showBlocks',
+            'fullScreen',
             '|',
             'heading',
+            'style',
             '|',
             'bold',
             'italic',
@@ -20,6 +24,7 @@ export const config = {
             'insertTable',
             '|',
             'bulletedList',
+            'numberedList',
             'indent',
             'outdent'
         ],

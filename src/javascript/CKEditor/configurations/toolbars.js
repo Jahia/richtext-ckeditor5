@@ -4,7 +4,7 @@ export const advancedToolbar = {
         'redo',
         'sourceEditing',
         'showBlocks',
-        'fullPage',
+        'fullScreen',
         '|',
         'heading',
         'style',
@@ -22,7 +22,10 @@ export const advancedToolbar = {
         'numberedList',
         'indent',
         'outdent'
-    ]
+    ],
+    menuBar: {
+        isVisible: false
+    }
 };
 
 export const lightToolbar = {
@@ -44,7 +47,10 @@ export const lightToolbar = {
         'numberedList',
         'indent',
         'outdent'
-    ]
+    ],
+    menuBar: {
+        isVisible: false
+    }
 };
 
 export const minimalToolbar = {
@@ -56,17 +62,22 @@ export const minimalToolbar = {
         'alignment:left',
         'alignment:center',
         'alignment:right'
-    ]
+    ],
+    menuBar: {
+        isVisible: false
+    }
 };
 
-export const resolveToolbar = type => {
-    if (type === 'Full') {
-        return advancedToolbar;
+export const resolveToolbar = () => {
+    const ck5config = contextJsParameters.config.ckeditor5;
+    switch (ck5config?.configType) {
+        case 'advanced':
+            return advancedToolbar;
+        case 'light':
+            return lightToolbar;
+        case 'minimal':
+            return minimalToolbar;
+        default:
+            return {}; // Return empty object to default to complete toolbar (default)
     }
-
-    if (type === 'Basic') {
-        return lightToolbar;
-    }
-
-    return minimalToolbar;
 };

@@ -26,7 +26,7 @@ void excludeExistingSites() {
             def siteService = JahiaSitesService.getInstance();
             ConfigService configService = BundleUtils.getOsgiService(ConfigService.class, null);
             if (configService != null) {
-                Config config = configService.getConfig("org.jahia.modules.richtext-ckeditor5");
+                Config config = configService.getConfig("org.jahia.modules.richtext_ckeditor5");
                 PropertiesValues values = config.getValues();
                 values.setProperty("enabledByDefault", "true");
                 values.setProperty("excludeSites", siteService.getSitesNodeList(jcrSessionWrapper)

@@ -21,9 +21,12 @@ public class RichtextConfig implements ManagedService {
     private final static String INCLUDE_SITES = "includeSites";
     private final static String EXCLUDE_SITES = "excludeSites";
     private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
+    private final static String CONFIG_TYPE = "configType";
+
     private boolean enabledByDefault = false;
     private List<String> includeSites = new ArrayList<>();
     private List<String> excludeSites = new ArrayList<>();
+    private String configType = "complete";
 
     public RichtextConfig() {
         super();
@@ -34,6 +37,8 @@ public class RichtextConfig implements ManagedService {
         enabledByDefault = getBoolean(dictionary, ENABLED_BY_DEFAULT);
         includeSites = getList(dictionary, INCLUDE_SITES);
         excludeSites = getList(dictionary, EXCLUDE_SITES);
+        configType = (dictionary != null && dictionary.get(CONFIG_TYPE) != null)
+                ? dictionary.get(CONFIG_TYPE).toString() : "complete";
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {
@@ -67,6 +72,7 @@ public class RichtextConfig implements ManagedService {
         obj.put(ENABLED_BY_DEFAULT, enabledByDefault);
         obj.put(INCLUDE_SITES, new JSONArray(includeSites));
         obj.put(EXCLUDE_SITES, new JSONArray(excludeSites));
+        obj.put(CONFIG_TYPE, configType);
         return obj;
     }
 }

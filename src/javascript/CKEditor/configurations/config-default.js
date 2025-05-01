@@ -4,10 +4,14 @@ export const config = {
     plugins,
     toolbar: {
         items: [
+            'undo',
+            'redo',
             'sourceEditing',
             'showBlocks',
+            'fullScreen',
             '|',
             'heading',
+            'style',
             '|',
             'bold',
             'italic',
@@ -20,10 +24,13 @@ export const config = {
             'insertTable',
             '|',
             'bulletedList',
+            'numberedList',
             'indent',
             'outdent'
         ],
-        shouldNotGroupWhenFull: false
+        // Set to true to wrap the toolbar items
+        // Set to false if we want to group items
+        shouldNotGroupWhenFull: true
     },
     menuBar: {
         isVisible: true

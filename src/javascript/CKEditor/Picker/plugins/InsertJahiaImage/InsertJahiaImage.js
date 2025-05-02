@@ -27,18 +27,21 @@ export class InsertJahiaImage extends Plugin {
     }
 
     static get translations() {
+        const l = InsertJahiaImage.prefixedTranslationKey('label');
+        const t = InsertJahiaImage.prefixedTranslationKey('tooltip');
+
         return {
             fr: {
-                [InsertJahiaImage.prefixedTranslationKey('label')]: 'fr Image',
-                [InsertJahiaImage.prefixedTranslationKey('tooltip')]: 'fr insert image'
+                [l]: 'fr Image',
+                [t]: 'fr insert image'
             },
             de: {
-                [InsertJahiaImage.prefixedTranslationKey('label')]: 'de Image',
-                [InsertJahiaImage.prefixedTranslationKey('tooltip')]: 'de insert image'
+                [l]: 'de Image',
+                [t]: 'de insert image'
             },
             en: {
-                [InsertJahiaImage.prefixedTranslationKey('label')]: 'Image',
-                [InsertJahiaImage.prefixedTranslationKey('tooltip')]: 'insert image'
+                [l]: 'Image',
+                [t]: 'insert image'
             }
         };
     }

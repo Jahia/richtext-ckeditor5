@@ -68,7 +68,7 @@ export const isProductivityMode = () => {
 };
 
 /**
- * This is meant to be called from init() of a plugin. Document way of loading translations via 'static get tranlsation()' does not work.
+ * This is meant to be called from init() of a plugin. Documented way of loading translations via 'static get tranlsation()' does not work.
  *
  *
  * @param editor

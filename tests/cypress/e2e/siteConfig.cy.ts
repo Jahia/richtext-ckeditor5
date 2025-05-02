@@ -37,6 +37,10 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     after(function () {
         cy.logout();
+        cy.apollo({
+            mutationFile: 'disableEnableCK5.graphql',
+            variables: {isEnabled: 'true'}
+        });
         deleteSite(siteKey);
     });
     beforeEach(() => {

@@ -44,7 +44,7 @@ public class RichtextConfig implements ManagedService {
         excludeSites = getList(dictionary, EXCLUDE_SITES);
         configType = (dictionary != null && dictionary.get(CONFIG_TYPE) != null)
                 ? dictionary.get(CONFIG_TYPE).toString() : "complete";
-        logger.info("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, configType={}",
+        logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, configType={}",
                 enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), configType);
     }
 
@@ -56,9 +56,9 @@ public class RichtextConfig implements ManagedService {
             } else if (val != null) {
                 return Boolean.parseBoolean(val.toString());
             }
-            logger.info("Property {} is null", key);
+            logger.debug("Property {} is null", key);
         } else {
-            logger.info("Property {} not found in dictionary", key);
+            logger.debug("Property {} not found in dictionary", key);
         }
         return false;
     }

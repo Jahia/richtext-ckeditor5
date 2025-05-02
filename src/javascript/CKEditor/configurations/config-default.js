@@ -20,7 +20,7 @@ export const config = {
             'alignment',
             '|',
             'insertJahiaImage',
-            'jahiaLink',
+            'link',
             'insertTable',
             '|',
             'bulletedList',

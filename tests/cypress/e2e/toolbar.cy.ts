@@ -32,11 +32,9 @@ describe('Toolbar tests', () => {
         ck5field.getToolbarButton('Heading').click().click();
         ck5field.getToolbarButton('Text alignment').click().click();
         ck5field.getToolbarButton('Insert image').click();
-        let picker: Picker = getComponentByRole(Picker, 'picker-dialog');
+        const picker: Picker = getComponentByRole(Picker, 'picker-dialog');
         picker.cancel();
-        ck5field.getToolbarButton('Insert link').click();
-        picker = getComponentByRole(Picker, 'picker-dialog');
-        picker.cancel();
+        ck5field.getToolbarButton('Link').click();
     });
 
     it('should have full toolbar visible', () => {
@@ -96,7 +94,7 @@ describe('Toolbar tests', () => {
             'Italic',
             'Remove Format',
             'Text alignment',
-            'Insert link',
+            'Link',
             'Insert image',
             'Insert table',
             'Bulleted List',

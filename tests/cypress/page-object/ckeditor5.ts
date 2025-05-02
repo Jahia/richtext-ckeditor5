@@ -53,6 +53,16 @@ export class RichTextCKeditor5Field extends Field {
             .closest('button');
     }
 
+    getBalloonButton(label: string) {
+        return this.get()
+            .get('.ck-balloon-panel > .ck-balloon-rotator')
+            .should('be.visible')
+            .find('button.ck-button')
+            .contains(label)
+            .should('be.visible')
+            .closest('button');
+    }
+
     getMenuItemByLabel(label: string): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('div.ck-menu-bar__menu_top-level > button.ck-menu-bar__menu__button')
             .contains('button.ck-menu-bar__menu__button', label);

@@ -1,7 +1,6 @@
 import {
     ButtonView,
     IconBrowseFiles,
-    IconLink,
     Plugin
 } from 'ckeditor5';
 
@@ -36,6 +35,5 @@ export class PickerUI extends Plugin {
         const t = editor.t;
 
         componentFactory.add('jahiaInsertImage', createButton(editor, 'jahiaInsertImage', t('Insert image or file'), IconBrowseFiles));
-        componentFactory.add('jahiaLink', createButton(editor, 'jahiaLink', t('Insert link'), IconLink));
     }
 }

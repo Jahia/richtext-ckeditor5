@@ -52,6 +52,7 @@ import {
 } from 'ckeditor5-premium-features';
 import {Picker} from '~/CKEditor/Picker/Picker';
 import {InsertJahiaImage} from '../Picker/plugins';
+import JahiaLinkProvider from '../Picker/JahiaLinkProvider';
 
 export const plugins = [
     Alignment,
@@ -85,6 +86,7 @@ export const plugins = [
     IndentBlock,
     Italic,
     Link,
+    JahiaLinkProvider,
     Paragraph,
     PasteFromOffice,
     RemoveFormat,

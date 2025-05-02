@@ -29,6 +29,7 @@ export class JahiaClassicEditor extends ClassicEditor {
             }
         }
 
+        console.log(config);
         const editor = new this(sourceElementOrData, config);
         return editor.initPlugins().then(() => {
             editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null);

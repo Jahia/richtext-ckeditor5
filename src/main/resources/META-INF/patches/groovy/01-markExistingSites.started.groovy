@@ -18,7 +18,6 @@ log.info("Add existing sites to exclude list so they use CKEditor 4");
 
 excludeExistingSites();
 
-
 void excludeExistingSites() {
     JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
         @Override
@@ -29,11 +28,12 @@ void excludeExistingSites() {
                 Config config = configService.getConfig("org.jahia.modules.richtext_ckeditor5");
                 PropertiesValues values = config.getValues();
                 values.setProperty("enabledByDefault", "true");
-                values.setProperty("excludeSites", siteService.getSitesNodeList(jcrSessionWrapper)
+                def excludeSites = siteService.getSitesNodeList(jcrSessionWrapper)
                         .stream()
                         .filter(n -> !"systemsite".equals(n.getSiteKey()))
-                        .map {n -> n.getSiteKey()}.collect(Collectors.joining(","))
-                );
+                        .map {n -> n.getSiteKey()}.collect(Collectors.joining(","));
+                log.info("Adding existing sites to exclude list: " + excludeSites);
+                values.setProperty("excludeSites", excludeSites);
                 configService.storeConfig(config);
             }
             return null

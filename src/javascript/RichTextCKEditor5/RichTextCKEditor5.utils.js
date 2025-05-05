@@ -76,10 +76,10 @@ export const isProductivityMode = () => {
  */
 export const loadTranslations = (editor, ts) => {
     for (const [key, value] of Object.entries(ts)) {
-        if (!editor.locale.translations[key]) {
-            editor.locale.translations[key] = {dictionary: value};
-        } else {
+        if (editor.locale.translations[key]) {
             editor.locale.translations[key].dictionary = {...editor.locale.translations[key].dictionary, ...value};
+        } else {
+            editor.locale.translations[key] = {dictionary: value};
         }
     }
 };

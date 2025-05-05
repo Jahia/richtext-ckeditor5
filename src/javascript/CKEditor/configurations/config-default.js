@@ -89,12 +89,17 @@ export const config = {
     },
     language: 'en',
     image: {
+        resizeUnit: 'px',
         toolbar: [
-            'imageTextAlternative',
             'toggleImageCaption',
+            'imageTextAlternative',
+            '|',
             'imageStyle:inline',
             'imageStyle:block',
-            'imageStyle:side'
+            'imageStyle:wrapText',
+            '|',
+            'resizeImage:original',
+            'resizeImage:custom'
         ]
     },
     table: {

@@ -4,7 +4,6 @@ import {
     Notification,
     Plugin
 } from 'ckeditor5';
-import {JahiaInsertImageCommand} from '~/CKEditor/Picker/JahiaInsertImageCommand';
 import {JahiaLinkCommand} from '~/CKEditor/Picker/JahiaLinkCommand';
 
 export class PickerEditing extends Plugin {
@@ -19,7 +18,6 @@ export class PickerEditing extends Plugin {
     init() {
         const editor = this.editor;
 
-        editor.commands.add('jahiaInsertImage', new JahiaInsertImageCommand(editor, 'image'));
         editor.commands.add('jahiaLink', new JahiaLinkCommand(editor, 'editoriallink'));
     }
 }

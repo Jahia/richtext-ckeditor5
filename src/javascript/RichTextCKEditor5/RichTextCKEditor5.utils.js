@@ -66,3 +66,20 @@ export const isProductivityMode = () => {
     // eslint-disable-next-line no-undef
     return window?.contextJsParameters?.valid && Boolean(CKEDITOR_PRODUCTIVITY_LICENSE?.toString());
 };
+
+/**
+ * This is meant to be called from init() of a plugin. Documented way of loading translations via 'static get tranlsation()' does not work.
+ *
+ *
+ * @param editor
+ * @param ts
+ */
+export const loadTranslations = (editor, ts) => {
+    for (const [key, value] of Object.entries(ts)) {
+        if (editor.locale.translations[key]) {
+            editor.locale.translations[key].dictionary = {...editor.locale.translations[key].dictionary, ...value};
+        } else {
+            editor.locale.translations[key] = {dictionary: value};
+        }
+    }
+};

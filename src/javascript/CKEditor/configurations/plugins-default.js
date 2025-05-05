@@ -51,6 +51,7 @@ import {
     Template
 } from 'ckeditor5-premium-features';
 import {Picker} from '~/CKEditor/Picker/Picker';
+import {InsertJahiaImage} from '../Picker/plugins';
 
 export const plugins = [
     Alignment,
@@ -101,5 +102,6 @@ export const plugins = [
     Template,
     TextTransformation,
     Underline,
-    Picker
+    Picker,
+    InsertJahiaImage
 ];

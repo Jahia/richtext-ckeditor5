@@ -32,12 +32,12 @@ export class InsertJahiaImage extends Plugin {
 
         return {
             fr: {
-                [l]: 'fr Image',
-                [t]: 'fr insert image'
+                [l]: 'Image',
+                [t]: 'insérer une image'
             },
             de: {
-                [l]: 'de Image',
-                [t]: 'de insert image'
+                [l]: 'Bild',
+                [t]: 'bild einfügen'
             },
             en: {
                 [l]: 'Image',

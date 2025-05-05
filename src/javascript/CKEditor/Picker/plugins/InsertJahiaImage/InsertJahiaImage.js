@@ -18,10 +18,6 @@ export class InsertJahiaImage extends Plugin {
         return [Notification, ImageEditing, LinkEditing];
     }
 
-    static get requiresTranslations() {
-        return true;
-    }
-
     static prefixedTranslationKey(key) {
         return `${InsertJahiaImage.pluginName}:${key}`;
     }
@@ -33,15 +29,15 @@ export class InsertJahiaImage extends Plugin {
         return {
             fr: {
                 [l]: 'Image',
-                [t]: 'insérer une image'
+                [t]: 'Insérer une image'
             },
             de: {
                 [l]: 'Bild',
-                [t]: 'bild einfügen'
+                [t]: 'Bild einfügen'
             },
             en: {
                 [l]: 'Image',
-                [t]: 'insert image'
+                [t]: 'Insert image'
             }
         };
     }

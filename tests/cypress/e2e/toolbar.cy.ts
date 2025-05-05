@@ -31,7 +31,7 @@ describe('Toolbar tests', () => {
         ck5field.getToolbarButton('Remove Format').click();
         ck5field.getToolbarButton('Heading').click().click();
         ck5field.getToolbarButton('Text alignment').click().click();
-        ck5field.getToolbarButton('Insert image or file').click();
+        ck5field.getToolbarButton('Insert image').click();
         let picker: Picker = getComponentByRole(Picker, 'picker-dialog');
         picker.cancel();
         ck5field.getToolbarButton('Insert link').click();
@@ -97,7 +97,7 @@ describe('Toolbar tests', () => {
             'Remove Format',
             'Text alignment',
             'Insert link',
-            'Insert image or file',
+            'Insert image',
             'Insert table',
             'Bulleted List',
             'Increase indent',

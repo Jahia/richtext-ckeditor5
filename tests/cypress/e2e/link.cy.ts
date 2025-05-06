@@ -78,7 +78,7 @@ describe('Link tests', () => {
         ck5field.getBalloonToolbarButton('Back').click();
 
         ck5field.getBalloonToolbarButton('Edit link').should('be.visible').click();
-        ck5field.getBalloonButton('Jahia Links').should('be.visible').click();
+        ck5field.getBalloonButton('Jahia internal links').should('be.visible').click();
 
         const picker = getComponentByAttr(Picker, 'data-sel-role', 'picker-dialog');
         picker.getTable().getRowByName(linkTargetName).get().click();

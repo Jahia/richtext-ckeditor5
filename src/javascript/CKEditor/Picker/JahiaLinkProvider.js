@@ -19,13 +19,13 @@ export default class JahiaLinkProvider extends Plugin {
 
         return {
             fr: {
-                [label]: 'Liens Jahia'
+                [label]: 'Liens internes Jahia'
             },
             de: {
-                [label]: 'Jahia-Links'
+                [label]: 'Jahia interne links'
             },
             en: {
-                [label]: 'Jahia Links'
+                [label]: 'Jahia internal links'
             }
         };
     }

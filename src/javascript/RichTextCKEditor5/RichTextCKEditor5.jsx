@@ -10,6 +10,7 @@ import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
 import {resolveToolbar} from '../CKEditor/configurations/toolbars';
+import './RichTextCKEditor5-overrides.css';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();

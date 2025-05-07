@@ -34,21 +34,12 @@ export default class JahiaLinkProvider extends Plugin {
         const editor = this.editor;
         const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
         const contentPrefix = `${contextPath}/cms/{mode}/{lang}`;
-        const filePrefix = `${contextPath}/files/{workspace}`;
 
         const pickerConfig = editor.config.get('picker');
 
-        let path;
-        if (this.value && this.value.startsWith(contentPrefix)) {
-            path = (this.value.substring(contentPrefix.length, this.value.lastIndexOf('.html')));
-        }
-
         window.CE_API.openPicker({
-            type: this.type,
-            value: path,
             setValue: pickerResults => {
-                const contentPicker = true;
-                const url = `${contentPicker ? contentPrefix : filePrefix}${pickerResults[0].path}${contentPicker ? '.html' : ''}`;
+                const url = `${contentPrefix}${pickerResults[0].path}.html`;
                 editor.execute('link', url);
             },
             ...pickerConfig

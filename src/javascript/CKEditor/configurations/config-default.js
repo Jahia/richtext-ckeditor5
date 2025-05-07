@@ -129,6 +129,7 @@ export const config = {
         }
     },
     link: {
+        toolbar: ['editLink', 'linkProperties', 'unlink'],
         decorators: {
             openInNewTab: {
                 mode: 'manual',

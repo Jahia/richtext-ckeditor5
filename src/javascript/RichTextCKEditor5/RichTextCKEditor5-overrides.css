@@ -1,10 +1,14 @@
 :root {
-    --ck-z-default: 10555 !important;
-    --ck-z-modal: calc(var(--ck-z-default) + 999) !important;
+    --ck-z-default: 10555;
+    --ck-z-modal: calc(var(--ck-z-default) + 999);
 }
 
-.ck.ck-form.ck-link-form {
+/**
+ * Related to this global reset in anthracite
+ * https://github.com/Jahia/jahia-private/blob/master/war/src/main/webapp/engines/jahia-anthracite/css/components/_build.scss#L802
+ * Overriding with !important for now to ensure it takes precedence over the default anthracite styles
+ */
+.ck.ck-form {
     padding-bottom: 0 !important;
     width: var(--ck-link-panel-width) !important;
 }
-

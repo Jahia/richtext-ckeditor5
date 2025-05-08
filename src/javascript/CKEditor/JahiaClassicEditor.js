@@ -6,7 +6,8 @@ import {ClassicEditor} from 'ckeditor5';
 import {isElement} from 'lodash-es';
 
 import 'ckeditor5/ckeditor5.css';
-import {isProductivityMode} from '../RichTextCKEditor5/RichTextCKEditor5.utils';
+import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
+import {isProductivityMode} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 
 export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {

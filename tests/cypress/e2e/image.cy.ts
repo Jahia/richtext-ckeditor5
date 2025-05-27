@@ -10,7 +10,7 @@ describe('Image tests', () => {
 
     before(() => {
         createSite(siteKey);
-        uploadFile('placeholder.jpg', `/sites/${siteKey}/files`, 'placeholder.jpg', 'image/jpg');
+        uploadFile('placeholder.jpg', `/sites/${siteKey}/files`, 'placeholder.jpg', 'image/jpeg');
         const imageText = {
             name: textName,
             primaryNodeType: 'jnt:bigText',

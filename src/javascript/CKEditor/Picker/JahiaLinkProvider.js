@@ -1,7 +1,7 @@
 import {Plugin, LinkUI} from 'ckeditor5';
 import {loadTranslations} from '../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
-export default class JahiaLinkProvider extends Plugin {
+export class JahiaLinkProvider extends Plugin {
     static get requires() {
         return [LinkUI];
     }

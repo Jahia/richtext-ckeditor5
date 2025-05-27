@@ -1,14 +1,14 @@
 import {JContent} from '@jahia/jcontent-cypress/dist/page-object';
 import {addNode, createSite, deleteSite, getComponent, uploadFile} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
-import {ResizeImage} from "../page-object/resizeImage";
+import {ResizeImage} from '../page-object/resizeImage';
 
 describe('Image tests', () => {
     const siteKey = 'imageCKEditor5Site';
     const ckeditor5 = new Ckeditor5();
     const textName = 'test-image';
 
-    before('setup', function setup() {
+    before(() => {
         createSite(siteKey);
         uploadFile('placeholder.jpg', `/sites/${siteKey}/files`, 'placeholder.jpg', 'image/jpg');
         const imageText = {
@@ -23,16 +23,14 @@ describe('Image tests', () => {
 
         addNode({
             parentPathOrId: `/sites/${siteKey}/home`,
-            name: "area-main",
-            primaryNodeType: "jnt:contentList",
+            name: 'area-main',
+            primaryNodeType: 'jnt:contentList',
             children: [imageText]
         });
         addNode({...imageText, parentPathOrId: `/sites/${siteKey}/contents`});
     });
 
-
-
-    after('teardown', function teardown() {
+    after(() => {
         cy.logout();
         deleteSite(siteKey);
     });
@@ -63,7 +61,7 @@ describe('Image tests', () => {
 
     it('should be able to resize image and display in page builder', () => {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
-            .switchToStructuredView()
+            .switchToStructuredView();
         const ce = jcontent.editComponentByText(textName);
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 

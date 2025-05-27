@@ -5,7 +5,7 @@ import {ImageResizeEditing, Plugin} from 'ckeditor5';
  */
 export class ImageResizeStyler extends Plugin {
     static get requires() {
-        return [ ImageResizeEditing ];
+        return [ImageResizeEditing];
     }
 
     static get pluginName() {
@@ -15,7 +15,7 @@ export class ImageResizeStyler extends Plugin {
     init() {
         const editor = this.editor;
 
-        editor.conversion.for('downcast').add((dispatcher) => {
+        editor.conversion.for('downcast').add(dispatcher => {
             dispatcher.on('attribute:resizedWidth:imageBlock', setStyles);
             dispatcher.on('attribute:resizedWidth:imageInline', setStyles);
         });
@@ -26,7 +26,7 @@ export class ImageResizeStyler extends Plugin {
                 return;
             }
 
-            // viewImage can sometimes be a container element and not the img element (in the case of imageBlock),
+            // ViewImage can sometimes be a container element and not the img element (in the case of imageBlock),
             // so we need to find the img element within this container
             let hasContainer = !viewImage.is('element', 'img');
             if (hasContainer) {
@@ -46,7 +46,7 @@ export class ImageResizeStyler extends Plugin {
                 // Image has been restored to original values; remove styling
                 conversionApi.writer.removeStyle('height', viewImage);
                 if (hasContainer && viewImage.getStyle('width') === data.attributeOldValue) {
-                    conversionApi.writer.removeStyle('width',viewImage);
+                    conversionApi.writer.removeStyle('width', viewImage);
                 }
             }
         }

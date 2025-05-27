@@ -1,4 +1,4 @@
-import {BaseComponent} from "@jahia/cypress";
+import {BaseComponent} from '@jahia/cypress';
 
 export class ResizeImage extends BaseComponent {
     static readonly defaultSelector = 'form.ck-image-custom-resize-form';

@@ -1,0 +1,1 @@
+export {InsertJahiaImage} from './InsertJahiaImage';

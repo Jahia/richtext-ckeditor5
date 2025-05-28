@@ -50,9 +50,8 @@ import {
     CaseChange,
     Template
 } from 'ckeditor5-premium-features';
-import {Picker} from '~/CKEditor/Picker/Picker';
-import {InsertJahiaImage} from '../Picker/plugins';
-import JahiaLinkProvider from '../Picker/JahiaLinkProvider';
+import {Picker, InsertJahiaImage, JahiaLinkProvider} from '~/CKEditor/Picker';
+import {ImageResizeStyler} from '~/CKEditor/plugins';
 
 export const plugins = [
     Alignment,
@@ -79,6 +78,7 @@ export const plugins = [
     Image,
     ImageCaption,
     ImageResize,
+    ImageResizeStyler,
     ImageStyle,
     ImageToolbar,
     ImageUpload,

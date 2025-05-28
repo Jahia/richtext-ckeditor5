@@ -1,6 +1,6 @@
 import {Command} from 'ckeditor5';
 
-export class JahiaInsertImageCommand extends Command {
+export class InsertJahiaImageCommand extends Command {
     constructor(editor, type) {
         super(editor);
         this.type = type;

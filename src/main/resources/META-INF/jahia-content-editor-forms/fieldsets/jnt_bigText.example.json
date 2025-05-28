@@ -1,5 +1,5 @@
 {
-  "name": "jnt:bigText*remove to enable json override*",
+  "name": "jnt:bigText*JSON OVERRIDES ARE DEPRECATED DO NOT USE*",
   "priority": 1.1,
   "fields": [
     {
@@ -14,7 +14,7 @@
               "-",
               "alignment",
               "|",
-              "jahiaInsertImage",
+              "insertJahiaImage",
               "jahiaLink"
             ]
           }

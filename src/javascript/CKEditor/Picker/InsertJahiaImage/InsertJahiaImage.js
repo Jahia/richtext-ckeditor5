@@ -3,8 +3,8 @@ import {
     ImageEditing, LinkEditing, MenuBarMenuListItemButtonView, Notification,
     Plugin
 } from 'ckeditor5';
-import {JahiaInsertImageCommand} from '../../JahiaInsertImageCommand';
-import {loadTranslations} from '../../../../RichTextCKEditor5/RichTextCKEditor5.utils';
+import {InsertJahiaImageCommand} from './InsertJahiaImageCommand';
+import {loadTranslations} from '../../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
 // This is taken from moonstone as I did not find a way to import and use "react" component directly or import pure svg
 const imageIcon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 3H3C2 3 1 4 1 5V19C1 20.1 1.9 21 3 21H21C22 21 23 20 23 19V5C23 4 22 3 21 3ZM5 17L8.5 12.5L11 15.51L14.5 11L19 17H5Z" fill="black"/></svg>';
@@ -48,7 +48,7 @@ export class InsertJahiaImage extends Plugin {
         const ts = InsertJahiaImage.translations;
         loadTranslations(editor, ts);
 
-        editor.commands.add('jahiaInsertImageCommand', new JahiaInsertImageCommand(editor, 'image'));
+        editor.commands.add('jahiaInsertImageCommand', new InsertJahiaImageCommand(editor, 'image'));
 
         // Override the existing 'uploadImage' component
         editor.ui.componentFactory.add('menuBar:insertImage', locale => {

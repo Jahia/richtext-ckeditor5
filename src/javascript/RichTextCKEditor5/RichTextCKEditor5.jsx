@@ -9,7 +9,7 @@ import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
-import {resolveToolbar} from '../CKEditor/configurations/toolbars';
+import {resolveToolbar} from '~/CKEditor/configurations/toolbars';
 import './RichTextCKEditor5-overrides.css';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
@@ -55,7 +55,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const customConfig = {
         ...resolveToolbar(),
         ...parsedOptions.ckEditorConfig,
+        editorContext,
         language: uilang,
+        apolloClient: client,
         picker: {
             site: editorContext.site,
             lang,

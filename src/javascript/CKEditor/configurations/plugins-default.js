@@ -17,6 +17,7 @@ import {
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,
+    HtmlEmbed,
     Image,
     ImageCaption,
     ImageResize,
@@ -51,6 +52,7 @@ import {
     Template
 } from 'ckeditor5-premium-features';
 import {Picker} from '~/CKEditor/Picker/Picker';
+import {Sanitize} from '~/CKEditor/Sanitize/Sanitize';
 import {InsertJahiaImage} from '../Picker/plugins';
 import JahiaLinkProvider from '../Picker/JahiaLinkProvider';
 
@@ -76,6 +78,7 @@ export const plugins = [
     GeneralHtmlSupport,
     Heading,
     HorizontalLine,
+    HtmlEmbed,
     Image,
     ImageCaption,
     ImageResize,
@@ -105,5 +108,6 @@ export const plugins = [
     TextTransformation,
     Underline,
     Picker,
-    InsertJahiaImage
+    InsertJahiaImage,
+    Sanitize
 ];

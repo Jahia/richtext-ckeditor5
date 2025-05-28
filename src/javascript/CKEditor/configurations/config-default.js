@@ -26,7 +26,8 @@ export const config = {
             'bulletedList',
             'numberedList',
             'indent',
-            'outdent'
+            'outdent',
+            'sanitize'
         ],
         // Set to true to wrap the toolbar items
         // Set to false if we want to group items

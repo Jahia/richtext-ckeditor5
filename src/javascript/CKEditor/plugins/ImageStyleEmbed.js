@@ -3,13 +3,13 @@ import {ImageResizeEditing, ImageStyleEditing, Plugin, Image, DataFilter} from '
 /**
  * Embeds the styles for the resized image.
  */
-export class ImageResizeStyler extends Plugin {
+export class ImageStyleEmbed extends Plugin {
     static get requires() {
         return [Image, DataFilter, ImageResizeEditing, ImageStyleEditing];
     }
 
     static get pluginName() {
-        return 'ImageResizeStyler';
+        return 'ImageStyleEmbed';
     }
 
     init() {

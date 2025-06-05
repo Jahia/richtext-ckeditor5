@@ -11,13 +11,17 @@ describe('Image tests', () => {
     before(() => {
         createSite(siteKey);
         uploadFile('placeholder.jpg', `/sites/${siteKey}/files`, 'placeholder.jpg', 'image/jpeg');
+
+        const textContent = `Lorem ipsum dolor sit amet. Aut eveniet voluptatem quo nulla itaque 
+            sit fuga fugit aut consequatur nesciunt ea modi rerum. 
+            Et provident deserunt ut nisi quidem aut velit Quis sed voluptas recusandae.`;
         const imageText = {
             name: textName,
             primaryNodeType: 'jnt:bigText',
             properties: [{
                 name: 'text',
                 language: 'en',
-                value: `<figure><img src="/files/{workspace}/sites/${siteKey}/files/placeholder.jpg"></figure>`
+                value: `<img src="/files/{workspace}/sites/${siteKey}/files/placeholder.jpg"><p>${textContent}</p>`
             }]
         };
 
@@ -44,7 +48,8 @@ describe('Image tests', () => {
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 
         // Trigger the balloon toolbar for images
-        ck5field.getEditArea().click('center');
+        // Ensure the image content is loaded before click
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
         cy.log('Verify image properties toolbar buttons are visible');
         [
             'Toggle caption on',
@@ -62,16 +67,17 @@ describe('Image tests', () => {
     it('should be able to resize image and display in page builder', () => {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
             .switchToStructuredView();
-        const ce = jcontent.editComponentByText(textName);
+        const ce = jcontent.editComponentByText('Lorem ipsum');
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 
         // Trigger the balloon toolbar for images
-        ck5field.getEditArea().click('center');
+        // Ensure the image content is loaded before click
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
         ck5field.getBalloonToolbarButton('Custom image size').click();
 
         const resizeImage = getComponent(ResizeImage);
         resizeImage.shouldBeVisible().setResizeWidth(150);
-        ck5field.getEditArea().find('img')
+        ck5field.getEditArea().find('.image_resized img') // Verify classes added by ck5
             .invoke('attr', 'style')
             .should('contain', 'height:auto')
             .and('contain', 'width:150px');
@@ -84,4 +90,37 @@ describe('Image tests', () => {
             .should('contain', 'height:auto')
             .and('contain', 'width:150px');
     });
+
+    it('should be able to left align and display in page builder', () => {
+        testAlign('Left');
+    });
+
+    it('should be able to right align and display in page builder', () => {
+        // This also tests that align works when existing float styles are present
+        testAlign('Right');
+    });
+
+    function testAlign(alignment: 'Left' | 'Right') {
+        const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
+            .switchToStructuredView();
+        const ce = jcontent.editComponentByText('Lorem ipsum');
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+
+        // Trigger the balloon toolbar for images
+        // Ensure the image content is loaded before click
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        ck5field.getBalloonToolbarButton('Wrap text').click();
+        ck5field.getBalloonToolbarButton(`${alignment} aligned image`).click();
+
+        ck5field.getEditArea().find(`.image-style-align-${alignment.toLowerCase()}`) // Verify classes added by ck5
+            .invoke('attr', 'style')
+            .should('contain', `float:${alignment.toLowerCase()}`);
+        ce.save();
+
+        // // Verify image is also resized in page builder
+        const pb = jcontent.switchToPageBuilder();
+        pb.getModule(`/sites/${siteKey}/home/area-main/${textName}`).get().find(`.image-style-align-${alignment.toLowerCase()}`)
+            .invoke('attr', 'style')
+            .should('contain', `float:${alignment.toLowerCase()}`);
+    }
 });

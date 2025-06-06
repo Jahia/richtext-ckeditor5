@@ -1,1 +1,1 @@
-export {ImageResizeStyler} from './ImageResizeStyler';
+export {ImageStyleEmbed} from './ImageStyleEmbed';

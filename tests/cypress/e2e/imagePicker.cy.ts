@@ -3,7 +3,7 @@ import {Picker} from '@jahia/jcontent-cypress/dist/page-object/picker';
 import {createSite, deleteSite, getComponentByRole, uploadFile} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 
-describe('Insert image tests', () => {
+describe('Image picker tests', () => {
     const siteKey = 'imageCKEditor5Site';
     const ckeditor5 = new Ckeditor5();
 

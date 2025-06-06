@@ -52,7 +52,7 @@ import {
     Template
 } from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider} from '~/CKEditor/Picker';
-import {ImageResizeStyler} from '~/CKEditor/plugins';
+import {ImageStyleEmbed} from '~/CKEditor/plugins';
 
 export const plugins = [
     Alignment,
@@ -80,7 +80,7 @@ export const plugins = [
     Image,
     ImageCaption,
     ImageResize,
-    ImageResizeStyler,
+    ImageStyleEmbed,
     ImageStyle,
     ImageToolbar,
     ImageUpload,

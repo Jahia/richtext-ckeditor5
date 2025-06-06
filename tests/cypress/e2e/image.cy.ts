@@ -2,6 +2,7 @@ import {JContent} from '@jahia/jcontent-cypress/dist/page-object';
 import {addNode, createSite, deleteSite, getComponent, uploadFile} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 import {ResizeImage} from '../page-object/resizeImage';
+import {EditLinkForm} from '../page-object/editLinkForm';
 
 describe('Image tests', () => {
     const siteKey = 'imageCKEditor5Site';
@@ -62,6 +63,30 @@ describe('Image tests', () => {
         ].forEach(toolbarLabel => {
             ck5field.getBalloonToolbarButton(toolbarLabel).should('be.visible');
         });
+    });
+
+    it('should be able to add links to images', () => {
+        const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
+            .switchToStructuredView();
+        const ce = jcontent.editComponentByText('Lorem ipsum');
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+
+        // Trigger the balloon toolbar for images
+        // Ensure the image content is loaded before click
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        ck5field.getBalloonButton('Link image').should('be.visible').click();
+        const linkForm = getComponent(EditLinkForm);
+        const linkUrl = 'https://google.com';
+        linkForm.setLinkUrl(linkUrl);
+        ck5field.getEditArea().find('a').should('have.attr', 'href', linkUrl);
+        ce.save();
+
+        // // Verify image is also resized in page builder
+        const pb = jcontent.switchToPageBuilder();
+        pb.getModule(`/sites/${siteKey}/home/area-main/${textName}`)
+            .get().find('a')
+            .invoke('attr', 'href')
+            .should('contain', linkUrl);
     });
 
     it('should be able to resize image and display in page builder', () => {

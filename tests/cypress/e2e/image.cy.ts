@@ -66,7 +66,7 @@ describe('Image tests', () => {
 
     it('should be able to resize image and display in page builder', () => {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
-            .switchToStructuredView();
+            .switchToListMode();
         const ce = jcontent.editComponentByText('Lorem ipsum');
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 
@@ -102,7 +102,7 @@ describe('Image tests', () => {
 
     function testAlign(alignment: 'Left' | 'Right') {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
-            .switchToStructuredView();
+            .switchToListMode();
         const ce = jcontent.editComponentByText('Lorem ipsum');
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 

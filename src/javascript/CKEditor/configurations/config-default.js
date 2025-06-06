@@ -91,6 +91,8 @@ export const config = {
     image: {
         resizeUnit: 'px',
         toolbar: [
+            'linkImage',
+            '|',
             'toggleImageCaption',
             'imageTextAlternative',
             '|',

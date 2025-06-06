@@ -6,7 +6,7 @@ export const config = {
         items: [
             'undo',
             'redo',
-            'sourceEditing',
+            'sourceEditingEnhanced',
             'showBlocks',
             'fullScreen',
             '|',

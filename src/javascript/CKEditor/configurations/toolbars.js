@@ -3,7 +3,7 @@ export const advancedToolbar = {
         items: [
             'undo',
             'redo',
-            'sourceEditing',
+            'sourceEditingEnhanced',
             'showBlocks',
             'fullScreen',
             '|',

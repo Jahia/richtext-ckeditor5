@@ -14,6 +14,6 @@ export class EditLinkForm extends BaseComponent {
         const linkUrlInput = this.get().contains('Link URL').closest('div').find('input');
         linkUrlInput.should('be.visible')
             .clear()
-            .type(`${linkUrl}{enter}`, {delay: 500});
+            .type(`${linkUrl}{enter}`, {delay: 200});
     }
 }

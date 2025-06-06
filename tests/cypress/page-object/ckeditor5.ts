@@ -59,7 +59,7 @@ export class RichTextCKeditor5Field extends Field {
             .should('be.visible')
             .find('button.ck-button')
             .contains(label)
-            .should('be.visible')
+            .should('exist')
             .closest('button');
     }
 

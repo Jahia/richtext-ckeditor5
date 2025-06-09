@@ -1,6 +1,6 @@
 import {registry} from '@jahia/ui-extender';
 import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
-import {config} from '~/CKEditor/configurations';
+import {defaultConfig, minimalConfig, lightConfig, advancedConfig} from '~/CKEditor/configurations';
 import Constants from '~/RichTextCKEditor5.constants';
 
 const {
@@ -10,7 +10,11 @@ const {
 } = Constants.registry;
 
 export function registerConfig() {
-    defineConfig('default', config);
+    defineConfig('default', defaultConfig);
+    defineConfig('minimal', minimalConfig);
+    defineConfig('light', lightConfig);
+    defineConfig('advanced', advancedConfig);
+    initConfig('default');
 
     /**
      * Make config override function available through registry (to be tested) e.g.
@@ -36,25 +40,19 @@ export function getDefaultConfig() {
 export function defineConfig(key, config) {
     const {plugins, ...configProps} = config;
     if (registry.get(CONFIG_KEY, key)) {
-        console.warn(`Config ${key} already exists. Overriding...`);
+        console.warn(`Config ${key} already exists.`);
+    } else {
+        registry.addOrReplace(CONFIG_KEY, key, configProps);
     }
-
-    registry.addOrReplace(CONFIG_KEY, key, configProps);
 
     if (registry.get(PLUGINS_KEY, key)) {
-        console.warn(`Plugin with ${key} already exists. Overriding...`);
+        console.warn(`Plugin with ${key} already exists.`);
+    } else {
+        registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
     }
-
-    registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
-
-    initConfig();
 }
 
-function initConfig() {
+export function initConfig(key) {
     JahiaClassicEditor.builtinPlugins = registry.find({type: PLUGINS_KEY}).map(m => m.plugins).flat();
-
-    const defaultConfig = registry.get(CONFIG_KEY, 'default');
-
-    // Need to figure out how to we deal with global overrides
-    JahiaClassicEditor.defaultConfig = defaultConfig;
+    JahiaClassicEditor.defaultConfig = registry.get(CONFIG_KEY, key);
 }

@@ -1,0 +1,23 @@
+## Possible usages and options
+#
+#enabledByDefault: true
+#configs:
+##  Will apply first available/matching config, permission is optional
+#  - siteKeys:
+#      - siteKey1
+#      - siteKey2
+#    name: "myConfig"
+#    permission: "myPermission"
+#  - siteKeys:
+#      - siteKey3
+#      - siteKey4
+#    name: "myConfig2"
+#    permission: "myPermission2"
+##  Will be applied to all sites since no siteKeys
+#  - name: "someConfig"
+#includedSites:
+#  - site1
+#  - site2
+#excludedSites:
+#  - site3
+#  - site4

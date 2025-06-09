@@ -9,8 +9,14 @@ import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
-import {resolveToolbar} from '../CKEditor/configurations/toolbars';
 import './RichTextCKEditor5-overrides.css';
+import {registry} from "@jahia/ui-extender";
+import Constants from "../RichTextCKEditor5.constants";
+
+const {
+    CONFIG_KEY,
+    PLUGINS_KEY
+} = Constants.registry;
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -48,13 +54,18 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>error</span>;
     }
 
-    if (loading || translationsLoading || !data || !data.forms) {
+    if (loading || translationsLoading || !data || !data.richtext) {
         return <span>loading...</span>;
     }
 
+    const cfg =  {
+        ...registry.get(CONFIG_KEY, data.richtext.config),
+        plugins: registry.get(PLUGINS_KEY, data.richtext.config).plugins,
+    }
+
     const customConfig = {
-        ...resolveToolbar(),
-        ...parsedOptions.ckEditorConfig,
+        ...cfg,
+        // ...parsedOptions.ckEditorConfig,
         language: uilang,
         picker: {
             site: editorContext.site,
@@ -68,6 +79,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     if (translations.length > 0) {
         customConfig.translations = translations.slice();
     }
+
+    // customConfig.toolbar = {items: ['undo', 'redo']}
+    console.log(customConfig)
 
     return (
         <div className={styles.unreset}>

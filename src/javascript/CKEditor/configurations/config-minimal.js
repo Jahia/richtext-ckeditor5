@@ -1,39 +1,23 @@
 import {plugins} from './plugins-default';
 
-export const defaultConfig = {
+export const minimalConfig = {
     plugins,
     toolbar: {
         items: [
-            'undo',
-            'redo',
-            'sourceEditingEnhanced',
-            'showBlocks',
-            'fullScreen',
-            '|',
-            'heading',
-            'style',
-            '|',
             'bold',
             'italic',
+            'underline',
             'removeFormat',
-            '|',
-            'alignment',
-            '|',
-            'insertJahiaImage',
-            'link',
-            'insertTable',
-            '|',
-            'bulletedList',
-            'numberedList',
-            'indent',
-            'outdent'
+            'alignment:left',
+            'alignment:center',
+            'alignment:right'
         ],
         // Set to true to wrap the toolbar items
         // Set to false if we want to group items
         shouldNotGroupWhenFull: true
     },
     menuBar: {
-        isVisible: true
+        isVisible: false
     },
     heading: {
         options: [
@@ -91,8 +75,6 @@ export const defaultConfig = {
     image: {
         resizeUnit: 'px',
         toolbar: [
-            'linkImage',
-            '|',
             'toggleImageCaption',
             'imageTextAlternative',
             '|',
@@ -132,7 +114,6 @@ export const defaultConfig = {
     },
     link: {
         toolbar: ['editLink', 'linkProperties', 'unlink'],
-        defaultProtocol: 'https://',
         decorators: {
             openInNewTab: {
                 mode: 'manual',

@@ -1,12 +1,12 @@
 import {plugins} from './plugins-default';
 
-export const defaultConfig = {
+export const advancedConfig = {
     plugins,
     toolbar: {
         items: [
             'undo',
             'redo',
-            'sourceEditingEnhanced',
+            'sourceEditing',
             'showBlocks',
             'fullScreen',
             '|',
@@ -33,7 +33,7 @@ export const defaultConfig = {
         shouldNotGroupWhenFull: true
     },
     menuBar: {
-        isVisible: true
+        isVisible: false
     },
     heading: {
         options: [
@@ -91,8 +91,6 @@ export const defaultConfig = {
     image: {
         resizeUnit: 'px',
         toolbar: [
-            'linkImage',
-            '|',
             'toggleImageCaption',
             'imageTextAlternative',
             '|',
@@ -132,7 +130,6 @@ export const defaultConfig = {
     },
     link: {
         toolbar: ['editLink', 'linkProperties', 'unlink'],
-        defaultProtocol: 'https://',
         decorators: {
             openInNewTab: {
                 mode: 'manual',

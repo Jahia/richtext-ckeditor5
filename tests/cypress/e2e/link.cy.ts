@@ -59,11 +59,10 @@ describe('Link tests', () => {
         openNewTabToggle.should('have.class', 'ck-on');
 
         cy.log('Verify link contains target="_blank"');
-        ck5field.getToolbarButton('Source').click();
-        ck5field.getSourceEditingArea()
-            .should('be.visible')
-            .invoke('attr', 'data-value')
-            .should('contain', 'target="_blank"');
+        ck5field.getEditArea()
+            .find('a')
+            .should('have.attr', 'target', '_blank')
+            .and('have.attr', 'rel', 'noopener noreferrer');
     });
 
     it('should open jahia link picker', () => {

@@ -35,7 +35,6 @@ import {
     PasteFromOffice,
     RemoveFormat,
     ShowBlocks,
-    SourceEditing,
     SpecialCharacters,
     SpecialCharactersEssentials,
     Strikethrough,
@@ -50,7 +49,8 @@ import {
 } from 'ckeditor5';
 import {
     CaseChange,
-    Template
+    Template,
+    SourceEditingEnhanced
 } from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider} from '~/CKEditor/Picker';
 import {ImageStyleEmbed} from '~/CKEditor/plugins';
@@ -94,7 +94,7 @@ export const plugins = [
     Paragraph,
     PasteFromOffice,
     RemoveFormat,
-    SourceEditing,
+    SourceEditingEnhanced,
     ShowBlocks,
     Strikethrough,
     Style,

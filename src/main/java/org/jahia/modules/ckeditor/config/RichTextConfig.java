@@ -91,11 +91,14 @@ public class RichTextConfig implements ManagedService {
         int size = list.getSize();
         for (int i = 0; i < size; i++) {
             PropertiesValues values = list.getValues(i);
-            configs.add(new CKEditorConfiguration(
-                    values.getProperty("name"),
-                    values.getProperty("permission"),
-                    getListOfStrings(values.getList("siteKeys")))
-            );
+
+            if (values.getProperty("name") != null) {
+                configs.add(new CKEditorConfiguration(
+                        values.getProperty("name"),
+                        values.getProperty("permission"),
+                        getListOfStrings(values.getList("siteKeys")))
+                );
+            }
         }
 
         return configs;

@@ -29,6 +29,41 @@ There are also a few configuration-related functions available in the registry b
 
 To see the current default configuration, you can use the `jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').getDefaultConfig()` function.
 
+To register custom configuration, you can use the jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').defaultConfig('configKey', {plugins...}) function.
+
+You can look at [test-richtext-config](https://github.com/Jahia/test-ckeditor5-config) module for an example.
+
+### Setting up configuration
+
+Configuration setup is done via `org.jahia.modules.richtext_ckeditor5.yml` file. Configuration can be applied to specific sites by specifying 
+site keys or globally by omitting site keys. Additionally, you can choose to have a permission-backed configuration, in which case ony users with that permission 
+will be able to access it. Note that the system will lok for first available configuration. Therefor configurations with the strongest permissions must come first for them to be considered.
+
+Here's an example of configuration:
+
+```
+configs:
+  - siteKeys:
+      - site4
+      - site5
+    name: "customConfig"
+  - siteKeys:
+      - site6
+    name: "site6Config"
+    permission: "somePermission"
+  - name: "defaultConfigWithPermission"
+    permission: "somePermissionForDefaultConfig"  
+ - name: "defaultConfigWITHOUTPermission"
+```
+As long as CK5 is enabled sites _site4_ and _site5_ will always use `customConfig`.
+
+Site _site6_ will only use `site6Config` if the user has `somePermission`. Otherwise, it will be a choice between `defaultConfigWithPermission` and `defaultConfigWITHOUTPermission` 
+depending on if the user has `somePermissionForDefaultConfig`.
+
+All other sites will use either `defaultConfigWithPermission` or `defaultConfigWITHOUTPermission` depending on availability of `somePermissionForDefaultConfig`permission.
+
+Note that this can be combined with `excludeSites` and `includeSites` to achieve powerful results.
+
 ## CK5 enterprise/development license
 
 Enterprise license is embedded in the builds through the use of secrets as part of the github actions workflow. 

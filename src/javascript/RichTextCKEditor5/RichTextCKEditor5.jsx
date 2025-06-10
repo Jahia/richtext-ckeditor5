@@ -10,8 +10,8 @@ import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
 import './RichTextCKEditor5-overrides.css';
-import {registry} from "@jahia/ui-extender";
-import Constants from "../RichTextCKEditor5.constants";
+import {registry} from '@jahia/ui-extender';
+import Constants from '../RichTextCKEditor5.constants';
 
 const {
     CONFIG_KEY,
@@ -58,10 +58,10 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>loading...</span>;
     }
 
-    const cfg =  {
+    const cfg = {
         ...registry.get(CONFIG_KEY, data.richtext.config),
-        plugins: registry.get(PLUGINS_KEY, data.richtext.config).plugins,
-    }
+        plugins: registry.get(PLUGINS_KEY, data.richtext.config).plugins
+    };
 
     const customConfig = {
         ...cfg,
@@ -80,8 +80,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         customConfig.translations = translations.slice();
     }
 
-    // customConfig.toolbar = {items: ['undo', 'redo']}
-    console.log(customConfig)
+    // CustomConfig.toolbar = {items: ['undo', 'redo']}
+    console.log(customConfig);
 
     return (
         <div className={styles.unreset}>

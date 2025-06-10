@@ -132,6 +132,7 @@ export const config = {
     },
     link: {
         toolbar: ['editLink', 'linkProperties', 'unlink'],
+        defaultProtocol: 'https://',
         decorators: {
             openInNewTab: {
                 mode: 'manual',

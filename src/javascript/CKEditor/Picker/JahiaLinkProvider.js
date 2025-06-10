@@ -42,6 +42,7 @@ export class JahiaLinkProvider extends Plugin {
                 const url = `${contentPrefix}${pickerResults[0].path}.html`;
                 editor.execute('link', url);
             },
+            type: 'editoriallink',
             ...pickerConfig
         });
     }

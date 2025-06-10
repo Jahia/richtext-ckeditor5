@@ -20,6 +20,7 @@ export class ImageStyleEmbed extends Plugin {
         // We do this for block <figure> and inline <img> elements
         editor.conversion.for('upcast').add(dispatcher => {
             dispatcher.on('element:figure', upcastFloat.bind(this));
+            dispatcher.on('element:figure', upcastAlignCenter.bind(this));
             dispatcher.on('element:img', upcastFloat.bind(this), {priority: 'low'});
             dispatcher.on('element:img', upcastWidth.bind(this), {priority: 'low'});
         });
@@ -27,8 +28,24 @@ export class ImageStyleEmbed extends Plugin {
         // Function handlers to embed styling when changed in the model
         editor.conversion.for('downcast').add(dispatcher => {
             dispatcher.on('attribute:resizedWidth', setResizeStyles);
-            dispatcher.on('attribute:imageStyle', setAlignmentStyles);
+            dispatcher.on('attribute:imageStyle', setFloatStyles);
+            dispatcher.on('attribute:imageStyle', setAlignStyles);
         });
+    }
+}
+
+function upcastAlignCenter(evt, data, conversionApi) {
+    const viewImage = data.viewItem;
+    const alignCenter = viewImage.getStyle('text-align') === 'center';
+
+    if (!alignCenter || !conversionApi.consumable.consume(viewImage, {style: 'text-align'})) {
+        return;
+    }
+
+    const modelElement = data.modelRange?.start.nodeAfter;
+    if (modelElement && conversionApi.schema.checkAttribute(modelElement, 'imageStyle')) {
+        this.dataFilter.processViewAttributes(viewImage, conversionApi);
+        conversionApi.writer.setAttribute('imageStyle', 'alignCenter', modelElement);
     }
 }
 
@@ -89,12 +106,13 @@ function setResizeStyles(evt, data, conversionApi) {
     }
 }
 
-function setAlignmentStyles(evt, data, conversionApi) {
+function setFloatStyles(evt, data, conversionApi) {
     const viewImage = conversionApi.mapper.toViewElement(data.item);
     if (!viewImage) {
         return;
     }
 
+    console.debug(`Removing float style for ${viewImage.name}`);
     conversionApi.writer.setStyle('float', null, viewImage);
     conversionApi.writer.removeStyle('float', viewImage);
 
@@ -108,6 +126,22 @@ function setAlignmentStyles(evt, data, conversionApi) {
             console.debug(`Applying alignment style 'float:${floatDir}' for ${viewImage.name}`);
             conversionApi.writer.setStyle('float', floatDir, viewImage);
         }
+    }
+}
+
+function setAlignStyles(evt, data, conversionApi) {
+    const viewImage = conversionApi.mapper.toViewElement(data.item);
+    if (!viewImage) {
+        return;
+    }
+
+    console.debug(`Removing alignment style 'text-align:center' for ${viewImage.name}`);
+    conversionApi.writer.setStyle('text-align', null, viewImage);
+    conversionApi.writer.removeStyle('text-align', viewImage);
+
+    if (data.attributeNewValue === 'alignCenter') {
+        console.debug(`Applying alignment style 'text-align:center' for ${viewImage.name}`);
+        conversionApi.writer.setStyle('text-align', 'center', viewImage);
     }
 }
 

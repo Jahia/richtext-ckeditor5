@@ -5,7 +5,7 @@ import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/jcontent';
 import {useApolloClient, useQuery} from '@apollo/client';
-import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
+import {getCKEditorConfiguration} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
@@ -42,7 +42,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
 
     const editorContext = useContentEditorContext();
     const {data, error, loading} = useQuery(
-        getCKEditorConfigurationPath,
+        getCKEditorConfiguration,
         {
             variables: {
                 nodePath: editorContext.path
@@ -79,9 +79,6 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     if (translations.length > 0) {
         customConfig.translations = translations.slice();
     }
-
-    // CustomConfig.toolbar = {items: ['undo', 'redo']}
-    console.log(customConfig);
 
     return (
         <div className={styles.unreset}>

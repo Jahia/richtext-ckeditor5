@@ -80,8 +80,8 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Opens previously saved content from Ckeditor 4 in CKEditor 5', function () {
         cy.apollo({
-            mutationFile: 'updateExcludeSites.graphql',
-            variables: {siteKey: ''}
+            mutationFile: 'removeProp.graphql',
+            variables: {prop: 'excludeSites'}
         });
 
         jcontent = visitContentFolders(siteKey, jcontent);
@@ -93,8 +93,8 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
 
     it('Opens previously saved content from Ckeditor 5 and formats it to Heading 2', function () {
         cy.apollo({
-            mutationFile: 'updateExcludeSites.graphql',
-            variables: {siteKey: ''}
+            mutationFile: 'removeProp.graphql',
+            variables: {prop: 'excludeSites'}
         });
 
         jcontent = visitContentFolders(siteKey, jcontent);
@@ -110,8 +110,8 @@ describe('Rich Text CKeditor 5 - Site level configuration tests', () => {
     it('Opens image picker when insert an image', function () {
         jcontent = visitContentFolders(siteKey, jcontent);
         cy.apollo({
-            mutationFile: 'updateExcludeSites.graphql',
-            variables: {siteKey: ''}
+            mutationFile: 'removeProp.graphql',
+            variables: {prop: 'excludeSites'}
         });
 
         jcontent.createContent('jnt:bigText');

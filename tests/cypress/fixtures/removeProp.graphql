@@ -1,0 +1,9 @@
+mutation updateExcludeSites($prop: String) {
+  admin {
+    jahia {
+      configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+        remove(name: $prop)
+      }
+    }
+  }
+}

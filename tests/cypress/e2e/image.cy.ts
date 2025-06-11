@@ -125,6 +125,29 @@ describe('Image tests', () => {
         testAlign('Right');
     });
 
+    it('should be able to center align and display in page builder', () => {
+        const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
+            .switchToListMode();
+        const ce = jcontent.editComponentByText('Lorem ipsum');
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+
+        // Trigger the balloon toolbar for images
+        // Ensure the image content is loaded before click
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        ck5field.getBalloonToolbarButton('Centered image').click();
+
+        ck5field.getEditArea().find('.image-style-align-center') // Verify classes added by ck5
+            .invoke('attr', 'style')
+            .should('contain', 'text-align:center');
+        ce.save();
+
+        // // Verify image is also resized in page builder
+        const pb = jcontent.switchToPageBuilder();
+        pb.getModule(`/sites/${siteKey}/home/area-main/${textName}`).get().find('.image-style-align-center')
+            .invoke('attr', 'style')
+            .should('contain', 'text-align:center');
+    });
+
     function testAlign(alignment: 'Left' | 'Right') {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
             .switchToListMode();

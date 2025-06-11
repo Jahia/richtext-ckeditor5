@@ -97,7 +97,7 @@ export const completeConfig = {
             'imageTextAlternative',
             '|',
             'imageStyle:inline',
-            'imageStyle:block',
+            'imageStyle:alignCenter',
             'imageStyle:wrapText',
             '|',
             'resizeImage:original',

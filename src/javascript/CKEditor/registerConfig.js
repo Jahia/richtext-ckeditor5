@@ -29,7 +29,6 @@ export function registerConfig() {
     });
 }
 
-
 /**
  * Define ckeditor5 config and plugins in the registry, and initialize them in the editor.
  */

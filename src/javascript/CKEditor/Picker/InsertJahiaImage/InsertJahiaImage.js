@@ -61,6 +61,8 @@ export class InsertJahiaImage extends Plugin {
                 icon: imageIcon
             });
 
+            view.bind('isEnabled').to(editor, 'isReadOnly', isReadOnly => !isReadOnly);
+
             view.on('execute', () => {
                 editor.commands.execute('jahiaInsertImageCommand');
             });
@@ -77,6 +79,8 @@ export class InsertJahiaImage extends Plugin {
                 withText: false,
                 icon: imageIcon
             });
+
+            view.bind('isEnabled').to(editor, 'isReadOnly', isReadOnly => !isReadOnly);
 
             view.on('execute', () => {
                 editor.commands.execute('jahiaInsertImageCommand');

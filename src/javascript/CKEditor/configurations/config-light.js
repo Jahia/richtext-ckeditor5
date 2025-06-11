@@ -1,8 +1,6 @@
-import {plugins} from './plugins-complete';
 import {completeConfig} from './config-complete';
 
 export const lightConfig = {
-    plugins,
     ...completeConfig,
     toolbar: {
         items: [

@@ -63,7 +63,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
 
     const cfg = {
         ...registry.get(CONFIG_KEY, resolvedConfigName),
-        plugins: registry.get(PLUGINS_KEY, resolvedConfigName).plugins
+        plugins: registry.get(PLUGINS_KEY, resolvedConfigName)?.plugins
     };
 
     const customConfig = {

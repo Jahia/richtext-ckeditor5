@@ -36,13 +36,13 @@ export function registerConfig() {
 export function defineConfig(key, config) {
     const {plugins, ...configProps} = config;
     if (registry.get(CONFIG_KEY, key)) {
-        console.warn(`Config ${key} already exists.`);
+        console.warn(`Config ${key} already exists. Please, use another key.`);
     } else {
         registry.addOrReplace(CONFIG_KEY, key, configProps);
     }
 
     if (registry.get(PLUGINS_KEY, key)) {
-        console.warn(`Plugin with ${key} already exists.`);
+        console.warn(`Plugin with ${key} already exists. Please, use another key.`);
     } else {
         registry.addOrReplace(PLUGINS_KEY, key, {plugins: plugins || []});
     }

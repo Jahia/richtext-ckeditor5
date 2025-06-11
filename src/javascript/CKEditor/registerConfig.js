@@ -1,6 +1,6 @@
 import {registry} from '@jahia/ui-extender';
 import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
-import {defaultConfig, minimalConfig, lightConfig, advancedConfig} from '~/CKEditor/configurations';
+import {completeConfig, minimalConfig, lightConfig, advancedConfig} from '~/CKEditor/configurations';
 import Constants from '~/RichTextCKEditor5.constants';
 
 const {
@@ -10,11 +10,11 @@ const {
 } = Constants.registry;
 
 export function registerConfig() {
-    defineConfig('default', defaultConfig);
+    defineConfig('complete', completeConfig);
     defineConfig('minimal', minimalConfig);
     defineConfig('light', lightConfig);
     defineConfig('advanced', advancedConfig);
-    initConfig('default');
+    initConfig('minimal');
 
     /**
      * Make config override function available through registry (to be tested) e.g.
@@ -25,14 +25,10 @@ export function registerConfig() {
      */
     // expose (some) shared functions through registry with registry.get('@jahia/ckeditor5', 'shared');
     registry.addOrReplace(MODULE_KEY, 'shared', {
-        defineConfig,
-        getDefaultConfig
+        defineConfig
     });
 }
 
-export function getDefaultConfig() {
-    return registry.get('ckeditor5-config', 'default');
-}
 
 /**
  * Define ckeditor5 config and plugins in the registry, and initialize them in the editor.
@@ -52,7 +48,7 @@ export function defineConfig(key, config) {
     }
 }
 
-export function initConfig(key) {
+function initConfig(key) {
     JahiaClassicEditor.builtinPlugins = registry.find({type: PLUGINS_KEY}).map(m => m.plugins).flat();
     JahiaClassicEditor.defaultConfig = registry.get(CONFIG_KEY, key);
 }

@@ -50,7 +50,7 @@ public class GqlRichTextQuery {
     public String validate(@GraphQLName("path") @GraphQLNonNull String path) {
 
         if (config == null) {
-            return "default";
+            return "minimal";
         }
 
         try {
@@ -74,7 +74,7 @@ public class GqlRichTextQuery {
 
             // If no config is defined by the user return default config name based on permission level
             if (node.hasPermission("view-full-wysiwyg-editor")) {
-                return "default";
+                return "complete";
             } else if (node.hasPermission("view-basic-wysiwyg-editor")) {
                 return "advanced";
             } else if (node.hasPermission("view-light-wysiwyg-editor")) {

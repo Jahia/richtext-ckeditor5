@@ -22,14 +22,14 @@ profile as in the following example:
 
 ## Configuration
 
-Default configuration is defined in `src/javascript/CKEditor/configurations` directory. You can create your own configuration by copying one of the existing ones and modifying it. The plugins have a separate file declaration (see `plugins-default.js`)
+Default configuration is defined in `src/javascript/CKEditor/configurations` directory. You can create your own configuration by copying one of the existing ones and modifying it. The plugins have a separate file declaration (see `plugins-complete.js`)
 
 There are also a few configuration-related functions available in the registry by accessing `jahia.uiExtender.registry.get
 ('@jahia/ckeditor5', 'shared')` in the console.
 
-To see the current default configuration, you can use the `jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').getDefaultConfig()` function.
+To see configurations, you can use `jahia.uiExtender.registry.get('ckeditor5-config', '<configuration-name>')`. Available configurations are: `complete`, `advanced`, `light`, `minimal`.
 
-To register custom configuration, you can use the jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').defaultConfig('configKey', {plugins...}) function.
+To register custom configuration, you can use the `jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').defaultConfig('configKey', {plugins...})` function.
 
 You can look at [test-richtext-config](https://github.com/Jahia/test-ckeditor5-config) module for an example.
 

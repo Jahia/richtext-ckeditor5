@@ -1,6 +1,6 @@
-import {plugins} from './plugins-default';
+import {plugins} from './plugins-complete';
 
-export const config = {
+export const completeConfig = {
     plugins,
     toolbar: {
         items: [

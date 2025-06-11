@@ -2,7 +2,9 @@ mutation updateIncludeSites($siteKey: String) {
   admin {
     jahia {
       configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
-        value(name: "includeSites", value: $siteKey)
+        mutateList(name: "includeSites") {
+            addValue(value: $siteKey)
+        }
       }
     }
   }

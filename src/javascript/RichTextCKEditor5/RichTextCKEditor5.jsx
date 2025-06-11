@@ -5,12 +5,18 @@ import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
 import styles from './RichTextCKEditor5.scss';
 import {useContentEditorConfigContext, useContentEditorContext} from '@jahia/jcontent';
 import {useApolloClient, useQuery} from '@apollo/client';
-import {getCKEditorConfigurationPath} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
+import {getCKEditorConfiguration} from '~/RichTextCKEditor5/RichTextCKEditor5.gql-queries';
 import {useStore} from 'react-redux';
 import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
-import {resolveToolbar} from '../CKEditor/configurations/toolbars';
 import './RichTextCKEditor5-overrides.css';
+import {registry} from '@jahia/ui-extender';
+import Constants from '../RichTextCKEditor5.constants';
+
+const {
+    CONFIG_KEY,
+    PLUGINS_KEY
+} = Constants.registry;
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -36,7 +42,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
 
     const editorContext = useContentEditorContext();
     const {data, error, loading} = useQuery(
-        getCKEditorConfigurationPath,
+        getCKEditorConfiguration,
         {
             variables: {
                 nodePath: editorContext.path
@@ -48,13 +54,20 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>error</span>;
     }
 
-    if (loading || translationsLoading || !data || !data.forms) {
+    if (loading || translationsLoading || !data || !data.richtext) {
         return <span>loading...</span>;
     }
 
+    // Prioritize cnd/selector defined configuration: - field (string, richtext[ckeditor.customConfig='customConfig25'])
+    const resolvedConfigName = parsedOptions.ckeditor?.customConfig ? parsedOptions.ckeditor.customConfig : data.richtext.config;
+
+    const cfg = {
+        ...registry.get(CONFIG_KEY, resolvedConfigName),
+        plugins: registry.get(PLUGINS_KEY, resolvedConfigName)?.plugins
+    };
+
     const customConfig = {
-        ...resolveToolbar(),
-        ...parsedOptions.ckEditorConfig,
+        ...cfg,
         language: uilang,
         picker: {
             site: editorContext.site,

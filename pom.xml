@@ -48,7 +48,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-module-signature>MCwCFGPZA0Ni3xV4FZEnAGFPkl+ABsDzAhRFdmKzrUsdX4uVsWfCzEbykEg3qQ==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
-        <jahia-depends>jcontent=3.4</jahia-depends>
+        <jahia-depends>jcontent=3.4,graphql-dxm-provider</jahia-depends>
     </properties>
 
     <repositories>
@@ -91,6 +91,18 @@
             <version>${slf4j.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>graphql-dxm-provider</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -121,6 +133,23 @@
                 <configuration>
                     <instructions>
                         <_dsannotations>*</_dsannotations>
+                        <Import-Package>
+                            ${jahia.plugin.projectPackageImport},
+                            graphql.annotations.annotationTypes;version="[6.5,99)",
+                            javax.jcr;version="[2.0,3)",
+                            org.apache.commons.io;version="[2.11,3)",
+                            org.apache.commons.collections;version="[3.2,4)",
+                            org.jahia.api,
+                            org.jahia.modules.graphql.provider.dxm;version="[3.1,4)",
+                            org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
+                            org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",
+                            org.jahia.modules.graphql.provider.dxm.node;version="[3.1,4)",
+                            org.jahia.osgi,
+                            org.jahia.services.content,
+                            org.osgi.framework;version="[1.8,2)",
+                            org.slf4j;version="[1.7,2)",
+                            *
+                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

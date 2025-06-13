@@ -1,35 +1,7 @@
-import {FileRepository, Plugin} from 'ckeditor5';
 import {v4} from 'uuid';
-import {getNode} from '~/CKEditor/Picker/uploadAdapter.gql-queries';
+import {getNode} from '~/CKEditor/Picker/JahiaUpload/uploadAdapter.gql-queries';
 
-export class PickerUploadAdapter extends Plugin {
-    static get requires() {
-        return [FileRepository];
-    }
-
-    static get pluginName() {
-        return 'PickerUploadAdapter';
-    }
-
-    init() {
-        // Register CKFinderAdapter
-        this.editor.plugins.get(FileRepository).createUploadAdapter = loader => new UploadAdapter(loader, this.editor);
-
-        // Disable drag and drop upload in editor
-        const stopUpload = (evt, data) => {
-            if (data.dataTransfer?.files?.length > 0) {
-                console.warn('Drag and drop upload is disabled in the editor. Please use the picker to upload files.');
-                evt.stop();
-                data.preventDefault();
-            }
-        };
-
-        this.editor.editing.view.document.on('drop', stopUpload, {priority: 'high'});
-        this.editor.editing.view.document.on('paste', stopUpload, {priority: 'high'});
-    }
-}
-
-class UploadAdapter {
+export class JahiaUploadAdapter {
     constructor(loader, editor) {
         this.loader = loader;
         this.editor = editor;

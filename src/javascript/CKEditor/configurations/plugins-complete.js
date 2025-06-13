@@ -48,12 +48,8 @@ import {
     TextTransformation,
     Underline
 } from 'ckeditor5';
-import {
-    CaseChange,
-    Template,
-    SourceEditingEnhanced
-} from 'ckeditor5-premium-features';
-import {Picker, InsertJahiaImage, JahiaLinkProvider} from '~/CKEditor/Picker';
+import {CaseChange, Template, SourceEditingEnhanced, PasteFromOfficeEnhanced} from 'ckeditor5-premium-features';
+import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
 import {ImageStyleEmbed} from '~/CKEditor/plugins';
 
 export const plugins = [
@@ -92,11 +88,13 @@ export const plugins = [
     InsertJahiaImage,
     Italic,
     JahiaLinkProvider,
+    JahiaUpload,
     Link,
     LinkImage,
     List,
     Paragraph,
     PasteFromOffice,
+    PasteFromOfficeEnhanced,
     Picker,
     RemoveFormat,
     SourceEditingEnhanced,

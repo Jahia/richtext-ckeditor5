@@ -16,9 +16,9 @@ enabledByDefault: true
 #    permission: "myPermission2"
 ##  Will be applied to all sites since no siteKeys
 #  - name: "someConfig"
-#includedSites:
+#includeSites:
 #  - site1
 #  - site2
-#excludedSites:
+#excludeSites:
 #  - site3
 #  - site4

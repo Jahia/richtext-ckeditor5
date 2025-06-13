@@ -1,7 +1,6 @@
 import {Plugin} from 'ckeditor5';
 
 import {PickerUI} from './ui';
-import {PickerUploadAdapter} from '~/CKEditor/Picker/uploadAdapter';
 
 export class Picker extends Plugin {
     static get pluginName() {
@@ -9,6 +8,6 @@ export class Picker extends Plugin {
     }
 
     static get requires() {
-        return [PickerUI, PickerUploadAdapter];
+        return [PickerUI];
     }
 }

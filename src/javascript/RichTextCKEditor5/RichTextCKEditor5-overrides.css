@@ -13,3 +13,7 @@
     padding-bottom: 0 !important;
     width: var(--ck-link-panel-width) !important;
 }
+
+.ck-clipboard-drop-target-line {
+    z-index: var(--ck-z-modal);
+}

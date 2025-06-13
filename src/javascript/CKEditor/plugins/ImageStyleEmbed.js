@@ -138,10 +138,14 @@ function setAlignStyles(evt, data, conversionApi) {
     console.debug(`Removing alignment style 'text-align:center' for ${viewImage.name}`);
     conversionApi.writer.setStyle('text-align', null, viewImage);
     conversionApi.writer.removeStyle('text-align', viewImage);
+    if (viewImage.getStyle('margin') === 'auto') {
+        conversionApi.writer.removeStyle('margin', viewImage);
+    }
 
     if (data.attributeNewValue === 'alignCenter') {
         console.debug(`Applying alignment style 'text-align:center' for ${viewImage.name}`);
         conversionApi.writer.setStyle('text-align', 'center', viewImage);
+        conversionApi.writer.setStyle('margin', 'auto', viewImage);
     }
 }
 

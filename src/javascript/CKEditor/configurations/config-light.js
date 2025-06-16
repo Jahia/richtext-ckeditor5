@@ -15,6 +15,7 @@ export const lightConfig = {
             '|',
             'insertJahiaImage',
             'link',
+            'bookmark',
             'insertTable',
             '|',
             'bulletedList',

@@ -21,6 +21,7 @@ export const completeConfig = {
             '|',
             'insertJahiaImage',
             'link',
+            'bookmark',
             'insertTable',
             '|',
             'bulletedList',

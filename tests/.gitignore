@@ -10,4 +10,3 @@ artifacts
 build-dependencies
 dist
 results
-**/src/main/resources/javascript/apps

@@ -429,6 +429,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
         ck5field.getMenuBar().should('not.exist');
         ck5field.getToolbarButton('Edit source').should('not.exist');
         ck5field.getToolbarButton('Bookmark').should('not.exist');
+        ck5field.getToolbarButton('Remove Format').should('not.exist');
         ck5field.getToolbarButton('Bold').should('exist');
         ck5field.getToolbarButton('Italic').should('exist');
         ck5field.getToolbarButton('Underline').should('exist');

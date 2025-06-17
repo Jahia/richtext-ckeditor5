@@ -3,25 +3,6 @@ import {createSite, deleteSite, enableModule} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 import gql from 'graphql-tag';
 
-// {
-//     admin {
-//     jahia {
-//         configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
-//             mutateList(name: "configs") {
-//                 addObject {
-//                     n:value(name:"name", value:"ddd")
-//                     p:value(name:"permission", value:"permission")
-//                     mutateList(name: "siteKeys"){
-//                         addValue(value:"mysite")
-//                     }
-//                 }
-//
-//             }
-//         }
-//     }
-// }
-// }
-
 describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
     const siteKey = 'toolbarCKEditor5Site';
     let jcontent: JContent;
@@ -442,7 +423,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             }`
         });
 
-        const ce = jcontent.createContent('jnt:bigText');
+        jcontent.createContent('jnt:bigText');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
         ck5field.getMenuBar().should('not.exist');
@@ -454,7 +435,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
     });
 
     it('Loads cnd config', function () {
-        const ce = jcontent.createContent('jnt:customArticle');
+        jcontent.createContent('jnt:customArticle');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:customArticle_abstract');
         ck5field.getMenuBar().should('not.exist');

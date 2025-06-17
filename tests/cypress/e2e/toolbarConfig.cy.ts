@@ -424,4 +424,44 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
         checkForMinimalToolbar(ck5field);
         ce.cancel();
     });
+
+    it('Loads extension config', function () {
+        cy.apollo({
+            mutation: gql`mutation {
+                admin {
+                    jahia {
+                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                            mutateList(name: "configs") {
+                                addObject {
+                                    value(name:"name", value:"testConfigCK5")
+                                }
+                            }
+                        }
+                    }
+                }
+            }`
+        });
+
+        const ce = jcontent.createContent('jnt:bigText');
+        const ckeditor5 = new Ckeditor5();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.getMenuBar().should('not.exist');
+        ck5field.getToolbarButton('Edit source').should('not.exist');
+        ck5field.getToolbarButton('Bookmark').should('not.exist');
+        ck5field.getToolbarButton('Bold').should('exist');
+        ck5field.getToolbarButton('Italic').should('exist');
+        ck5field.getToolbarButton('Underline').should('exist');
+    });
+
+    it('Loads cnd config', function () {
+        const ce = jcontent.createContent('jnt:customArticle');
+        const ckeditor5 = new Ckeditor5();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:customArticle_abstract');
+        ck5field.getMenuBar().should('not.exist');
+        ck5field.getToolbarButton('Edit source').should('not.exist');
+        ck5field.getToolbarButton('Bookmark').should('not.exist');
+        ck5field.getToolbarButton('Underline').should('not.exist');
+        ck5field.getToolbarButton('Italic').should('not.exist');
+        ck5field.getToolbarButton('Bold').should('exist');
+    });
 });

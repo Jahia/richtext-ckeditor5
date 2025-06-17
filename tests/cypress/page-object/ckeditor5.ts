@@ -63,6 +63,10 @@ export class RichTextCKeditor5Field extends Field {
             .closest('button');
     }
 
+    getMenuBar(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().find('div.ck-menu-bar__menu_top-level > button.ck-menu-bar__menu__button');
+    }
+
     getMenuItemByLabel(label: string): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('div.ck-menu-bar__menu_top-level > button.ck-menu-bar__menu__button')
             .contains('button.ck-menu-bar__menu__button', label);

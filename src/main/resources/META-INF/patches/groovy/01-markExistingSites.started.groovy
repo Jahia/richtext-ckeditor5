@@ -28,15 +28,16 @@ void excludeExistingSites() {
                 Config config = configService.getConfig("org.jahia.modules.richtext_ckeditor5");
                 PropertiesValues values = config.getValues();
                 values.setProperty("enabledByDefault", "true");
+                def list = values.getList("excludeSites");
                 def excludeSites = siteService.getSitesNodeList(jcrSessionWrapper)
                         .stream()
                         .filter(n -> !"systemsite".equals(n.getSiteKey()))
-                        .map {n -> n.getSiteKey()}.collect(Collectors.joining(","));
+                        .map {n -> n.getSiteKey()}.collect(Collectors.toList());
                 log.info("Adding existing sites to exclude list: " + excludeSites);
-                values.setProperty("excludeSites", excludeSites);
+                excludeSites.forEach {key -> list.addProperty(key)}
                 configService.storeConfig(config);
             }
-            return null
+            return null;
         }
     });
 }

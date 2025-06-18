@@ -1,0 +1,13 @@
+{
+  "label": {
+    "settings": {
+      "title": "test-ckeditor5-config setting"
+    },
+    "action": {
+      "title": "test-ckeditor5-config - How to extend the ui ?"
+    },
+    "appsAccordion": {
+      "title": "test-ckeditor5-config"
+    }
+  }
+}

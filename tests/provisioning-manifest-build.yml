@@ -25,6 +25,6 @@
     - 'mvn:org.jahia.modules/skins'
     - 'mvn:org.jahia.modules/default-skins'
     - 'mvn:org.jahia.modules/jcontent'
-    - 'mvn:org.jahia.modules/test-ckeditor5-config'
+    - 'mvn:org.jahia.test/test-ckeditor5-config'
   autoStart: true
   uninstallPreviousVersion: true

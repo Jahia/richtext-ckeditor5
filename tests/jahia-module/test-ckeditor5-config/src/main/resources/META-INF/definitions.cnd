@@ -3,3 +3,6 @@
 
 [jnt:customArticle] > jnt:content, jmix:mainResource, jmix:siteComponent, jmix:droppableContent
 - abstract (string, richtext[ckeditor.customConfig='testConfigCK5Cnd'])
+
+[jnt:customArticleOverride] > jnt:content, jmix:mainResource, jmix:siteComponent, jmix:droppableContent
+- abstract (string, richtext)

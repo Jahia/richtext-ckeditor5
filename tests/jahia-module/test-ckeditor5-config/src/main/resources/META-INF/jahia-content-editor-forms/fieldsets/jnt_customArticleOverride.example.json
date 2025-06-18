@@ -1,12 +1,12 @@
 {
-  "name": "jnt:bigText*disabled*",
+  "name": "jnt:customArticleOverride",
   "priority": 1.1,
   "fields": [
     {
-      "name": "text",
+      "name": "abstract",
       "selectorOptionsMap": {
         "ckeditor": {
-          "customConfig": "configName"
+          "customConfig": "testConfigCK5Cnd"
           }
         }
       }

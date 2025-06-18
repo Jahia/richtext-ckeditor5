@@ -21,10 +21,33 @@ export class JahiaUpload extends Plugin {
         // To be re-enabled
         // this.createUploadAdapter();
 
-        // Disable pasting of image by removing any img element in the data content
         const clipboardPipeline = this.editor.plugins.get('ClipboardPipeline');
+        const dragDropPlugin = this.editor.plugins.get('DragDrop');
+
+        // Disable pasting of image by removing any img element in the data content
         this.listenTo(clipboardPipeline, 'inputTransformation', (evt, data) => {
-            this._removeImages(data.content);
+            if (data.method === 'paste') {
+                this._removeImages(data.content);
+            }
+        });
+
+        /**
+         * Cancel drag-drop event when leaving the CKEditor 5 area
+         * to prevent CK5 from handling drop event and removing the dragged items from the editor.
+         */
+        this.listenTo(this.editor.editing.view.document, 'dragend', (evt, data) => {
+            const {domEvent} = data;
+            const ckEditorArea = document.querySelector('.ck-editor__editable');
+            const dragOverElem = document.elementFromPoint(domEvent.clientX, domEvent.clientY);
+
+            const isOutsideCK5 = !ckEditorArea.contains(dragOverElem);
+            if (isOutsideCK5) {
+                console.debug('We are leaving ckeditor 5 editor area, canceling CK5 drag-and-drop');
+                dragDropPlugin._draggedRange.detach();
+                dragDropPlugin._draggedRange = null;
+                evt.stop();
+                data.preventDefault();
+            }
         });
     }
 

@@ -4,6 +4,11 @@
     --ck-z-fullscreen: 1300;
 }
 
+body.ck-fullscreen {
+    /* Without this, body has height 0 in fullscreen mode in firefox */
+    min-height: 100%;
+}
+
 /**
  * Related to this global reset in anthracite
  * https://github.com/Jahia/jahia-private/blob/master/war/src/main/webapp/engines/jahia-anthracite/css/components/_build.scss#L802

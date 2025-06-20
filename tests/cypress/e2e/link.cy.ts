@@ -106,4 +106,21 @@ describe('Link tests', () => {
         picker = getComponentByAttr(Picker, 'data-sel-role', 'picker-dialog');
         picker.getTable().getRowByName(linkTargetName).get().should('have.class', 'moonstone-TableRow-highlighted');
     });
+
+    it('should open jahia file picker', () => {
+        JContent.visit(siteKey, 'en', `content-folders/contents/${textName}`).editContent();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.getEditArea().contains('my text').click('center');
+
+        openLinkPicker(ck5field);
+
+        ck5field.getBalloonToolbarButton('Edit link').should('be.visible').click();
+        ck5field.getBalloonButton('Jahia internal files').should('be.visible').click();
+
+        const picker = getComponentByAttr(Picker, 'data-sel-role', 'picker-dialog');
+        picker.getTable().getRowByName('bootstrap').get().dblclick();
+        picker.getTable().getRowByName('css').get().dblclick();
+        picker.getTable().getRowByName('bootstrap.css').get().click();
+        picker.select();
+    });
 });

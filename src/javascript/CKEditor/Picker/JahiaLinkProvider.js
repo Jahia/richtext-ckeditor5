@@ -2,10 +2,6 @@ import {Plugin, LinkUI} from 'ckeditor5';
 import {loadTranslations} from '../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
 export class JahiaLinkProvider extends Plugin {
-    static contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
-    static contentPrefix = `${JahiaLinkProvider.contextPath}/cms/{mode}/{lang}`;
-    static filePrefix = `${JahiaLinkProvider.contextPath}/files/{workspace}`;
-
     static get requires() {
         return [LinkUI];
     }
@@ -19,63 +15,57 @@ export class JahiaLinkProvider extends Plugin {
     }
 
     static get translations() {
-        const label = JahiaLinkProvider.prefixedTranslationKey('label');
+        const link = JahiaLinkProvider.prefixedTranslationKey('link');
+        const file = JahiaLinkProvider.prefixedTranslationKey('file');
 
         return {
             fr: {
-                [label]: 'Liens internes Jahia'
+                [link]: 'Liens internes Jahia',
+                [file]: 'Fichiers internes Jahia'
             },
             de: {
-                [label]: 'Jahia interne links'
+                [link]: 'Jahia interne links',
+                [file]: 'Jahia interne dateien'
             },
             en: {
-                [label]: 'Jahia internal links'
+                [link]: 'Jahia internal links',
+                [file]: 'Jahia internal files'
             }
         };
     }
 
-    static canParse(val) {
-        try {
-            return Boolean(new URL(val));
-        } catch {
-            return false;
-        }
-    }
-
-    static getPickerValue(url) {
-        const hasContentPrefix = url.startsWith(JahiaLinkProvider.contentPrefix);
-        const hasFilePrefix = url.startsWith(JahiaLinkProvider.filePrefix);
-
-        if (JahiaLinkProvider.canParse(url)) {
-            return new URL(url).toString();
-        }
-
-        if (hasContentPrefix) {
-            return decodeURIComponent(url.substring(JahiaLinkProvider.contentPrefix.length).slice(0, -('.html').length));
-        }
-
-        if (hasFilePrefix) {
-            return decodeURIComponent(url.substring(JahiaLinkProvider.filePrefix.length));
-        }
-
-        return decodeURIComponent(url);
-    }
-
-    openPicker() {
+    openLinkPicker() {
         const editor = this.editor;
-
-        const currentLink = editor.commands.get('link').value;
-        console.log('Current link:', currentLink);
+        const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
+        const contentPrefix = `${contextPath}/cms/{mode}/{lang}`;
 
         const pickerConfig = editor.config.get('picker');
 
+        // Editorial link picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
-                const url = `${JahiaLinkProvider.contentPrefix}${pickerResults[0].path}.html`;
+                const url = `${contentPrefix}${pickerResults[0].path}.html`;
                 editor.execute('link', url);
             },
             type: 'editoriallink',
-            value: currentLink ? JahiaLinkProvider.getPickerValue(currentLink) : undefined,
+            ...pickerConfig
+        });
+    }
+
+    openFilePicker() {
+        const editor = this.editor;
+        const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
+        const filePrefix = `${contextPath}/files/{workspace}`;
+
+        const pickerConfig = editor.config.get('picker');
+
+        // File picker config
+        window.CE_API.openPicker({
+            setValue: pickerResults => {
+                const url = `${filePrefix}${pickerResults[0].path}`;
+                editor.execute('link', url);
+            },
+            type: 'file',
             ...pickerConfig
         });
     }
@@ -87,32 +77,50 @@ export class JahiaLinkProvider extends Plugin {
         // Get access to the original LinkUI plugin
         const linkUI = this.editor.plugins.get('LinkUI');
 
-        // Create a custom link provider that will directly open your modal
         linkUI.registerLinksListProvider({
-            label: t(JahiaLinkProvider.prefixedTranslationKey('label')),
-            type: 'jahiaLinks',
+            label: 'Jahia',
+            type: 'jahia',
             getListItems() {
-                return [];
+                return [
+                    // Editorial link picker button
+                    {
+                        label: t(JahiaLinkProvider.prefixedTranslationKey('link'))
+                    },
+                    // File picker button
+                    {
+                        label: t(JahiaLinkProvider.prefixedTranslationKey('file'))
+                    }
+                ];
             }
         });
 
-        // Monkey patch the LinkUI._createLinksListProviderButton method to add our custom behavior
-        const originalCreateLinksListProviderButton = linkUI._createLinksListProviderButton;
-        const onOpenPicker = this.openPicker.bind(this);
+        // Monkey patch the LinkUI._createLinkProviderListView method to add our custom behavior
+        const originalCreateLinkProviderListView = linkUI._createLinkProviderListView;
+        const onOpenLinkPicker = this.openLinkPicker.bind(this);
+        const onOpenFilePicker = this.openFilePicker.bind(this);
 
-        linkUI._createLinksListProviderButton = function (linkProvider) {
-            const button = originalCreateLinksListProviderButton.call(this, linkProvider);
+        // Reset execute listeners for Jahia menu buttons to have custom functionality to open pickers
+        linkUI._createLinkProviderListView = function (linkProvider) {
+            const buttonViews = originalCreateLinkProviderListView.call(this, linkProvider);
 
-            if (linkProvider.type === 'jahiaLinks') {
-                // Override the execute event
-                button.off('execute');
-                button.on('execute', () => {
+            // Set up link and file picker buttons, see linkUI.registerLinksListProvider for button definition
+            if (linkProvider.type === 'jahia') {
+                // Editorial link picker button
+                buttonViews[0].off('execute');
+                buttonViews[0].on('execute', () => {
                     linkUI._hideUI();
-                    onOpenPicker();
+                    onOpenLinkPicker();
+                });
+
+                // File picker button
+                buttonViews[1].off('execute');
+                buttonViews[1].on('execute', () => {
+                    linkUI._hideUI();
+                    onOpenFilePicker();
                 });
             }
 
-            return button;
+            return buttonViews;
         };
     }
 }

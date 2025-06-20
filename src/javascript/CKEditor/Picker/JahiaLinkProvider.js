@@ -78,49 +78,48 @@ export class JahiaLinkProvider extends Plugin {
         const linkUI = this.editor.plugins.get('LinkUI');
 
         linkUI.registerLinksListProvider({
-            label: 'Jahia',
-            type: 'jahia',
+            label: t(JahiaLinkProvider.prefixedTranslationKey('link')),
+            type: 'jahiaEditorialLink',
             getListItems() {
-                return [
-                    // Editorial link picker button
-                    {
-                        label: t(JahiaLinkProvider.prefixedTranslationKey('link'))
-                    },
-                    // File picker button
-                    {
-                        label: t(JahiaLinkProvider.prefixedTranslationKey('file'))
-                    }
-                ];
+                return [];
             }
         });
 
-        // Monkey patch the LinkUI._createLinkProviderListView method to add our custom behavior
-        const originalCreateLinkProviderListView = linkUI._createLinkProviderListView;
+        linkUI.registerLinksListProvider({
+            label: t(JahiaLinkProvider.prefixedTranslationKey('file')),
+            type: 'jahiaFileLink',
+            getListItems() {
+                return [];
+            }
+        });
+
+        // Monkey patch the LinkUI._createLinksListProviderButton method to add our custom behavior
+        const originalCreateLinksListProviderButton = linkUI._createLinksListProviderButton;
         const onOpenLinkPicker = this.openLinkPicker.bind(this);
         const onOpenFilePicker = this.openFilePicker.bind(this);
 
-        // Reset execute listeners for Jahia menu buttons to have custom functionality to open pickers
-        linkUI._createLinkProviderListView = function (linkProvider) {
-            const buttonViews = originalCreateLinkProviderListView.call(this, linkProvider);
+        linkUI._createLinksListProviderButton = function (linkProvider) {
+            let button = originalCreateLinksListProviderButton.call(this, linkProvider);
 
-            // Set up link and file picker buttons, see linkUI.registerLinksListProvider for button definition
-            if (linkProvider.type === 'jahia') {
-                // Editorial link picker button
-                buttonViews[0].off('execute');
-                buttonViews[0].on('execute', () => {
+            if (linkProvider.type === 'jahiaEditorialLink') {
+                // Override the execute event
+                button.off('execute');
+                button.on('execute', () => {
                     linkUI._hideUI();
                     onOpenLinkPicker();
                 });
+            }
 
-                // File picker button
-                buttonViews[1].off('execute');
-                buttonViews[1].on('execute', () => {
+            if (linkProvider.type === 'jahiaFileLink') {
+                // Override the execute event
+                button.off('execute');
+                button.on('execute', () => {
                     linkUI._hideUI();
                     onOpenFilePicker();
                 });
             }
 
-            return buttonViews;
+            return button;
         };
     }
 }

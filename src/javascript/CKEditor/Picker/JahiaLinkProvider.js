@@ -2,6 +2,10 @@ import {Plugin, LinkUI} from 'ckeditor5';
 import {loadTranslations} from '../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
 export class JahiaLinkProvider extends Plugin {
+    static contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
+    static contentPrefix = `${JahiaLinkProvider.contextPath}/cms/{mode}/{lang}`;
+    static filePrefix = `${JahiaLinkProvider.contextPath}/files/{workspace}`;
+
     static get requires() {
         return [LinkUI];
     }
@@ -34,38 +38,65 @@ export class JahiaLinkProvider extends Plugin {
         };
     }
 
+    static canParse(val) {
+        try {
+            return Boolean(new URL(val));
+        } catch {
+            return false;
+        }
+    }
+
+    static getPickerValue(url) {
+        const hasContentPrefix = url.startsWith(JahiaLinkProvider.contentPrefix);
+        const hasFilePrefix = url.startsWith(JahiaLinkProvider.filePrefix);
+
+        if (JahiaLinkProvider.canParse(url)) {
+            return new URL(url).toString();
+        }
+
+        if (hasContentPrefix) {
+            return decodeURIComponent(url.substring(JahiaLinkProvider.contentPrefix.length).slice(0, -('.html').length));
+        }
+
+        if (hasFilePrefix) {
+            return decodeURIComponent(url.substring(JahiaLinkProvider.filePrefix.length));
+        }
+
+        return decodeURIComponent(url);
+    }
+
     openLinkPicker() {
         const editor = this.editor;
-        const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
-        const contentPrefix = `${contextPath}/cms/{mode}/{lang}`;
+        const currentLink = editor.commands.get('link').value;
 
         const pickerConfig = editor.config.get('picker');
 
         // Editorial link picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
-                const url = `${contentPrefix}${pickerResults[0].path}.html`;
+                const url = `${JahiaLinkProvider.contentPrefix}${pickerResults[0].path}.html`;
                 editor.execute('link', url);
             },
             type: 'editoriallink',
+            value: currentLink ? JahiaLinkProvider.getPickerValue(currentLink) : undefined,
             ...pickerConfig
         });
     }
 
     openFilePicker() {
         const editor = this.editor;
-        const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
-        const filePrefix = `${contextPath}/files/{workspace}`;
+        const currentLink = editor.commands.get('link').value;
 
         const pickerConfig = editor.config.get('picker');
 
         // File picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
-                const url = `${filePrefix}${pickerResults[0].path}`;
+                const url = `${JahiaLinkProvider.filePrefix}${pickerResults[0].path}`;
                 editor.execute('link', url);
             },
             type: 'file',
+            value: currentLink ? JahiaLinkProvider.getPickerValue(currentLink) : undefined,
             ...pickerConfig
         });
     }

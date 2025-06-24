@@ -42,7 +42,7 @@ void excludeExistingSites() {
                     PropertiesValues oldValues = oldConfig.getValues();
                     String exSites = oldValues.getProperty("excludeSites");
 
-                    if (excludeSites != null) {
+                    if (exSites != null) {
                         excludeSites.addAll(exSites.split(",").toList());
                     }
 

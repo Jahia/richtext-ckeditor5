@@ -12,7 +12,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             remove(name: "configs")
                         }
                     }
@@ -93,7 +93,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"advanced")
@@ -117,7 +117,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"light")
@@ -141,7 +141,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"minimal")
@@ -165,7 +165,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     n: value(name:"name", value:"minimal")
@@ -188,7 +188,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     n: value(name:"name", value:"minimal")
@@ -213,7 +213,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"minimal")
@@ -240,7 +240,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"minimal")
@@ -268,7 +268,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     n: value(name:"name", value:"minimal")
@@ -297,7 +297,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     n: value(name:"name", value:"minimal")
@@ -326,7 +326,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 a: addObject {
                                     a: value(name:"name", value:"advanced")
@@ -362,7 +362,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 a: addObject {
                                     a: value(name:"name", value:"advanced")
@@ -411,7 +411,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             mutation: gql`mutation {
                 admin {
                     jahia {
-                        configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+                        configuration(pid: "org.jahia.modules.richtextCKEditor5") {
                             mutateList(name: "configs") {
                                 addObject {
                                     value(name:"name", value:"testConfigCK5")

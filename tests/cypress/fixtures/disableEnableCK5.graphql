@@ -1,7 +1,7 @@
 mutation disableEnable($isEnabled: String!) {
   admin {
     jahia {
-      configuration(pid: "org.jahia.modules.richtext_ckeditor5") {
+      configuration(pid: "org.jahia.modules.richtextCKEditor5") {
         value(name: "enabledByDefault", value: $isEnabled)
       }
     }

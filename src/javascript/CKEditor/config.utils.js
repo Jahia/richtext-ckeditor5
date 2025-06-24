@@ -4,7 +4,7 @@ export function removeToolbarItem(config, item) {
         if (index !== -1) {
             toolbar.splice(index, 1);
         }
-    }
+    };
 
     if (Array.isArray(config.toolbar)) {
         removeItem(config.toolbar, item);

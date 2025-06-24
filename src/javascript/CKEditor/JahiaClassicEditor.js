@@ -10,7 +10,6 @@ import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import {isProductivityMode} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {removePlugin, removeToolbarItem} from '~/CKEditor/config.utils';
 
-
 export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {
         config = {...JahiaClassicEditor.defaultConfig, ...config};

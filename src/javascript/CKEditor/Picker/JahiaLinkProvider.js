@@ -19,17 +19,21 @@ export class JahiaLinkProvider extends Plugin {
     }
 
     static get translations() {
-        const label = JahiaLinkProvider.prefixedTranslationKey('label');
+        const link = JahiaLinkProvider.prefixedTranslationKey('link');
+        const file = JahiaLinkProvider.prefixedTranslationKey('file');
 
         return {
             fr: {
-                [label]: 'Liens internes Jahia'
+                [link]: 'Liens internes Jahia',
+                [file]: 'Fichiers internes Jahia'
             },
             de: {
-                [label]: 'Jahia interne links'
+                [link]: 'Jahia interne links',
+                [file]: 'Jahia interne dateien'
             },
             en: {
-                [label]: 'Jahia internal links'
+                [link]: 'Jahia internal links',
+                [file]: 'Jahia internal files'
             }
         };
     }
@@ -61,20 +65,37 @@ export class JahiaLinkProvider extends Plugin {
         return decodeURIComponent(url);
     }
 
-    openPicker() {
+    openLinkPicker() {
         const editor = this.editor;
-
         const currentLink = editor.commands.get('link').value;
-        console.log('Current link:', currentLink);
 
         const pickerConfig = editor.config.get('picker');
 
+        // Editorial link picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
                 const url = `${JahiaLinkProvider.contentPrefix}${pickerResults[0].path}.html`;
                 editor.execute('link', url);
             },
             type: 'editoriallink',
+            value: currentLink ? JahiaLinkProvider.getPickerValue(currentLink) : undefined,
+            ...pickerConfig
+        });
+    }
+
+    openFilePicker() {
+        const editor = this.editor;
+        const currentLink = editor.commands.get('link').value;
+
+        const pickerConfig = editor.config.get('picker');
+
+        // File picker config
+        window.CE_API.openPicker({
+            setValue: pickerResults => {
+                const url = `${JahiaLinkProvider.filePrefix}${pickerResults[0].path}`;
+                editor.execute('link', url);
+            },
+            type: 'file',
             value: currentLink ? JahiaLinkProvider.getPickerValue(currentLink) : undefined,
             ...pickerConfig
         });
@@ -87,10 +108,17 @@ export class JahiaLinkProvider extends Plugin {
         // Get access to the original LinkUI plugin
         const linkUI = this.editor.plugins.get('LinkUI');
 
-        // Create a custom link provider that will directly open your modal
         linkUI.registerLinksListProvider({
-            label: t(JahiaLinkProvider.prefixedTranslationKey('label')),
-            type: 'jahiaLinks',
+            label: t(JahiaLinkProvider.prefixedTranslationKey('link')),
+            type: 'jahiaEditorialLink',
+            getListItems() {
+                return [];
+            }
+        });
+
+        linkUI.registerLinksListProvider({
+            label: t(JahiaLinkProvider.prefixedTranslationKey('file')),
+            type: 'jahiaFileLink',
             getListItems() {
                 return [];
             }
@@ -98,17 +126,27 @@ export class JahiaLinkProvider extends Plugin {
 
         // Monkey patch the LinkUI._createLinksListProviderButton method to add our custom behavior
         const originalCreateLinksListProviderButton = linkUI._createLinksListProviderButton;
-        const onOpenPicker = this.openPicker.bind(this);
+        const onOpenLinkPicker = this.openLinkPicker.bind(this);
+        const onOpenFilePicker = this.openFilePicker.bind(this);
 
         linkUI._createLinksListProviderButton = function (linkProvider) {
-            const button = originalCreateLinksListProviderButton.call(this, linkProvider);
+            let button = originalCreateLinksListProviderButton.call(this, linkProvider);
 
-            if (linkProvider.type === 'jahiaLinks') {
+            if (linkProvider.type === 'jahiaEditorialLink') {
                 // Override the execute event
                 button.off('execute');
                 button.on('execute', () => {
                     linkUI._hideUI();
-                    onOpenPicker();
+                    onOpenLinkPicker();
+                });
+            }
+
+            if (linkProvider.type === 'jahiaFileLink') {
+                // Override the execute event
+                button.off('execute');
+                button.on('execute', () => {
+                    linkUI._hideUI();
+                    onOpenFilePicker();
                 });
             }
 

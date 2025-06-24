@@ -25,7 +25,8 @@ void excludeExistingSites() {
             def siteService = JahiaSitesService.getInstance();
             ConfigService configService = BundleUtils.getOsgiService(ConfigService.class, null);
             if (configService != null) {
-                Config config = configService.getConfig("org.jahia.modules.richtext_ckeditor5");
+                // New configuration
+                Config config = configService.getConfig("org.jahia.modules.richtextCKEditor5");
                 PropertiesValues values = config.getValues();
                 values.setProperty("enabledByDefault", "true");
                 def list = values.getList("excludeSites");
@@ -33,6 +34,26 @@ void excludeExistingSites() {
                         .stream()
                         .filter(n -> !"systemsite".equals(n.getSiteKey()))
                         .map {n -> n.getSiteKey()}.collect(Collectors.toList());
+
+                // Old configuration, will not be used anymore
+                Config oldConfig = configService.getConfig("org.jahia.modules.richtext_ckeditor5");
+
+                if (oldConfig != null) {
+                    PropertiesValues oldValues = oldConfig.getValues();
+                    String exSites = oldValues.getProperty("excludeSites");
+
+                    if (excludeSites != null) {
+                        excludeSites.addAll(exSites.split(",").toList());
+                    }
+
+                    // If user set includeSites then migrate that property to new config
+                    String incSites = oldValues.getProperty("includeSites");
+                    if (incSites != null) {
+                        def incList = values.getList("includeSites");
+                        incSites.split(",").toList().forEach {site -> incList.addProperty(site)}
+                    }
+                }
+
                 log.info("Adding existing sites to exclude list: " + excludeSites);
                 excludeSites.forEach {key -> list.addProperty(key)}
                 configService.storeConfig(config);

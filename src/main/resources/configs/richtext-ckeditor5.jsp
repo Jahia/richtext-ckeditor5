@@ -6,4 +6,4 @@
   response.addHeader("Pragma", "no-cache");
   response.setHeader("Cache-Control", "no-cache");
 %>
-contextJsParameters.config.ckeditor5 = <%= BundleUtils.getOsgiService(RichTextConfig.class, "(service.pid=org.jahia.modules.richtext_ckeditor5)").toJSON().toString() %>;
+contextJsParameters.config.ckeditor5 = <%= BundleUtils.getOsgiService(RichTextConfig.class, "(service.pid=org.jahia.modules.richtextCKEditor5)").toJSON().toString() %>;

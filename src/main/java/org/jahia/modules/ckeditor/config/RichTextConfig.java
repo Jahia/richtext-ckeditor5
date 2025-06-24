@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component(service = {ManagedService.class, RichTextConfig.class}, property = {
-    "service.pid=org.jahia.modules.richtext_ckeditor5",
+    "service.pid=org.jahia.modules.richtextCKEditor5",
     "service.description=Richtext configuration service",
     "service.vendor=Jahia Solutions Group SA"
 }, immediate = true)

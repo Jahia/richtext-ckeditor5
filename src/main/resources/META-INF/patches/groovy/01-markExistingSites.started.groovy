@@ -27,6 +27,7 @@ void excludeExistingSites() {
             if (configService != null) {
                 // New configuration
                 Config config = configService.getConfig("org.jahia.modules.richtextCKEditor5");
+                config.setFormat("YAML");
                 PropertiesValues values = config.getValues();
                 values.setProperty("enabledByDefault", "true");
                 def list = values.getList("excludeSites");

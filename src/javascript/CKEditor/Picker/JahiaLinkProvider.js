@@ -28,8 +28,8 @@ export class JahiaLinkProvider extends Plugin {
                 [file]: 'Fichiers internes Jahia'
             },
             de: {
-                [link]: 'Jahia interne links',
-                [file]: 'Jahia interne dateien'
+                [link]: 'Jahia interne Links',
+                [file]: 'Jahia interne Dateien'
             },
             en: {
                 [link]: 'Jahia internal links',

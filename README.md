@@ -35,7 +35,7 @@ You can look at [test-richtext-config](https://github.com/Jahia/test-ckeditor5-c
 
 ### Setting up configuration
 
-Configuration setup is done via `org.jahia.modules.richtextCKEditor5.yml` file. Configuration can be applied to specific sites by specifying 
+Configuration setup is done via `org.jahia.modules.richtextCKEditor5.yaml` file. Configuration can be applied to specific sites by specifying 
 site keys or globally by omitting site keys. Additionally, you can choose to have a permission-backed configuration, in which case only users with that permission 
 will be able to access it. Note that the system will look for first available configuration (in the order they appear). Therefor configurations with the strongest permissions must come first for them to be considered.
 

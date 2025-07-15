@@ -22,6 +22,7 @@ jobs:
       - uses: jahia/jahia-modules-action/integration-tests@v2
         with:
           module_id: richtext-ckeditor5
+          incident_service: richtext-ckeditor5
           testrail_project: CKEditor 5 Module
           tests_manifest: provisioning-manifest-snapshot.yml
           jahia_image: jahia/jahia-ee-dev:8-SNAPSHOT

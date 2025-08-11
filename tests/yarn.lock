@@ -163,10 +163,10 @@
     uuid "^8.3.1"
     xml-js "^1.6.11"
 
-"@jahia/jcontent-cypress@^3.4.0-tests.0":
-  version "3.4.0-tests.0"
-  resolved "https://registry.yarnpkg.com/@jahia/jcontent-cypress/-/jcontent-cypress-3.4.0-tests.0.tgz#04ff8aad7f76bd5024b14305ad5155028319b28a"
-  integrity sha512-rE8DahBNNIxOLuuIACvxsGWYfGzaqeqDdN+VNFEfidxn/LQ4qcjorugpAX4T2RDHBVVPON0P0nRhlV5LdtCSUA==
+"@jahia/jcontent-cypress@^3.4.0-tests.3":
+  version "3.4.0-tests.3"
+  resolved "https://registry.yarnpkg.com/@jahia/jcontent-cypress/-/jcontent-cypress-3.4.0-tests.3.tgz#aa3e0150f4c374812c742091136b0710b073928d"
+  integrity sha512-c8Z1gBgOoLVm1i+znwfKInoL6VktKpl7hXYs9FN547ouPnjTUANKDtl50hk0EjsuECulMz5eP8KopxllptNtQQ==
   dependencies:
     cypress-real-events "^1.14.0"
 

@@ -46,9 +46,14 @@ jobs:
           CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
         run: |
           echo "CKEDITOR_PRODUCTIVITY_LICENSE=${CKEDITOR_PRODUCTIVITY_LICENSE}" > .env
+          echo "Env var is set? $([ -n "$CKEDITOR_PRODUCTIVITY_LICENSE" ] && echo 'Yes' || echo 'No')"
+          echo "Env var length: ${#CKEDITOR_PRODUCTIVITY_LICENSE}"
+          echo "CKEDITOR_PRODUCTIVITY_LICENSE exists in .env? $(grep -q CKEDITOR_PRODUCTIVITY_LICENSE .env && echo 'Yes' || echo 'No')"
 
       - uses: jahia/jahia-modules-action/release@v2
         name: Release Module
+        env:
+          CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
         with:
           github_slug: Jahia/richtext-ckeditor5
           primary_release_branch: main

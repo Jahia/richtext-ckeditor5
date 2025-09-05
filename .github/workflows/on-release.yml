@@ -40,6 +40,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.GH_SSH_PRIVATE_KEY_JAHIACI }}
 
+      - name: Create .env file
+        shell: bash
+        env:
+          CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
+        run: |
+          echo "CKEDITOR_PRODUCTIVITY_LICENSE=${CKEDITOR_PRODUCTIVITY_LICENSE}" > .env
+
       - uses: jahia/jahia-modules-action/release@v2
         name: Release Module
         with:
@@ -56,13 +63,6 @@ jobs:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
           force_signature: true
-
-      - name: Create .env file
-        shell: bash
-        env:
-          CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
-        run: |
-          echo "CKEDITOR_PRODUCTIVITY_LICENSE=${CKEDITOR_PRODUCTIVITY_LICENSE}" > .env
 
       - uses: jahia/jahia-modules-action/release-publication@v2
         name: Publish Module

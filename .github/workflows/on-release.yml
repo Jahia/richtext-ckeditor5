@@ -49,6 +49,8 @@ jobs:
 
       - uses: jahia/jahia-modules-action/release@v2
         name: Release Module
+        env:
+          CKEDITOR_PRODUCTIVITY_LICENSE: ${{ secrets.CKEDITOR_PRODUCTIVITY_LICENSE }}
         with:
           github_slug: Jahia/richtext-ckeditor5
           primary_release_branch: main

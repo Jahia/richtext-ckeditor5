@@ -49,6 +49,9 @@
         <jahia-module-signature>MCwCFDFBNZqHZlCsprvnzY3FNlCtgOFSAhQxjl4nWCpeEOkvv3EIDAj6cN3rWg==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <jahia-depends>jcontent=3.4,graphql-dxm-provider</jahia-depends>
+        <import-package>
+            org.jahia.modules.contenteditor.graphql.api
+        </import-package>
     </properties>
 
     <repositories>
@@ -95,6 +98,12 @@
             <groupId>org.jahia.modules</groupId>
             <artifactId>graphql-dxm-provider</artifactId>
             <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>jcontent</artifactId>
+            <version>3.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

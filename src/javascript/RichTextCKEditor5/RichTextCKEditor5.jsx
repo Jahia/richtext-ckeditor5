@@ -54,12 +54,12 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>error</span>;
     }
 
-    if (loading || translationsLoading || !data || !data.richtext) {
+    if (loading || translationsLoading || !data || !data.jcontent.richtext) {
         return <span>loading...</span>;
     }
 
     // Prioritize cnd/selector defined configuration: - field (string, richtext[ckeditor.customConfig='customConfig25'])
-    const resolvedConfigName = parsedOptions.ckeditor?.customConfig ? parsedOptions.ckeditor.customConfig : data.richtext.config;
+    const resolvedConfigName = parsedOptions.ckeditor?.customConfig ? parsedOptions.ckeditor.customConfig : data.jcontent.richtext.config;
 
     const cfg = {
         ...registry.get(CONFIG_KEY, resolvedConfigName),

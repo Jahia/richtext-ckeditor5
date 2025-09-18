@@ -22,6 +22,6 @@ import org.osgi.service.component.annotations.Component;
  * RichText CKEditor5 query extension endpoint
  */
 @Component(immediate = true)
-public class GraphQRichTextExtensionsProvider implements DXGraphQLExtensionsProvider {
+public class GraphQLRichTextExtensionsProvider implements DXGraphQLExtensionsProvider {
     // Auto discovered
 }

@@ -33,7 +33,7 @@
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-beta-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (richtext-ckeditor5) for running on a Jahia server.</description>
 

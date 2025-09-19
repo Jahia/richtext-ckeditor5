@@ -6,6 +6,10 @@ schema {
     subscription: Subscription
 }
 
+directive @fetcher(name: String) on FIELD_DEFINITION
+
+directive @mapping(ignoreDefaultQueries: Boolean, node: String, property: String) on OBJECT | FIELD_DEFINITION
+
 "Indicates an Input Object is a OneOf Input Object."
 directive @oneOf on INPUT_OBJECT
 
@@ -96,6 +100,8 @@ interface JCRNode {
     defaultWipInfo: wipInfo
     "Returns the node definition that applies to this node."
     definition: JCRNodeDefinition
+    "The depth in the JCR Tree of the JCR node this object represents"
+    depth: Int!
     "GraphQL representation of a descendant node, based on its relative path"
     descendant(
         "Name or relative path of the sub node"
@@ -119,6 +125,8 @@ interface JCRNode {
         last: Int,
         "fetching only the first certain number of nodes"
         limit: Int,
+        "Maximum depth in JCR tree for descendants from the current node, 0 (or less) for all sub nodes, 1 for one sub level, etc"
+        maxDepth: Int,
         "fetching only nodes after this node (inclusive)"
         offset: Int,
         "Filter of descendant nodes by their property values; null to avoid such filtering"
@@ -206,6 +214,11 @@ interface JCRNode {
         "When set to true, returns the node in the default language if there is no translation for the requested language. Returns null if the option \"Replace untranslated content with the default language content\" is not activated for the site of the requested node. Will also return null if there is no translation for the default language."
         useFallbackLanguage: Boolean = false
     ): JCRProperty
+    "Returns count of all references of the node across all sites"
+    referenceCount(
+        "Filter out referencing types which should not be counted"
+        typesFilter: InputNodeTypesInput
+    ): Int
     "GraphQL representations of the reference properties that target the current JCR Node"
     references(
         "fetching only nodes after this node (exclusive)"
@@ -225,6 +238,15 @@ interface JCRNode {
         "fetching only nodes after this node (inclusive)"
         offset: Int
     ): JCRPropertyConnection!
+    "Get render URL"
+    renderUrl(
+        "Finds displayable node"
+        findDisplayable: Boolean = false,
+        "The language content is rendered in"
+        language: String!,
+        "The target workspace"
+        workspace: Workspace!
+    ): String
     "Gets the fully rendered content for this node"
     renderedContent(
         "Rendering context configuration"
@@ -239,13 +261,15 @@ interface JCRNode {
         requestAttributes: [InputRenderRequestAttributeInput],
         "Template type"
         templateType: String,
-        "Name of the view"
+        "Name of the view (leave null for default)"
         view: String
     ): RenderedNode
     "GraphQL representation of the site the JCR node belongs to, or the system site in case the node does not belong to any site"
     site: JCRSite
     "Get node thumbnail URL"
     thumbnailUrl(
+        "Checks if requested thumbnail node exists"
+        checkIfExists: Boolean = false,
         "Thumbnail name"
         name: String
     ): String
@@ -362,8 +386,6 @@ type AdminMutation {
     mountPoint: GqlMountPointMutation
     "Personal API tokens mutations"
     personalApiTokens: PersonalApiTokensMutation
-    "Sitemap API mutations"
-    sitemap: GqlSitemapMutation
 }
 
 "Admin queries root"
@@ -372,22 +394,166 @@ type AdminQuery {
     cluster: Cluster
     "Current datetime"
     datetime: String
+    "Elasticsearch query extension API"
+    elasticsearch: GqlElasticsearchQuery
     "Get Jahia admin query"
     jahia: JahiaAdminQuery!
-    "Mount point mutation extension API"
+    "Mount point query extension API"
     mountPoint: GqlMountPointQuery
     "Personal API tokens queries"
     personalApiTokens: PersonalApiTokensQuery
     "Get available ACL roles; does not include any hidden or privileged roles"
     roles: [AclRole]
-    "Sitemap API queries"
-    sitemap: GqlSitemapQueries
+    "Jahia admin tools"
+    tools: AdminTools
     "Get user administration endpoint"
     userAdmin: UserAdminQuery
     "Get user group endpoint"
     userGroup: UserGroupQuery
     "Version of the running Jahia instance"
     version: String! @deprecated(reason: "Deprecated")
+}
+
+"Jahia admin tools"
+type AdminTools {
+    "List of matching bundles."
+    bundles(
+        "Allows to filter on whether the bundles are Jahia modules or not. If the parameter is set to 'true', only bundles that are also Jahia modules are returned. If set to 'false', only bundles that are not Jahia modules are returned. By default, both Jahia modules and non Jahia modules are returned."
+        areModules: Boolean,
+        "Only return bundles whose symbolic names match the given regular expression"
+        nameRegExp: String,
+        "When set to 'true', only return bundles that have at least one dependency with an unsupported version range (to be considered supported, a version range should be open to minor upgrade based on SemVer)"
+        withUnsupportedDependenciesOnly: Boolean = false
+    ): [BundleWithDependencies]
+    "Will return all the duplicate export packages and the bundles that export them"
+    findMatchingExportPackages(
+        "Regular expression for the export packages. When specified, only export packages matching this regular expression are retrieved."
+        RegExp: String,
+        "When set to 'true', only return export packages found multiple times for the same package name. By default (or when set to 'false'), all export packages are retrieved, regardless of how many times they are exported."
+        duplicates: Boolean = false
+    ): FindExportPackage
+    "Will return all the import packages matching the given parameters."
+    findMatchingImportPackages(
+        "Regular expression for the import packages. When specified, only import packages matching this regular expression are retrieved"
+        RegExp: String,
+        "Version for the import package. When specified, only import packages of an exact version or a version range matching this version are retrieved. Note that this parameter does not apply on the versions of the bundles, but on the versions of the import packages"
+        version: String,
+        "Filter the import packages on whether their version is missing (when the flag is set to 'true') or is set (when the flag is set to 'false'). If not specified, import packages with and without version are retrieved"
+        versionMissing: Boolean = false
+    ): FindImportPackage
+}
+
+"Asset type for files"
+type Asset {
+    "Asset metadata"
+    metadata: Metadata
+    "Asset size"
+    size: Float
+    "Mime type of the asset"
+    type: String
+}
+
+"Result of the dependency inspector operation."
+type BundleDependency {
+    "An error occurred during parsing dependency"
+    error: String
+    "The name of the dependency"
+    name: String
+    "The dependency is optional"
+    optional: Boolean
+    "The status of that dependency."
+    status: Status
+    "The type of the dependency."
+    type: String
+    "The version of the dependency (can be a range, a number or empty)"
+    version: String
+}
+
+"Result of the dependency inspector operation."
+type BundleWithDependencies {
+    "Display name of the bundle."
+    bundleDisplayName: String @deprecated(reason: "Use displayName instead")
+    "ID of the bundle."
+    bundleId: Long @deprecated(reason: "Use id instead")
+    "Name of the bundle."
+    bundleName: String @deprecated(reason: "Use name instead")
+    "Symbolic name of the bundle."
+    bundleSymbolicName: String @deprecated(reason: "Use symbolicName instead")
+    "List of bundle dependencies (packages and modules)."
+    dependencies(
+        "Return dependencies matching the provided statuses. This parameter cannot be used with the 'supported' one."
+        statuses: [Status],
+        "Allows to filter the list of dependencies returned. If the parameter is set to 'true', only the supported dependencies are returned. If set to 'false', only the unsupported ones are returned. By default, all dependencies are returned. This parameter cannot be used with the 'statuses' one."
+        supported: Boolean
+    ): [BundleDependency]
+    "Display name of the bundle."
+    displayName: String
+    "ID of the bundle."
+    id: Long
+    "Name of the bundle."
+    name: String
+    "Symbolic name of the bundle."
+    symbolicName: String
+    "Version of the bundle."
+    version: String
+}
+
+"Result of the export package inspector operation."
+type BundleWithExportPackage {
+    "Display name of the bundle."
+    bundleDisplayName: String @deprecated(reason: "Use displayName instead")
+    "ID of the bundle."
+    bundleId: Long @deprecated(reason: "Use id instead")
+    "Name of the bundle."
+    bundleName: String @deprecated(reason: "Use name instead")
+    "Symbolic name of the bundle."
+    bundleSymbolicName: String @deprecated(reason: "Use symbolicName instead")
+    "Display name of the bundle."
+    displayName: String
+    "ID of the bundle."
+    id: Long
+    "The full export-package clause."
+    matchingExportPackage: String
+    "Name of the bundle."
+    name: String
+    "Symbolic name of the bundle."
+    symbolicName: String
+    "Version of the bundle."
+    version: String
+}
+
+"Result of the import package inspector operation."
+type BundleWithImportPackages {
+    "Display name of the bundle."
+    bundleDisplayName: String @deprecated(reason: "Use displayName instead")
+    "ID of the bundle."
+    bundleId: Long @deprecated(reason: "Use id instead")
+    "Name of the bundle."
+    bundleName: String @deprecated(reason: "Use name instead")
+    "Symbolic name of the bundle."
+    bundleSymbolicName: String @deprecated(reason: "Use symbolicName instead")
+    "Display name of the bundle."
+    displayName: String
+    "ID of the bundle."
+    id: Long
+    "List of matching imported packages."
+    matchingImportPackages: [String]
+    "Name of the bundle."
+    name: String
+    "Symbolic name of the bundle."
+    symbolicName: String
+    "Version of the bundle."
+    version: String
+}
+
+"Category type"
+type Category {
+    "Description"
+    description: String
+    "Asset metadata"
+    metadata: Metadata
+    "Title"
+    title: String
 }
 
 "Details about the Jahia Cluster"
@@ -517,6 +683,32 @@ type Current_32_user {
     username: String!
 }
 
+"Result of the export package inspector operation."
+type ExportPackages {
+    "Flat list of exported packages"
+    matchingExportPackages: [String]
+    "The bundles that export the package."
+    matchingExportPackagesDetailed: [BundleWithExportPackage]
+    "the package name."
+    packageName: String
+}
+
+"Result of the export package inspector operation."
+type FindExportPackage {
+    "List of matching packages"
+    packages: [ExportPackages]
+    "Total number of matching export packages."
+    totalCount: Int
+}
+
+"Result of the import package inspector operation."
+type FindImportPackage {
+    "List of matching bundles."
+    bundles: [BundleWithImportPackages]
+    "Total number of matching import packages."
+    totalCount: Int
+}
+
 "GraphQL representation of a generic JCR node"
 type GenericJCRNode implements JCRNode {
     "Get ACL info for this node"
@@ -588,6 +780,8 @@ type GenericJCRNode implements JCRNode {
     defaultWipInfo: wipInfo
     "Returns the node definition that applies to this node."
     definition: JCRNodeDefinition
+    "The depth in the JCR Tree of the JCR node this object represents"
+    depth: Int!
     "GraphQL representation of a descendant node, based on its relative path"
     descendant(
         "Name or relative path of the sub node"
@@ -611,6 +805,8 @@ type GenericJCRNode implements JCRNode {
         last: Int,
         "fetching only the first certain number of nodes"
         limit: Int,
+        "Maximum depth in JCR tree for descendants from the current node, 0 (or less) for all sub nodes, 1 for one sub level, etc"
+        maxDepth: Int,
         "fetching only nodes after this node (inclusive)"
         offset: Int,
         "Filter of descendant nodes by their property values; null to avoid such filtering"
@@ -698,6 +894,11 @@ type GenericJCRNode implements JCRNode {
         "When set to true, returns the node in the default language if there is no translation for the requested language. Returns null if the option \"Replace untranslated content with the default language content\" is not activated for the site of the requested node. Will also return null if there is no translation for the default language."
         useFallbackLanguage: Boolean = false
     ): JCRProperty
+    "Returns count of all references of the node across all sites"
+    referenceCount(
+        "Filter out referencing types which should not be counted"
+        typesFilter: InputNodeTypesInput
+    ): Int
     "GraphQL representations of the reference properties that target the current JCR Node"
     references(
         "fetching only nodes after this node (exclusive)"
@@ -717,6 +918,15 @@ type GenericJCRNode implements JCRNode {
         "fetching only nodes after this node (inclusive)"
         offset: Int
     ): JCRPropertyConnection!
+    "Get render URL."
+    renderUrl(
+        "Finds displayable node"
+        findDisplayable: Boolean = false,
+        "The language content is rendered in"
+        language: String!,
+        "The target workspace"
+        workspace: Workspace!
+    ): String
     "Gets the fully rendered content for this node"
     renderedContent(
         "Rendering context configuration"
@@ -731,13 +941,15 @@ type GenericJCRNode implements JCRNode {
         requestAttributes: [InputRenderRequestAttributeInput],
         "Template type"
         templateType: String,
-        "Name of the view"
+        "Name of the view (leave null for default)"
         view: String
     ): RenderedNode
     "GraphQL representation of the site the JCR node belongs to, or the system site in case the node does not belong to any site"
     site: JCRSite
     "Get node thumbnail URL"
     thumbnailUrl(
+        "Optional: Checks if requested thumbnail node exists, returns null if it doesn't"
+        checkIfExists: Boolean = false,
         "Thumbnail name"
         name: String
     ): String
@@ -821,29 +1033,36 @@ type GqlBackgroundJob {
     group: String
     "The job (Boolean) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobBooleanProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Boolean
+    "Job description"
+    jobDescription: String
     "The job (Int) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobIntegerProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Int
     "The job (Long) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobLongProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Long
     "The job state is different from the status, it reflect the last action done on the job instance (Started, Vetoed, Finished)"
     jobState: GqlBackgroundJobState
     "The job status"
     jobStatus: GqlBackgroundJobStatus
+    "List of strings property from the job map (eg. publicationInfos, publicationPaths)"
+    jobStringListProperty(
+        "The name of the property"
+        name: String
+    ): [String]
     "The job (String) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobStringProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): String
-    "The job name"
+    "The name of the property"
     name: String
     "GraphQL representation of publication job"
     publicationJob: GqlPublicationBackgroundJob
@@ -851,6 +1070,38 @@ type GqlBackgroundJob {
     siteKey: String
     "The user key. The returned value will be null in case the job doesn't have associated user key"
     userKey: String
+}
+
+"A connection to a list of items."
+type GqlBackgroundJobConnection {
+    "a list of edges"
+    edges: [GqlBackgroundJobEdge]
+    "a list of nodes"
+    nodes: [GqlBackgroundJob]
+    "details about this specific page"
+    pageInfo: PageInfo!
+}
+
+"An edge in a connection"
+type GqlBackgroundJobEdge {
+    "cursor marks a unique position or index into the connection"
+    cursor: String!
+    "index in the connection"
+    index: Int
+    "The item at the end of the edge"
+    node: GqlBackgroundJob
+}
+
+"Channel information"
+type GqlChannel {
+    "Channel label (not localized)"
+    displayName: String
+    "Return true if channel is visible, otherwise false"
+    isVisible: Boolean
+    "Channel name/identifier"
+    name: String
+    "Return variants for this channel, if available"
+    variants: [GqlVariant]
 }
 
 "Condition for override item"
@@ -930,58 +1181,6 @@ type GqlDashboard {
     modules: [GqlModule]
     "Whether the tools are accessible on the installation"
     toolsAccess: Boolean
-}
-
-type GqlDistributedSessionsMutation {
-    "Delete a session"
-    removeSession(
-        "Session id"
-        id: String!
-    ): Boolean
-}
-
-type GqlDistributedSessionsQuery {
-    localSessions(
-        "fetching only nodes after this node (exclusive)"
-        after: String,
-        "fetching only nodes before this node (exclusive)"
-        before: String,
-        "Filter by graphQL fields values"
-        fieldFilter: InputFieldFiltersInput,
-        "Group fields by criteria"
-        fieldGrouping: InputFieldGroupingInput,
-        "sort by GraphQL field values"
-        fieldSorter: InputFieldSorterInput,
-        "fetching only the first certain number of nodes"
-        first: Int,
-        "fetching only the last certain number of nodes"
-        last: Int,
-        "fetching only the first certain number of nodes"
-        limit: Int,
-        "fetching only nodes after this node (inclusive)"
-        offset: Int
-    ): GqlSessionConnection
-    sessions(
-        "fetching only nodes after this node (exclusive)"
-        after: String,
-        "fetching only nodes before this node (exclusive)"
-        before: String,
-        "Filter by graphQL fields values"
-        fieldFilter: InputFieldFiltersInput,
-        "Group fields by criteria"
-        fieldGrouping: InputFieldGroupingInput,
-        "sort by GraphQL field values"
-        fieldSorter: InputFieldSorterInput,
-        "fetching only the first certain number of nodes"
-        first: Int,
-        "fetching only the last certain number of nodes"
-        last: Int,
-        "fetching only the first certain number of nodes"
-        limit: Int,
-        "fetching only nodes after this node (inclusive)"
-        offset: Int
-    ): GqlSessionConnection
-    sessionsCount: Int
 }
 
 type GqlEditorForm {
@@ -1181,6 +1380,13 @@ type GqlEditorForms {
         "A string representation of a locale, in IETF BCP 47 language tag format, ie en_US, en, fr, fr_CH, ..."
         uiLocale: String!
     ): [GqlEditorFormValueConstraint]
+    "Retrieve info for given node types"
+    nodeTypeInfo(
+        "node types"
+        nodeTypes: [String]!,
+        "A string representation of a locale, in IETF BCP 47 language tag format, ie en_US, en, fr, fr_CH, ..."
+        uiLocale: String!
+    ): [NodeTypeInfo]
     "Retrieve the number of sub contents under the node for given types"
     subContentsCount(
         "List of node types to check for"
@@ -1192,16 +1398,50 @@ type GqlEditorForms {
     ): Int
 }
 
+"Elasticsearch queries object"
+type GqlElasticsearchQuery {
+    "Return true if an elasticsearch connection can be established from existing configuration, false otherwise"
+    testConnection: Boolean
+}
+
 "Server healthCheck"
 type GqlHealthCheck {
-    probes: [GqlProbe]
+    "Probes registered in SAM for the requested severity"
+    probes(
+        "Return probes matching this status or above"
+        health: GqlProbeHealth
+    ): [GqlProbe]
     "Highest reported status across all probes"
     status: GqlProbeStatus
 }
 
-type GqlHzPartition {
-    id: Int
-    owner: String
+"jContent API"
+type GqlJContent {
+    "Returns all available channels"
+    channels: [GqlChannel]
+    "Returns html with marked differences"
+    diffHtml(
+        "New html"
+        newHtml: String,
+        "Original html"
+        originalHtml: String
+    ): String
+    "Main access to richtext ckeditor5 queries"
+    richtext: RichTextQuery
+}
+
+"jContent API"
+type GqlJContentMutations {
+    "Flushes cache for a page, checks adminCache permission and node type"
+    flushPageCache(
+        "Page path"
+        pagePath: String!
+    ): Boolean
+    "Flushes cache for a site, will resolve site node if the path supplied is not a site, checks adminCache permission"
+    flushSiteCache(
+        "Site path"
+        sitePath: String!
+    ): Boolean
 }
 
 type GqlJcrImageTransformMutation {
@@ -1363,28 +1603,6 @@ type GqlMountPointQuery {
     mountPoints: [GqlMountPoint]
 }
 
-type GqlNpmHelper {
-    "Render a compoment according to the parameters"
-    renderedComponent(
-        "Rendering context configuration"
-        contextConfiguration: String,
-        "Edit mode"
-        isEditMode: Boolean,
-        "Language"
-        language: String,
-        "Main resource path"
-        mainResourcePath: String,
-        "Input containing the primary node type, the name, the properties and other fields of a JCR Node of a node to render"
-        node: InputJCRNode,
-        "Path of the node"
-        path: String,
-        "Template type"
-        templateType: String,
-        "Name of the view"
-        view: String
-    ): SimpleRenderedNode
-}
-
 "Possible operations on a node"
 type GqlOperationsSupport {
     "Can node be locked"
@@ -1395,6 +1613,7 @@ type GqlOperationsSupport {
     publication: Boolean!
 }
 
+"Probes registered with SAM"
 type GqlProbe {
     "Description specified by the developer of the probe"
     description: String
@@ -1411,7 +1630,7 @@ type GqlProbeStatus {
     "Health of the probe"
     health: GqlProbeHealth
     "Message explaining probe status"
-    message: String
+    message: String @deprecated(reason: "When multiple probe return the same error status (YELLOW or RED), the message does not guarantee which of the probe will get its message returned. We recommend using the \"health\" parameter and corresponding individual probe message instead.")
 }
 
 "Publication background job"
@@ -1422,36 +1641,57 @@ type GqlPublicationBackgroundJob {
     group: String
     "The job (Boolean) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobBooleanProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Boolean
+    "Job description"
+    jobDescription: String
     "The job (Int) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobIntegerProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Int
     "The job (Long) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobLongProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): Long
     "The job state is different from the status, it reflect the last action done on the job instance (Started, Vetoed, Finished)"
     jobState: GqlBackgroundJobState
     "The job status"
     jobStatus: GqlBackgroundJobStatus
+    "List of strings property from the job map (eg. publicationInfos, publicationPaths)"
+    jobStringListProperty(
+        "The name of the property"
+        name: String
+    ): [String]
     "The job (String) property that correspond to the given name. The returned value will be null in case the job doesn't have the property"
     jobStringProperty(
-        "The job name"
+        "The name of the property"
         name: String
     ): String
     "Publication language"
     language: String
-    "The job name"
+    "The name of the property"
     name: String
     "The site key. The returned value will be null in case the job doesn't have associated site key"
     siteKey: String
     "The user key. The returned value will be null in case the job doesn't have associated user key"
     userKey: String
+}
+
+"Publication event"
+type GqlPublicationEvent {
+    "Language"
+    language: String
+    "Paths"
+    paths: [String]
+    "Site key"
+    siteKey: String
+    "State of the publication event"
+    state: State
+    "User"
+    user: String
 }
 
 "Publication status information for a JCR node"
@@ -1470,8 +1710,29 @@ type GqlPublicationInfo {
 
 "Scheduler object which allows to access to background jobs"
 type GqlScheduler {
-    "List of active jobs"
-    jobs: [GqlBackgroundJob]
+    "List of active jobs (deprecated)"
+    jobs: [GqlBackgroundJob] @deprecated(reason: "Use paginatedJobs instead")
+    "List of active jobs (paginated)"
+    paginatedJobs(
+        "fetching only nodes after this node (exclusive)"
+        after: String,
+        "fetching only nodes before this node (exclusive)"
+        before: String,
+        "Exclude jobs with these statuses"
+        excludeStatuses: [GqlBackgroundJobStatus],
+        "fetching only the first certain number of nodes"
+        first: Int,
+        "The group jobs belong to"
+        group: String,
+        "Include jobs with these statuses"
+        includeStatuses: [GqlBackgroundJobStatus],
+        "fetching only the last certain number of nodes"
+        last: Int,
+        "fetching only the first certain number of nodes"
+        limit: Int,
+        "fetching only nodes after this node (inclusive)"
+        offset: Int
+    ): GqlBackgroundJobConnection
 }
 
 "API Scope"
@@ -1482,55 +1743,22 @@ type GqlScope {
     name: String
 }
 
-type GqlSession {
-    cost: Long
-    creationTime: String
-    id: String
-    lastAccessedTime: String
-    maxInactiveIntervalInSeconds: Int
-    partition: GqlHzPartition
-    user: User
+"Variant information for a given channel"
+type GqlVariant {
+    "Variant display name/label (not localized)"
+    displayName: String
+    "Variant dimension (width x height) if available"
+    imageSize: GqlVariantDimension
+    "Variant name/identifier"
+    name: String
 }
 
-"A connection to a list of items."
-type GqlSessionConnection {
-    "a list of edges"
-    edges: [GqlSessionEdge]
-    "a list of nodes"
-    nodes: [GqlSession]
-    "details about this specific page"
-    pageInfo: PageInfo!
-}
-
-"An edge in a connection"
-type GqlSessionEdge {
-    "cursor marks a unique position or index into the connection"
-    cursor: String!
-    "index in the connection"
-    index: Int
-    "The item at the end of the edge"
-    node: GqlSession
-}
-
-type GqlSitemapMutation {
-    "Sending sitemap(s) based on either sitemap index XML or sitemap XML URL to search engine URL(s) specified in CFG"
-    sendSitemapToSearchEngine(
-        "Sitemap index XML or sitemap XML URL"
-        sitemapURL: String!
-    ): Boolean
-    "Trigger the sitemap job execution for the given sitekey"
-    triggerSitemapJob(
-        "Site key"
-        siteKey: String
-    ): Boolean
-}
-
-type GqlSitemapQueries {
-    "Get site URL with only server domain appended from sitemap URL"
-    siteUrl(
-        "Sitemap index XML or sitemap XML URL"
-        siteKey: String!
-    ): String
+"Represents dimensions (width, height) of a variant"
+type GqlVariantDimension {
+    "Variant height"
+    height: String
+    "Variant width"
+    width: String
 }
 
 type GqlWorkflowEvent {
@@ -1634,6 +1862,20 @@ type GroupEdge {
     index: Int
     "The item at the end of the edge"
     node: Group
+}
+
+"Asset type for image"
+type ImageAsset {
+    "Image height"
+    height: Float
+    "Asset metadata"
+    metadata: Metadata
+    "Image size"
+    size: Float
+    "Mime type of image"
+    type: String
+    "Image width"
+    width: Float
 }
 
 "JCR Mutations"
@@ -1867,6 +2109,11 @@ type JCRNodeMutation {
     ): Boolean
     "Delete the current node (and its subgraph)"
     delete: Boolean
+    "Deletes a set of properties on the current node"
+    deletePropertiesBatch(
+        "The collection of JCR properties: name and language"
+        properties: [InputJCRDeletedProperty]
+    ): Boolean
     "Grant role permissions to specified principal user/group for the given node"
     grantRoles(
         "Name of principal (user/group)"
@@ -2027,6 +2274,44 @@ type JCRNodeType {
         "Language"
         language: String!
     ): String
+    "Returns the node types that extend the current node type (in CND using the `extends=...` syntax), filtered by the specified parameters."
+    extendedBy(
+        "fetching only nodes after this node (exclusive)"
+        after: String,
+        "fetching only nodes before this node (exclusive)"
+        before: String,
+        "Filter by graphQL fields values"
+        fieldFilter: InputFieldFiltersInput,
+        "Filter on node type"
+        filter: InputNodeTypesListInput,
+        "fetching only the first certain number of nodes"
+        first: Int,
+        "fetching only the last certain number of nodes"
+        last: Int,
+        "fetching only the first certain number of nodes"
+        limit: Int,
+        "fetching only nodes after this node (inclusive)"
+        offset: Int
+    ): JCRNodeTypeConnection
+    "Returns the node types dynamically extended by the current node type (in CND using the `extends=...` syntax), filtered by the specified parameters."
+    extends(
+        "fetching only nodes after this node (exclusive)"
+        after: String,
+        "fetching only nodes before this node (exclusive)"
+        before: String,
+        "Filter by graphQL fields values"
+        fieldFilter: InputFieldFiltersInput,
+        "Filter on node type"
+        filter: InputNodeTypesListInput,
+        "fetching only the first certain number of nodes"
+        first: Int,
+        "fetching only the last certain number of nodes"
+        last: Int,
+        "fetching only the first certain number of nodes"
+        limit: Int,
+        "fetching only nodes after this node (inclusive)"
+        offset: Int
+    ): JCRNodeTypeConnection
     "Returns true if nodes of this type must support orderable child nodes; returns false otherwise."
     hasOrderableChildNodes: Boolean
     "Node type icon"
@@ -2150,6 +2435,10 @@ type JCRProperty {
     refNode: JCRNode
     "GraphQL representations of the nodes this property references in case the property is multiple-valued, null otherwise"
     refNodes: [JCRNode]
+    "Gets the rendered value of that property"
+    renderedValue: String
+    "Gets the rendered values of that property"
+    renderedValues: [String]
     "The binary size of the JCR node as a Long, null otherwise"
     size: Long
     "The type of the JCR property"
@@ -2459,6 +2748,8 @@ type JCRSite implements JCRNode {
     defaultWipInfo: wipInfo
     "Returns the node definition that applies to this node."
     definition: JCRNodeDefinition
+    "The depth in the JCR Tree of the JCR node this object represents"
+    depth: Int!
     "GraphQL representation of a descendant node, based on its relative path"
     descendant(
         "Name or relative path of the sub node"
@@ -2482,6 +2773,8 @@ type JCRSite implements JCRNode {
         last: Int,
         "fetching only the first certain number of nodes"
         limit: Int,
+        "Maximum depth in JCR tree for descendants from the current node, 0 (or less) for all sub nodes, 1 for one sub level, etc"
+        maxDepth: Int,
         "fetching only nodes after this node (inclusive)"
         offset: Int,
         "Filter of descendant nodes by their property values; null to avoid such filtering"
@@ -2511,7 +2804,7 @@ type JCRSite implements JCRNode {
         "The name of the permission"
         permissionName: String!
     ): Boolean
-    "Returns the node of the home page"
+    "Returns the node of the home page or null if no home page is defined or is not accessible"
     homePage: JCRNode
     "Retrieves a collection of module IDs, which are installed on the site, the node belongs to"
     installedModules: [String]
@@ -2579,6 +2872,11 @@ type JCRSite implements JCRNode {
         "When set to true, returns the node in the default language if there is no translation for the requested language. Returns null if the option \"Replace untranslated content with the default language content\" is not activated for the site of the requested node. Will also return null if there is no translation for the default language."
         useFallbackLanguage: Boolean = false
     ): JCRProperty
+    "Returns count of all references of the node across all sites"
+    referenceCount(
+        "Filter out referencing types which should not be counted"
+        typesFilter: InputNodeTypesInput
+    ): Int
     "GraphQL representations of the reference properties that target the current JCR Node"
     references(
         "fetching only nodes after this node (exclusive)"
@@ -2598,6 +2896,15 @@ type JCRSite implements JCRNode {
         "fetching only nodes after this node (inclusive)"
         offset: Int
     ): JCRPropertyConnection!
+    "Get render URL."
+    renderUrl(
+        "Finds displayable node"
+        findDisplayable: Boolean = false,
+        "The language content is rendered in"
+        language: String!,
+        "The target workspace"
+        workspace: Workspace!
+    ): String
     "Gets the fully rendered content for this node"
     renderedContent(
         "Rendering context configuration"
@@ -2612,7 +2919,7 @@ type JCRSite implements JCRNode {
         requestAttributes: [InputRenderRequestAttributeInput],
         "Template type"
         templateType: String,
-        "Name of the view"
+        "Name of the view (leave null for default)"
         view: String
     ): RenderedNode
     "Site server name"
@@ -2623,6 +2930,8 @@ type JCRSite implements JCRNode {
     sitekey: String
     "Get node thumbnail URL"
     thumbnailUrl(
+        "Optional: Checks if requested thumbnail node exists, returns null if it doesn't"
+        checkIfExists: Boolean = false,
         "Thumbnail name"
         name: String
     ): String
@@ -2742,8 +3051,8 @@ type JahiaAdminMutation {
         "Service name"
         service: String!
     ): Boolean
-    "Distributed sessions admin"
-    distributedSessions: GqlDistributedSessionsMutation
+    "Mount point mutation extension API"
+    mountPoint: GqlMountPointMutation
     "Shutdown the server"
     shutdown(
         "Do not send the shutdown event"
@@ -2766,12 +3075,17 @@ type JahiaAdminQuery {
     ): GqlConfigurationQuery
     "Details about the database Jahia is connected to"
     database: JahiaDatabase
-    "Distributed sessions admin"
-    distributedSessions: GqlDistributedSessionsQuery
     "HealthCheck node"
-    healthCheck(severity: GqlProbeSeverity): GqlHealthCheck
+    healthCheck(
+        "Returns only SAM probes with probe names included in this list"
+        includes: [String!],
+        "Returns SAM probes with this severity or higher"
+        severity: GqlProbeSeverity
+    ): GqlHealthCheck
     "Get server load"
     load: Load
+    "Mount point query extension API"
+    mountPoint: GqlMountPointQuery
     "Get jobs scheduler"
     scheduler: GqlScheduler
     "Details about the system hosting Jahia"
@@ -2860,18 +3174,27 @@ type JournalRevision {
 
 "Server load"
 type Load {
+    "Get JCR Node Cache load across active sessions"
+    cachedNodes: LoadProvider
     "Get requests load"
-    requests: LoadValue
+    requests: LoadProvider
     "Get JCR Sessions load"
-    sessions: LoadValue
+    sessions: LoadProvider
+    "Get Thread load"
+    thread: LoadProvider
 }
 
-"Load value"
-type LoadValue {
+"Load provider"
+type LoadProvider {
     "Exponential moving average"
-    average(interval: LoadInterval): Float
+    average(
+        "Interval between collection of load metrics"
+        interval: LoadInterval
+    ): Float
     "Instantaneous count"
-    count: Int
+    count: Float
+    "Load Entry"
+    entry: String
 }
 
 "Information on node lock"
@@ -2889,22 +3212,50 @@ type LockInfo {
     lockable: Boolean
 }
 
+"Metadata properties for all content"
+type Metadata {
+    "Date of creation for the associated content"
+    created: Date
+    "Original author of the associated content"
+    createdBy: String
+    "Date of last modification of the associated content"
+    lastModified: Date
+    "Author of last modification of the associated content"
+    lastModifiedBy: String
+    "Date of last publication of the associated content"
+    lastPublished: Date
+    "Author of last publication of the associated content"
+    lastPublishedBy: String
+}
+
 "Root mutation type"
 type Mutation {
     "Admin Mutation"
     admin: AdminMutation!
     "Main access field to the DX GraphQL Form mutation API"
     forms: GqlEditorFormMutations
+    "Main access field to the jContent mutation API"
+    jcontent: GqlJContentMutations
     "JCR Mutation"
     jcr(
         "Should save"
         save: Boolean = true,
         "The name of the workspace to fetch the node from; either 'edit', 'live', or null to use 'edit' by default"
-        workspace: Workspace
+        workspace: Workspace = EDIT
     ): JCRMutation
     "Generate a new JWT token"
     jwtToken(ips: [String], referer: [String], scopes: [String]!): JWTToken
     mutateWorkflows(definition: String): [WorkflowMutation]
+}
+
+"GraphQL representation of node type information"
+type NodeTypeInfo {
+    "Returns icon url of the node type"
+    iconUrl: String
+    "Returns the localized label of the node type"
+    label: String
+    "Returns the name of the node type"
+    name: String
 }
 
 "GraphQL representation of node type tree entry"
@@ -2984,7 +3335,7 @@ type PersonalApiTokenEdge {
 
 "Mutations for Personal Api Tokens"
 type PersonalApiTokensMutation {
-    "Create a new token"
+    "Create a new token for connected user"
     createToken(
         "Expiration date of the token"
         expireAt: String,
@@ -2992,8 +3343,6 @@ type PersonalApiTokensMutation {
         name: String!,
         "Scopes attached to this token"
         scopes: [String],
-        "The site the user belongs to, null if global user"
-        site: String,
         "State to give the newly created token"
         state: TokenState
     ): String
@@ -3087,19 +3436,37 @@ type PrincipalEdge {
 type Query {
     "Admin Queries"
     admin: AdminQuery!
+    "default finder for categoryById"
+    categoryById(
+        "Node identifier"
+        id: String,
+        "Content language, defaults to English"
+        language: String = "en",
+        "Return content from live or default workspace"
+        preview: Boolean = false
+    ): Category
+    "default finder for categoryByPath"
+    categoryByPath(
+        "Content language, defaults to English"
+        language: String = "en",
+        "Path of the node"
+        path: String,
+        "Return content from live or default workspace"
+        preview: Boolean = false
+    ): Category
     "Get the current user"
     currentUser: Current_32_user
     "Main access field to the DX GraphQL Dashboard API"
     dashboard: GqlDashboard
     "Main access field to the DX GraphQL Form API"
     forms: GqlEditorForms
+    "Main access field to the jContent API"
+    jcontent: GqlJContent
     "JCR Queries"
     jcr(
         "The name of the workspace to fetch the node from; either EDIT, LIVE, or null to use EDIT by default"
-        workspace: Workspace
+        workspace: Workspace = EDIT
     ): JCRQuery!
-    "Main access field to the NPM helpers"
-    npm: GqlNpmHelper
     "Tag Queries"
     tag: JCRTags
     "Retrieves the number of active workflow tasks for the current user"
@@ -3119,12 +3486,10 @@ type RenderedNode {
     ): [StaticAsset]
 }
 
-"Rendering result for a node"
-type SimpleRenderedNode {
-    "Id of of the rendering node"
-    id: String
-    "Rendering output"
-    output: String
+"Provides functionality necessary for operation of richtext ckeditor5"
+type RichTextQuery {
+    "Returns appropriate configuration name for richtext ckeditor5"
+    config(path: String!): String
 }
 
 "Simple numeric aggregation on properties values"
@@ -3179,7 +3544,7 @@ type Subscription {
         filterByUserKey: [String],
         "The target scheduler for listening jobs"
         targetScheduler: TargetScheduler = BOTH
-    ): GqlBackgroundJob
+    ): GqlBackgroundJob @deprecated(reason: "Use subscribeToPublicationJob instead")
     "Lock the node for edition and subscribe to hold the lock. The node is automatically unlocked when the client disconnect or close the connection"
     subscribeToEditorLock(
         "An ID generated client side used to identify the lock"
@@ -3187,6 +3552,11 @@ type Subscription {
         "Uuid of the node to be locked."
         nodeId: String!
     ): String
+    "Subscription on publication jobs"
+    subscribeToPublicationJob(
+        "Subscribe only to job with matching user keys"
+        userKeyFilter: [String]
+    ): GqlPublicationEvent
     "Subscription on workflows"
     workflowEvent: GqlWorkflowEvent
 }
@@ -3456,6 +3826,8 @@ type VanityUrl implements JCRNode {
     defaultWipInfo: wipInfo
     "Returns the node definition that applies to this node."
     definition: JCRNodeDefinition
+    "The depth in the JCR Tree of the JCR node this object represents"
+    depth: Int!
     "GraphQL representation of a descendant node, based on its relative path"
     descendant(
         "Name or relative path of the sub node"
@@ -3479,6 +3851,8 @@ type VanityUrl implements JCRNode {
         last: Int,
         "fetching only the first certain number of nodes"
         limit: Int,
+        "Maximum depth in JCR tree for descendants from the current node, 0 (or less) for all sub nodes, 1 for one sub level, etc"
+        maxDepth: Int,
         "fetching only nodes after this node (inclusive)"
         offset: Int,
         "Filter of descendant nodes by their property values; null to avoid such filtering"
@@ -3568,6 +3942,11 @@ type VanityUrl implements JCRNode {
         "When set to true, returns the node in the default language if there is no translation for the requested language. Returns null if the option \"Replace untranslated content with the default language content\" is not activated for the site of the requested node. Will also return null if there is no translation for the default language."
         useFallbackLanguage: Boolean = false
     ): JCRProperty
+    "Returns count of all references of the node across all sites"
+    referenceCount(
+        "Filter out referencing types which should not be counted"
+        typesFilter: InputNodeTypesInput
+    ): Int
     "GraphQL representations of the reference properties that target the current JCR Node"
     references(
         "fetching only nodes after this node (exclusive)"
@@ -3587,6 +3966,15 @@ type VanityUrl implements JCRNode {
         "fetching only nodes after this node (inclusive)"
         offset: Int
     ): JCRPropertyConnection!
+    "Get render URL."
+    renderUrl(
+        "Finds displayable node"
+        findDisplayable: Boolean = false,
+        "The language content is rendered in"
+        language: String!,
+        "The target workspace"
+        workspace: Workspace!
+    ): String
     "Gets the fully rendered content for this node"
     renderedContent(
         "Rendering context configuration"
@@ -3601,7 +3989,7 @@ type VanityUrl implements JCRNode {
         requestAttributes: [InputRenderRequestAttributeInput],
         "Template type"
         templateType: String,
-        "Name of the view"
+        "Name of the view (leave null for default)"
         view: String
     ): RenderedNode
     "GraphQL representation of the site the JCR node belongs to, or the system site in case the node does not belong to any site"
@@ -3610,6 +3998,8 @@ type VanityUrl implements JCRNode {
     targetNode: JCRNode
     "Get node thumbnail URL"
     thumbnailUrl(
+        "Optional: Checks if requested thumbnail node exists, returns null if it doesn't"
+        checkIfExists: Boolean = false,
         "Thumbnail name"
         name: String
     ): String
@@ -3787,6 +4177,7 @@ enum GqlBackgroundJobStatus {
     SUCCESSFUL
 }
 
+"Available health statuses for a probe"
 enum GqlProbeHealth {
     "GREEN"
     GREEN
@@ -3796,9 +4187,12 @@ enum GqlProbeHealth {
     YELLOW
 }
 
+"Available severity levels for SAM probes"
 enum GqlProbeSeverity {
     "CRITICAL"
     CRITICAL
+    "DEBUG"
+    DEBUG
     "HIGH"
     HIGH
     "LOW"
@@ -3850,6 +4244,7 @@ enum JCRPropertyType {
     WEAKREFERENCE
 }
 
+"Interval expressed in minutes"
 enum LoadInterval {
     "FIFTEEN"
     FIFTEEN
@@ -3978,6 +4373,32 @@ enum SortType {
     DESC
 }
 
+"State of the publication event"
+enum State {
+    "FINISHED"
+    FINISHED
+    "STARTED"
+    STARTED
+    "UNPUBLISHED"
+    UNPUBLISHED
+}
+
+"List of available statuses for a dependency"
+enum Status {
+    "EMPTY"
+    EMPTY
+    "OPEN_RANGE"
+    OPEN_RANGE
+    "RESTRICTIVE_RANGE"
+    RESTRICTIVE_RANGE
+    "SINGLE_VERSION_RANGE"
+    SINGLE_VERSION_RANGE
+    "STRICT_NO_RANGE"
+    STRICT_NO_RANGE
+    "UNKNOWN"
+    UNKNOWN
+}
+
 "The target scheduler(s)"
 enum TargetScheduler {
     "Both persisted and RAM schedulers will be used"
@@ -4011,6 +4432,9 @@ enum Workspace {
     "Live workspace"
     LIVE
 }
+
+"Date type"
+scalar Date
 
 "A 64-bit signed integer"
 scalar Long
@@ -4128,6 +4552,14 @@ input InputGqlOrdering {
     orderType: OrderType
     "The property to order by"
     property: String
+}
+
+"GraphQL representation of a deleted JCR property"
+input InputJCRDeletedProperty {
+    "The language in which the property will be deleted"
+    language: String!
+    "The name of the property to delete"
+    name: String!
 }
 
 "GraphQL representation of a JCR node to be created"

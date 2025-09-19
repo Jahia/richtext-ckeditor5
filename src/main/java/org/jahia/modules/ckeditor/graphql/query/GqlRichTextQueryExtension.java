@@ -19,11 +19,11 @@ import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import graphql.annotations.annotationTypes.GraphQLTypeExtension;
-import org.jahia.modules.graphql.provider.dxm.DXGraphQLProvider;
+import org.jahia.modules.contenteditor.graphql.api.GqlJContent;
 
-@GraphQLTypeExtension(DXGraphQLProvider.Query.class)
+@GraphQLTypeExtension(GqlJContent.class)
 @SuppressWarnings("java:S1118") // ignore "Utility classes should not have public constructors"
-public class GqlHtmlFilteringExtension {
+public class GqlRichTextQueryExtension {
 
     @GraphQLField
     @GraphQLName("richtext")

@@ -19,6 +19,7 @@ const getModuleFederationConfig = require('@jahia/webpack-config/getModuleFedera
 const packageJson = require('./package.json');
 require('dotenv').config({ path: './.env' });
 
+console.log('Building with CKEditor license:', process.env.CKEDITOR_PRODUCTIVITY_LICENSE ? 'Available' : 'Not found');
 module.exports = (env, argv) => {
     let _argv = argv || {};
 

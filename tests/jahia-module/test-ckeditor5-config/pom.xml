@@ -52,7 +52,7 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>ckeditor5-test-module-root</artifactId>
-        <version>1.0.0-beta-1-SNAPSHOT</version>
+        <version>1.0.0-beta-1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jahia.test</groupId>

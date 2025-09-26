@@ -1,4 +1,4 @@
-![GitHub tag (latest by version)](https://img.shields.io/github/v/tag/Jahia/richtext-ckeditor5?sort=semver)
+![GitHub tag (latest by version)](https://img.shields.io/github/v/tag/Jahia/richtext-ckeditor5)
 
 <a href="https://www.jahia.com/">
     <img src="https://www.jahia.com/modules/jahiacom-templates/images/jahia-3x.png" alt="Jahia logo" title="Jahia" align="right" height="60" />

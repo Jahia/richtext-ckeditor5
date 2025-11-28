@@ -132,6 +132,15 @@ module.exports = (env, argv) => {
                 remotes: {
                     '@jahia/jcontent': 'appShell.remotes.jcontent',
                 },
+                shared: {
+                    'ckeditor5': { singleton: true },
+                    '@ckeditor/ckeditor5-ui': { singleton: true },
+                    '@ckeditor/ckeditor5-core': { singleton: true },
+                    '@ckeditor/ckeditor5-react': { singleton: true },
+                    '@ckeditor/ckeditor5-utils': { singleton: true },
+                    'ckeditor5-premium-features': { singleton: true },
+                    '@ckeditor/ckeditor5-theme-lark': { singleton: true },
+                },
             })),
             new CleanWebpackPlugin({
                 cleanOnceBeforeBuildPatterns: [`${path.resolve(__dirname, 'src/main/resources/javascript/apps/')}/**/*`],

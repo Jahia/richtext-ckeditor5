@@ -4,6 +4,9 @@ export const completeConfig = {
     plugins,
     toolbar: {
         items: [
+            'aiCommands',
+            'aiAssistant',
+            '|',
             'undo',
             'redo',
             'sourceEditingEnhanced',
@@ -99,6 +102,14 @@ export const completeConfig = {
                     target: '_blank',
                     rel: 'noopener noreferrer'
                 }
+            }
+        }
+    },
+    ai: {
+        openAI: {
+            requestHeaders: {
+                // Paste your OpenAI API key in place of YOUR_OPENAI_API_KEY:
+                Authorization: 'Bearer YOUR_OPENAI_API_KEY'
             }
         }
     }

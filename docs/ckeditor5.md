@@ -219,7 +219,7 @@ This will apply yourConfig to the body field on the `example:article` definition
 
 Configurations defined in the configuration file will have lower priority than the ones defined at the CND level, and JSON overrides will have the ability to change configuration at the CND level.
 
-### Bundled Plugins and Features
+## Bundled Plugins and Features
 
 The CK5 module packs many free and premium features of CKEditor 5, some of them are not visible in our default toolbars but still available for integration. For instance, because code blocks require specific scripting and styling in the integration, they have not been included in the default toolbars, but the button can still be added to a custom configuration:
 
@@ -269,7 +269,7 @@ The complete list of plugins available in the CK5 Jahia module [can be found on 
 
 The configuration of the `complete` toolbar [can also be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/config-complete.js).
 
-### Premium Licence
+## Premium Licence
 
 The embedded version of CKEditor 5 includes a licence that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
 

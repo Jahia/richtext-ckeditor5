@@ -33,19 +33,19 @@ Jahia provides four configurations (`minimal`, `light`, `advanced` and `complete
 
 Here are screenshots of the four default configurations:
 
-1. **Complete:** interface visible by default to editors with the `view-full-wysiwyg-editor` permission (can be overriden with `richtext[ckeditor.customConfig='complete']` in CND)
+1. **Complete:** interface visible by default to editors with the `view-full-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='complete']` in CND)
 
    ![Editor in Complete configuration](complete.png)
 
-2. **Advanced:** interface visible by default to editors with the `view-basic-wysiwyg-editor` permission (can be overriden with `richtext[ckeditor.customConfig='advanced']` in CND)
+2. **Advanced:** interface visible by default to editors with the `view-basic-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='advanced']` in CND)
 
    ![Editor in Advanced configuration](advanced.png)
 
-3. **Light:** interface visible by default to editors with the `view-light-wysiwyg-editor` permission (can be overriden with `richtext[ckeditor.customConfig='light']` in CND)
+3. **Light:** interface visible by default to editors with the `view-light-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='light']` in CND)
 
    ![Editor in Light configuration](light.png)
 
-4. **Minimal:** interface visible by default to all other contributors (can be overriden with `richtext[ckeditor.customConfig='minimal']` in CND)
+4. **Minimal:** interface visible by default to all other contributors (can be overridden with `richtext[ckeditor.customConfig='minimal']` in CND)
 
    ![Editor in Minimal configuration](minimal.png)
 
@@ -196,7 +196,7 @@ CND-level configuration does not support permissions or site keys. The specified
 
 Another way to apply configuration is by using a JSON override. JSON override can be deployed with a module, it could be your template-set for example.
 
-To do so, you need to create a file under `META_INF/jahia-content-editor-forms/fieldsets` with the following content:
+To do so, you need to create a file under `META-INF/jahia-content-editor-forms/fieldsets` with the following content:
 
 ```json
 {
@@ -269,8 +269,8 @@ The complete list of plugins available in the CK5 Jahia module [can be found on 
 
 The configuration of the `complete` toolbar [can also be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/config-complete.js).
 
-## Premium Licence
+## Premium License
 
-The embedded version of CKEditor 5 includes a licence that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
+The embedded version of CKEditor 5 includes a license that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
 
-Collaboration features are not covered by this licence, neither File management (this is a feature of Jahia itself), nor Conversion and Embedding features.
+Collaboration features are not covered by this license, neither File management (this is a feature of Jahia itself), nor Conversion and Embedding features.

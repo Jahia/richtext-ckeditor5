@@ -203,7 +203,7 @@ Configurations defined in the configuration file will have lower priority than t
 
 The CK5 module packs many free and premium features of CKEditor 5, some of them are not visible in our default toolbars but still available for integration. For instance, because code blocks require specific scripting and styling in the integration, they have not been included in the default toolbars, but the button can still be added to a custom configuration:
 
-```javascript
+```js
 // This custom toolbar inherits the `complete` configuration
 const completeConfig = registry.get('ckeditor5-config', 'complete');
 
@@ -247,8 +247,89 @@ The complete list of plugins available in the CK5 Jahia module [can be found on 
 
 The configuration of the `complete` toolbar [can also be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/config-complete.js).
 
+## Building a Custom Plugin
+
+CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.
+
+This section assumes you already have a Jahia module set up with the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html). If that's not the case, please refer to [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html).
+
+- Install `ckeditor5` with `yarn add -D ckeditor5` in your module folder.
+
+  This is library is only used during the development to provide autocompletion hints. The actual CKEditor 5 code used at runtime will be the one provided by the CK5 module.
+
+- Ensure `ckeditor5` resolves to the remote module at runtime by adding it to the `remotes` section of your `webpack.config.js` file:
+
+  ```js
+  new ModuleFederationPlugin(
+    mergeWebpackConfig(commonConfig, {
+      remotes: {
+        '@jahia/jcontent': 'appShell.remotes.jcontent',
+        'ckeditor5': 'appShell.remotes.ckeditor5', // Add this line
+      },
+    })
+  ),
+  ```
+
+Once these steps are complete you can create your own plugin. Here's a simple example of a plugin that adds a button to insert the current date at the cursor position:
+
+```js
+// File: src/javascript/init.js
+
+import { registry } from '@jahia/ui-extender';
+// This import will resolve to the remote ckeditor5 module at runtime
+import { Plugin, ButtonView } from 'ckeditor5';
+
+/**
+ * Based on https://ckeditor.com/docs/ckeditor5/latest/framework/tutorials/creating-simple-plugin-timestamp.html
+ */
+class Timestamp extends Plugin {
+  init() {
+    const editor = this.editor;
+
+    editor.ui.componentFactory.add('timestamp', () => {
+      const button = new ButtonView();
+      button.set({ label: 'Timestamp', withText: true });
+      button.on('execute', () => {
+        const now = new Date();
+        editor.model.change((writer) => {
+          editor.model.insertContent(writer.createText(now.toString()));
+        });
+      });
+      return button;
+    });
+  }
+}
+
+export default function () {
+  registry.add('callback', 'customConfig', {
+    targets: ['jahiaApp-init:99.5'],
+    callback() {
+      // Our `customConfig` is based on the `minimal` configuration
+      const minimalConfig = registry.get('ckeditor5-config', 'minimal');
+      const customConfig = {
+        ...minimalConfig,
+        // Register the Timestamp plugin
+        plugins: minimalConfig.plugins.concat([Timestamp]),
+        toolbar: {
+          // Add the timestamp button at the end of the toolbar
+          items: minimalConfig.toolbar.items.concat(['timestamp']),
+          shouldNotGroupWhenFull: true,
+        },
+      };
+      registry.add('ckeditor5-config', 'customConfig', customConfig);
+    },
+  });
+}
+```
+
+![CKEditor with a "Timestamp" button in the toolbar](timestamp.png)
+
 ## Premium License
 
 The embedded version of CKEditor 5 includes a license that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
 
 Collaboration features are not covered by this license, neither File management (this is a feature of Jahia itself), nor Conversion and Embedding features.
+
+```
+
+```

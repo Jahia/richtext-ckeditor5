@@ -329,7 +329,3 @@ export default function () {
 The embedded version of CKEditor 5 includes a license that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
 
 Collaboration features are not covered by this license, neither File management (this is a feature of Jahia itself), nor Conversion and Embedding features.
-
-```
-
-```

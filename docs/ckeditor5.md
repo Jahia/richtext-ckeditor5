@@ -56,28 +56,10 @@ The goal of this section is to give a good understanding of how configurations a
 :::info
 If you are working on a module using the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html), you can import and use `registry` from the `@jahia/ui-extender` package instead of accessing it from `window`. [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html)
 
-If you intend to import official `ckeditor5` packages from npm within your module, you'll need to register them as both `sharedDeps` and `singletonDeps` in your `webpack.shared.js` configuration file.
+If you intend to import the `ckeditor5` package from npm within your module, you'll need to declare it as a remote module in your `webpack.config.js` file: `remote: { ckeditor5: 'appShell.remotes.ckeditor5' }`. This will ensure that your module uses the same instance of CKEditor 5 as all other modules.
 :::
 
-CKEditor 5-related settings can be found in the registry under three types:
-
-- `@jahia/ckeditor5`: exposes a `defineConfig` helper to register custom configurations.
-
-  Here's how to use `defineConfig` to create a new toolbar:
-
-  ```javascript
-  // 1. Define custom configuration
-  const customConfig = {
-    // See below for examples
-  };
-
-  // 2. Register your configuration under the `customConfig` name
-  const ckeditor5 = window.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared');
-  ckeditor5.defineConfig('customConfig', customConfig);
-  ```
-
-- `ckeditor5-config`: exposes toolbars registered for all default and custom configurations. When you register your configuration using `defineConfig` it will be available for your specific key under this type.
-- `ckeditor5-plugins`: exposes plugins registered for all default and custom configurations. Similarly to ckeditor5-config, the plugins used by your custom toolbar will be found under that type.
+All CKEditor 5 configurations live under the `ckeditor5-config` type in the registry. A configuration is an object containing the list of plugins, the toolbar buttons and optional plugin-specific configuration.
 
 The initialization of the default toolbars happens on the `jahiaApp-init:99` hook, use `99.5` to access the default toolbars when defining your own:
 
@@ -96,7 +78,6 @@ Here's how you can quickly define a simple custom config by relying on existing 
 /** A custom configuration with only the bold button */
 const boldOnly = {
   // Inherit plugins and config from the minimal configuration
-  ...window.jahia.uiExtender.registry.get('ckeditor5-plugins', 'minimal'),
   ...window.jahia.uiExtender.registry.get('ckeditor5-config', 'minimal'),
   // Override toolbar to have only the bold button
   toolbar: {
@@ -104,8 +85,7 @@ const boldOnly = {
   },
 };
 
-const ckeditor5 = window.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared');
-ckeditor5.defineConfig('boldOnly', boldOnly);
+window.jahia.uiExtender.registry.add('ckeditor5-config', 'boldOnly', boldOnly);
 ```
 
 Your custom toolbar can now be applied using `richtext[ckeditor.customConfig='boldOnly']` in your CND or via the configuration file as described below. The result is rather minimal:
@@ -230,7 +210,6 @@ const completeConfig = registry.get('ckeditor5-config', 'complete');
 /** A complex toolbar for developer documentation */
 const academyToolbar = {
   // Inherit plugins and config from the complete configuration
-  ...registry.get('ckeditor5-plugins', 'complete'),
   ...completeConfig,
   toolbar: {
     items: completeConfig.toolbar.items.toSpliced(
@@ -250,8 +229,7 @@ const academyToolbar = {
   },
 };
 
-const ckeditor5 = registry.get('@jahia/ckeditor5', 'shared');
-ckeditor5.defineConfig('academyToolbar', academyToolbar);
+window.jahia.uiExtender.registry.add('ckeditor5-config', 'academyToolbar', academyToolbar);
 ```
 
 ![CKEditor with the code block button](complete-with-code.png)

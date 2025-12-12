@@ -5,9 +5,10 @@ window.jahia.uiExtender.registry.add('callback', 'test-ckeditor5-configExample',
     callback: function () {
       try{
         console.log('Register custom CK5 config: testConfigCK5')
-        window.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').defineConfig('testConfigCK5', {
-          plugins: window.jahia.uiExtender.registry.get('ckeditor5-plugins', 'complete').plugins,
-          ...window.jahia.uiExtender.registry.get('ckeditor5-config', 'minimal'),
+
+        const minimal = window.jahia.uiExtender.registry.get('ckeditor5-config', 'minimal');
+        window.jahia.uiExtender.registry.add('ckeditor5-config', 'testConfigCK5', {
+          ...minimal,
           toolbar: {
             items: [
               'bold',
@@ -16,11 +17,10 @@ window.jahia.uiExtender.registry.add('callback', 'test-ckeditor5-configExample',
             ],
             shouldNotGroupWhenFull: true
           }
-        });
+        })
 
-        window.jahia.uiExtender.registry.get('@jahia/ckeditor5', 'shared').defineConfig('testConfigCK5Cnd', {
-          plugins: window.jahia.uiExtender.registry.get('ckeditor5-plugins', 'complete').plugins,
-          ...window.jahia.uiExtender.registry.get('ckeditor5-config', 'minimal'),
+        window.jahia.uiExtender.registry.add('ckeditor5-config', 'testConfigCK5Cnd', {
+          ...minimal,
           toolbar: {
             items: [
               'bold'

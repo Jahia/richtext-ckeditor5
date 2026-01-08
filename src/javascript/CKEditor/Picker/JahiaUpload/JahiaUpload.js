@@ -71,7 +71,7 @@ export class JahiaUpload extends Plugin {
     _removeImages(viewElementOrFragment) {
         const viewChildren = Array.from(viewElementOrFragment.getChildren());
         for (const child of viewChildren) {
-            if (child.is('element', 'img') && !child.getAttribute('src')?.match(/\/files\/(\{|%7[bB])workspace(\{|%7[dD])/)) {
+            if (child.is('element', 'img') && !child.getAttribute('src')?.match(/\/files\/(\{|%7[bB])workspace(\}|%7[dD])/)) {
                 child._remove();
             } else if (child.is('element')) {
                 this._removeImages(child);

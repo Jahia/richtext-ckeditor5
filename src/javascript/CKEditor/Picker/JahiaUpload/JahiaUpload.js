@@ -67,10 +67,11 @@ export class JahiaUpload extends Plugin {
         this.editor.editing.view.document.on('paste', stopUpload, {priority: 'high'});
     }
 
+    /** @param {import('ckeditor5').ViewDocumentFragment | import('ckeditor5').ViewElement} viewElementOrFragment */
     _removeImages(viewElementOrFragment) {
         const viewChildren = Array.from(viewElementOrFragment.getChildren());
         for (const child of viewChildren) {
-            if (child.is('element', 'img')) {
+            if (child.is('element', 'img') && !child.getAttribute('src')?.match(/\/files\/(\{|%7[bB])workspace(\{|%7[dD])/)) {
                 child._remove();
             } else if (child.is('element')) {
                 this._removeImages(child);

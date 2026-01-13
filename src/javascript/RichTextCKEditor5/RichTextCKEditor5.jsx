@@ -11,12 +11,7 @@ import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
 import './RichTextCKEditor5-overrides.css';
 import {registry} from '@jahia/ui-extender';
-import Constants from '../RichTextCKEditor5.constants';
-
-const {
-    CONFIG_KEY,
-    PLUGINS_KEY
-} = Constants.registry;
+import {REGISTRY_KEY} from '../RichTextCKEditor5.constants';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -61,13 +56,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     // Prioritize cnd/selector defined configuration: - field (string, richtext[ckeditor.customConfig='customConfig25'])
     const resolvedConfigName = parsedOptions.ckeditor?.customConfig ? parsedOptions.ckeditor.customConfig : data.jcontent.richtext.config;
 
-    const cfg = {
-        ...registry.get(CONFIG_KEY, resolvedConfigName),
-        plugins: registry.get(PLUGINS_KEY, resolvedConfigName)?.plugins
-    };
-
     const customConfig = {
-        ...cfg,
+        ...registry.get(REGISTRY_KEY, resolvedConfigName),
         language: uilang,
         picker: {
             site: editorContext.site,

@@ -48,6 +48,7 @@ jobs:
         with:
           nexus_username: ${{ secrets.NEXUS_USERNAME }}
           nexus_password: ${{ secrets.NEXUS_PASSWORD }}
+          tests_module_type: javascript
 
   sonar-analysis:
     name: Sonar Analysis

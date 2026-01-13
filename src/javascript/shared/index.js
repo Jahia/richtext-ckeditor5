@@ -1,1 +1,1 @@
-export * from '../CKEditor/registerConfig';
+export * from 'ckeditor5';

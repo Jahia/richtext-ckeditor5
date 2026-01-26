@@ -48,7 +48,7 @@
     <groupId>org.jahia.test</groupId>
     <artifactId>ckeditor5-test-module-root</artifactId>
     <name>CKEditor5 Test Module Root</name>
-    <version>1.0.0-beta-1</version>
+    <version>1.0.0-beta-2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>This is the custom module for testing CKEditor 5 in Jahia</description>
 

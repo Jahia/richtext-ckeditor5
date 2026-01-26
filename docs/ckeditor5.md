@@ -1,0 +1,331 @@
+---
+page:
+  '$path': '/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/configuring-and-customizing-ckeditor-menu/ckeditor-5'
+  'jcr:title': CKEditor 5
+  'j:templateName': documentation
+content:
+  '$subpath': document-area/content
+---
+
+This page provides information on how to configure, integrate and extend CKEditor 5 in Jahia. It explains how to work with the configuration file, how to create custom toolbars, how to apply custom toolbars to specific sites, permissions or content types.
+
+## Installation
+
+CK5 is available as a module. You can download it from the [Jahia Store](https://store.jahia.com/home.html).
+
+Please note that CKEditor 5 will completely replace CKEditor 4 in a later version of Jahia, but for the time being both CK4 and CK5 can run at the same time on a Jahia environment. We've maintained this possibility to ease our customers' transition and training process of their users.
+
+:::warning
+CK4 is not supported anymore by its vendor, hence no bug fixes will be provided on this version, except for the parts that are specific to Jahia, if they are security related.
+:::
+
+### Initialization Behavior
+
+Once the CK5 module is started, every new website created on the platform will use CK5 by default. All previously existing websites are automatically added in a list of exclusions, to let users continue to use CK4 and not force any change on the platform.
+
+To activate CK5 on a pre-existing website, the first thing to do is to remove this site from the exclude list in the cfg file.
+
+## Configuration
+
+A configuration is the name given to a specific CK5 toolbar and its underlying plugins.
+
+Jahia provides four configurations (`minimal`, `light`, `advanced` and `complete`) aiming to satisfy most editorial teams. To ease maintenance and governance, those configurations should not be modified. **You can create and deploy your own configurations to match your needs.**
+
+Here are screenshots of the four default configurations:
+
+1. **Complete:** interface visible by default to editors with the `view-full-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='complete']` in CND)
+
+   ![Editor in Complete configuration](complete.png)
+
+2. **Advanced:** interface visible by default to editors with the `view-basic-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='advanced']` in CND)
+
+   ![Editor in Advanced configuration](advanced.png)
+
+3. **Light:** interface visible by default to editors with the `view-light-wysiwyg-editor` permission (can be overridden with `richtext[ckeditor.customConfig='light']` in CND)
+
+   ![Editor in Light configuration](light.png)
+
+4. **Minimal:** interface visible by default to all other contributors (can be overridden with `richtext[ckeditor.customConfig='minimal']` in CND)
+
+   ![Editor in Minimal configuration](minimal.png)
+
+### Configuration Registration
+
+The goal of this section is to give a good understanding of how configurations are registered and where they are kept in order to make them editable.
+
+:::info
+If you are working on a module using the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html), you can import and use `registry` from the `@jahia/ui-extender` package instead of accessing it from `window`. [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html)
+
+If you intend to import the `ckeditor5` package from npm within your module, you'll need to declare it as a remote module in your `webpack.config.js` file: `remote: { ckeditor5: 'appShell.remotes.ckeditor5' }`. This will ensure that your module uses the same instance of CKEditor 5 as all other modules.
+:::
+
+All CKEditor 5 configurations live under the `ckeditor5-config` type in the registry. A configuration is an object containing the list of plugins, the toolbar buttons and optional plugin-specific configuration.
+
+The initialization of the default toolbars happens on the `jahiaApp-init:99` hook, use `99.5` to access the default toolbars when defining your own:
+
+```javascript
+window.jahia.uiExtender.registry.add('callback', 'test-ckeditor5-configExample', {
+  targets: ['jahiaApp-init:99.5'],
+  callback: function () {
+    // Register custom toolbars here
+  },
+});
+```
+
+Here's how you can quickly define a simple custom config by relying on existing registrations to avoid importing a lot of custom classes:
+
+```javascript
+/** A custom configuration with only the bold button */
+const boldOnly = {
+  // Inherit plugins and config from the minimal configuration
+  ...window.jahia.uiExtender.registry.get('ckeditor5-config', 'minimal'),
+  // Override toolbar to have only the bold button
+  toolbar: {
+    items: ['bold'],
+  },
+};
+
+window.jahia.uiExtender.registry.add('ckeditor5-config', 'boldOnly', boldOnly);
+```
+
+Your custom toolbar can now be applied using `richtext[ckeditor.customConfig='boldOnly']` in your CND or via the configuration file as described below. The result is rather minimal:
+
+![Editor with bold button only](bold-only.png)
+
+:::info
+The CKEditor website has an interactive tool to create custom configurations: [CK5 builder tool](https://ckeditor.com/ckeditor-5/builder/).
+:::
+
+### Applying a Configuration
+
+This section demonstrates the ways in which CK 5 configuration can be applied in Jahia.
+
+#### Global Configuration File
+
+The global configuration file allows you to have control over what toolbar is displayed on what site and under what conditions.
+
+```yaml
+includeSites:
+  - site1
+  - site2
+excludeSites:
+  # This list is automatically populated when CK5 module is installed with pre-existing sites
+  - site3
+  - site4
+```
+
+Ensure that the target site is not listed under `excludeSites` when modifying other sections of the configuration file.
+
+There are several ways to apply specific configuration:
+
+- Global: Configuration can be applied across all sites
+- Site-specific: Configuration can be applied only to specific sites
+- Permission-based: can be combined with 1 or 2 to determine if configuration can be applied
+
+Global configuration can be applied simply by adding the name of the configuration in the configs list:
+
+```yaml
+configs:
+  - name: yourConfig
+```
+
+This will apply a config named `yourConfig` to all sites. Note that you still need to follow the steps in the first section to define your configuration.
+
+To apply configuration to specific sites, add an optional siteKeys list:
+
+```yaml
+configs:
+  - siteKeys:
+      - siteKey1
+      - siteKey2
+    name: yourConfig
+```
+
+If you want to check for permission add an optional permission parameter:
+
+```yaml
+configs:
+  - siteKeys:
+      - siteKey1
+      - siteKey2
+    name: yourConfig
+    permission: myPermission
+```
+
+The configuration order is important:
+
+- Configurations that have `siteKeys` will be processed first.
+- Configurations without `siteKeys` will be processed afterwards.
+
+Apart from this site key ordering, the first configuration that satisfies all configuration requirements will be used.
+
+**Set the most powerful toolbars first,** so that users with broader permissions do not get matched to configurations intended for more restricted roles.
+
+#### CND configuration
+
+Configuration can also be defined at the CND level. In this case, the configuration is applied directly to the specified field within the content definition, overriding any global or site-specific configuration.
+
+```
+[example:article]
+ - body (string, richtext[ckeditor.customConfig='yourConfig'])
+```
+
+CND-level configuration does not support permissions or site keys. The specified configuration is always applied directly to the field.
+
+#### JSON Overrides
+
+Another way to apply configuration is by using a JSON override. JSON override can be deployed with a module, it could be your template-set for example.
+
+To do so, you need to create a file under `META-INF/jahia-content-editor-forms/fieldsets` with the following content:
+
+```json
+{
+  "name": "example:article",
+  "priority": 1.1,
+  "fields": [
+    {
+      "name": "body",
+      "selectorOptionsMap": {
+        "ckeditor": {
+          "customConfig": "yourConfig"
+        }
+      }
+    }
+  ]
+}
+```
+
+This will apply yourConfig to the body field on the `example:article` definition.
+
+Configurations defined in the configuration file will have lower priority than the ones defined at the CND level, and JSON overrides will have the ability to change configuration at the CND level.
+
+## Bundled Plugins and Features
+
+The CK5 module packs many free and premium features of CKEditor 5, some of them are not visible in our default toolbars but still available for integration. For instance, because code blocks require specific scripting and styling in the integration, they have not been included in the default toolbars, but the button can still be added to a custom configuration:
+
+```js
+// This custom toolbar inherits the `complete` configuration
+const completeConfig = registry.get('ckeditor5-config', 'complete');
+
+/** A complex toolbar for developer documentation */
+const academyToolbar = {
+  // Inherit plugins and config from the complete configuration
+  ...completeConfig,
+  toolbar: {
+    items: completeConfig.toolbar.items.toSpliced(
+      // Add the `codeBlock` button right after the `insertTable` button
+      completeConfig.toolbar.items.indexOf('insertTable') + 1,
+      0,
+      'codeBlock'
+    ),
+    shouldNotGroupWhenFull: true,
+  },
+  codeBlock: {
+    // List of languages visible in the code block dropdown
+    languages: [
+      { language: 'css', label: 'CSS' },
+      { language: 'html', label: 'HTML' },
+    ],
+  },
+};
+
+window.jahia.uiExtender.registry.add('ckeditor5-config', 'academyToolbar', academyToolbar);
+```
+
+![CKEditor with the code block button](complete-with-code.png)
+
+This toolbar can then be applied to the `academy` website using the configuration file:
+
+```yaml
+configs:
+  - siteKeys:
+      - academy
+    name: academyToolbar
+```
+
+The complete list of plugins available in the CK5 Jahia module [can be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/plugins-complete.js#L54).
+
+The configuration of the `complete` toolbar [can also be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/config-complete.js).
+
+## Building a Custom Plugin
+
+CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.
+
+This section assumes you already have a Jahia module set up with the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html). If that's not the case, please refer to [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html).
+
+- Install `ckeditor5` with `yarn add -D ckeditor5` in your module folder.
+
+  This is library is only used during the development to provide autocompletion hints. The actual CKEditor 5 code used at runtime will be the one provided by the CK5 module.
+
+- Ensure `ckeditor5` resolves to the remote module at runtime by adding it to the `remotes` section of your `webpack.config.js` file:
+
+  ```js
+  new ModuleFederationPlugin(
+    mergeWebpackConfig(commonConfig, {
+      remotes: {
+        '@jahia/jcontent': 'appShell.remotes.jcontent',
+        'ckeditor5': 'appShell.remotes.ckeditor5', // Add this line
+      },
+    })
+  ),
+  ```
+
+Once these steps are complete you can create your own plugin. Here's a simple example of a plugin that adds a button to insert the current date at the cursor position:
+
+```js
+// File: src/javascript/init.js
+
+import { registry } from '@jahia/ui-extender';
+// This import will resolve to the remote ckeditor5 module at runtime
+import { Plugin, ButtonView } from 'ckeditor5';
+
+/**
+ * Based on https://ckeditor.com/docs/ckeditor5/latest/framework/tutorials/creating-simple-plugin-timestamp.html
+ */
+class Timestamp extends Plugin {
+  init() {
+    const editor = this.editor;
+
+    editor.ui.componentFactory.add('timestamp', () => {
+      const button = new ButtonView();
+      button.set({ label: 'Timestamp', withText: true });
+      button.on('execute', () => {
+        const now = new Date();
+        editor.model.change((writer) => {
+          editor.model.insertContent(writer.createText(now.toString()));
+        });
+      });
+      return button;
+    });
+  }
+}
+
+export default function () {
+  registry.add('callback', 'customConfig', {
+    targets: ['jahiaApp-init:99.5'],
+    callback() {
+      // Our `customConfig` is based on the `minimal` configuration
+      const minimalConfig = registry.get('ckeditor5-config', 'minimal');
+      const customConfig = {
+        ...minimalConfig,
+        // Register the Timestamp plugin
+        plugins: minimalConfig.plugins.concat([Timestamp]),
+        toolbar: {
+          // Add the timestamp button at the end of the toolbar
+          items: minimalConfig.toolbar.items.concat(['timestamp']),
+          shouldNotGroupWhenFull: true,
+        },
+      };
+      registry.add('ckeditor5-config', 'customConfig', customConfig);
+    },
+  });
+}
+```
+
+![CKEditor with a "Timestamp" button in the toolbar](timestamp.png)
+
+## Premium License
+
+The embedded version of CKEditor 5 includes a license that covers the [Essential](https://ckeditor.com/ckeditor-5/capabilities/core-editing-features/) features, [Productivity](https://ckeditor.com/ckeditor-5/capabilities/productivity-features/) features and [AI Assistant](https://ckeditor.com/ckeditor-5/capabilities/ai-features/) features. This license applies to all Jahia modules, which means an integration can use those features in custom configurations, without any additional cost.
+
+Collaboration features are not covered by this license, neither File management (this is a feature of Jahia itself), nor Conversion and Embedding features.

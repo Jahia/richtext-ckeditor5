@@ -374,12 +374,14 @@
 }
 
 // Reset the fixed position from CKEditor
+// Needs !important to override CKEditor's inline style
 :global(.ck.ck-sticky-panel .ck-sticky-panel__content) {
-  position: static !important;
+  position: static;
   width: auto !important;
 }
 
 // We don't need that placeholder as we use sticky position
+// Needs !important to override CKEditor's inline style
 :global(.ck.ck-sticky-panel__placeholder) {
 	display: none !important;
 }

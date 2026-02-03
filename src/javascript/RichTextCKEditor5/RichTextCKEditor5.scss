@@ -366,3 +366,20 @@
   opacity: .8;
   border-radius: var(--radius-selector);
 }
+
+// Manage sticky toolbar when richtext is focused
+:global(.ck.ck-editor__top:has(~ .ck-editor__main .ck-focused)) {
+  position: sticky;
+  top: 40px; // size of the sticky section header
+}
+
+// Reset the fixed position from CKEditor
+:global(.ck.ck-sticky-panel .ck-sticky-panel__content) {
+  position: static !important;
+  width: auto !important;
+}
+
+// We don't need that placeholder as we use sticky position
+:global(.ck.ck-sticky-panel__placeholder) {
+	display: none !important;
+}

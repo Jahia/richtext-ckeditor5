@@ -371,6 +371,7 @@
 :global(.ck.ck-editor__top:has(~ .ck-editor__main .ck-focused)) {
   position: sticky;
   top: 40px; // size of the sticky section header
+  z-index: 50; // manage menu z-index when the toolbar is sticky
 }
 
 // Reset the fixed position from CKEditor

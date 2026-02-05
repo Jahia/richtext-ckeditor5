@@ -1,4 +1,55 @@
-:root, body.ck-fullscreen {
+/* All CKEditor5 overrides to fit our need */
+
+:root {
+    --ck-inner-shadow: none;
+    --ck-focus-ring: 1px solid var(--color-accent_light);
+    --ck-border-radius: var(--radius-selector);
+
+    /* -- Overrides generic colors. ------------------------------------------------------------- */
+    --ck-content-font-color: var(--color-gray_dark);
+
+    --ck-color-base-background: var(--color-white);
+    --ck-color-base-border: var(--color-gray40);
+
+    --ck-color-focus-border: var(--color-accent_light);
+    --ck-color-text: var(--color-gray_dark);
+
+    /* -- Overrides the default .ck-button class colors. ---------------------------------------- */
+
+    --ck-color-button-default-hover-background: var(--color-gray_light_plain20);
+    --ck-color-button-default-active-background: var(--color-gray_light_plain60);
+
+    --ck-color-button-on-color: var(--color-accent_dark);
+    --ck-color-button-on-background: var(--color-accent_light_plain20);
+    --ck-color-button-on-hover-background: var(--color-accent_light_plain40);
+    --ck-color-button-on-active-background:var(--color-accent_light_plain60);
+
+    --ck-color-button-action-background: var(--color-accent);
+    --ck-color-button-action-hover-background: var(--color-accent_dark);
+    --ck-color-button-action-active-background: var(--color-accent_dark_contrast);
+
+    /* -- Overrides the default .ck-dropdown class colors. -------------------------------------- */
+
+    --ck-color-dropdown-panel-border: var(--border-selector);
+
+    --ck-color-list-background: var(--color-light);
+
+    /* -- Overrides the default .ck-balloon-panel class colors. --------------------------------- */
+
+    --ck-color-panel-border: var(--color-gray20);
+
+    /* -- Overrides the default .ck-toolbar class colors. --------------------------------------- */
+
+    --ck-color-toolbar-border: var(--color-gray20);
+
+    /* -- Overrides the default .ck-tooltip class colors. --------------------------------------- */
+
+    --ck-color-tooltip-background: var(--color-gray_dark);
+    --ck-color-tooltip-text: var(--color-light);
+}
+
+:root,
+body.ck-fullscreen {
     --ck-z-default: 10555;
     --ck-z-modal: calc(var(--ck-z-default) + 999);
     --ck-z-fullscreen: 1300;
@@ -21,4 +72,45 @@ body.ck-fullscreen {
 
 .ck-clipboard-drop-target-line {
     z-index: var(--ck-z-modal);
+}
+
+
+/* Manage read-only styles for CKEditor */
+.ck.ck-editor:has(.ck-read-only) {
+  --ck-color-base-border: transparent;
+  --ck-base-background: transparent;
+}
+
+.ck.ck-editor:has(.ck-read-only) .ck-editor__top {
+    pointer-events: none;
+    opacity: .6;
+}
+
+.ck.ck-editor .ck-content.ck-read-only {
+  color: var(--color-gray_dark);
+
+  border-color: transparent;
+  background-color: var(--color-gray_light_plain40);
+  opacity: .8;
+  border-radius: var(--radius-selector);
+}
+
+/* Manage sticky toolbar when richtext is focused */
+.ck.ck-editor__top:has(~ .ck-editor__main .ck-focused) {
+  position: sticky;
+  top: 40px; /* size of the sticky section header */
+  z-index: 50; /* manage menu z-index when the toolbar is sticky */
+}
+
+/* Reset the fixed position from CKEditor */
+/* Needs !important to override CKEditor's inline style */
+.ck.ck-sticky-panel .ck-sticky-panel__content {
+  position: static;
+  width: auto !important;
+}
+
+/* We don't need that placeholder as we use sticky position */
+/* Needs !important to override CKEditor's inline style */
+.ck.ck-sticky-panel__placeholder {
+	display: none !important;
 }

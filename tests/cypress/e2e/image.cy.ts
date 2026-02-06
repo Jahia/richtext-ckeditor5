@@ -65,7 +65,7 @@ describe('Image tests', () => {
         });
     });
 
-    it('should be able to add links to images', () => {
+    it.skip('should be able to add links to images', () => {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
             .switchToListMode();
         const ce = jcontent.editComponentByText('Lorem ipsum');

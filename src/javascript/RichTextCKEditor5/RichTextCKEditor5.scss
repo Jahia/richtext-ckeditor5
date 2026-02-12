@@ -2,6 +2,15 @@
 // Styles related to our CKEditor5 implementation
 //--
 
+// Moonstone fixes to remove when https://github.com/Jahia/moonstone/issues/1275 will be released an used in the product
+:global(.moonstone-collapsible_button_expanded) {
+  z-index: unset;
+}
+
+:global(.moonstone-collapsible_button_sticky) {
+  z-index: 100;
+}
+
 .wrapper {
   overflow-y: scroll;
   min-height: 20vh;

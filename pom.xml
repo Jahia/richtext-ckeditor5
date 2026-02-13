@@ -48,6 +48,7 @@
         <jahia-module-type>system</jahia-module-type>
         <jahia-module-signature>MCwCFDFBNZqHZlCsprvnzY3FNlCtgOFSAhQxjl4nWCpeEOkvv3EIDAj6cN3rWg==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
+        <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>
         <import-package>
             org.jahia.modules.contenteditor.graphql.api

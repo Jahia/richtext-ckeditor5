@@ -89,7 +89,7 @@ describe('Image tests', () => {
             .should('contain', linkUrl);
     });
 
-    it('should be able to resize image and display in page builder', {retries: 3}, () => {
+    it('should be able to resize image and display in page builder', () => {
         const jcontent = JContent.visit(siteKey, 'en', 'pages/home')
             .switchToListMode();
         const ce = jcontent.editComponentByText('Lorem ipsum');

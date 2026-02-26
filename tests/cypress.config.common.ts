@@ -2,6 +2,10 @@ import * as fs from 'fs';
 
 export const baseConfig = {
     chromeWebSecurity: false,
+    retries: {
+        runMode: 2,
+        openMode: 0
+    },
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 60000,
     requestTimeout: 60000,

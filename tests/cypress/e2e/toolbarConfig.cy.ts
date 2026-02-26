@@ -59,11 +59,26 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests', () => {
             variables: {isEnabled: 'true'}
         });
 
+        // Health check: ensure DNS is resolving before calling enableModule.
+        // Docker embedded DNS can degrade after sustained testing.
+        cy.request({
+            url: `${Cypress.env('JAHIA_URL') || Cypress.config('baseUrl')}/modules/api/provisioning`,
+            method: 'GET',
+            failOnStatusCode: false,
+            timeout: 60000
+        });
+
         enableModule('test-ckeditor5-config', siteKey);
     });
 
     after(function () {
-        cy.logout();
+        // Use direct request to avoid cy.logout() crashing on DNS failure during cleanup
+        cy.request({
+            url: `${Cypress.env('JAHIA_URL') || Cypress.config('baseUrl')}/cms/logout`,
+            method: 'POST',
+            failOnStatusCode: false,
+            timeout: 30000
+        });
         cy.apollo({
             mutationFile: 'disableEnableCK5.graphql',
             variables: {isEnabled: 'true'}

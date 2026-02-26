@@ -11,14 +11,13 @@ services:
             JAHIA_LICENSE: ${JAHIA_LICENSE}
             SUPER_USER_PASSWORD: ${SUPER_USER_PASSWORD}
             PROCESSING_SERVER: 'true'
-            MAX_RAM_PERCENTAGE: 70
             JAHIA_PROPERTIES: ${JAHIA_PROPERTIES}
-            CATALINA_OPTS: ${CATALINA_OPTS}
+            CATALINA_OPTS: ${CATALINA_OPTS:--Xmx2g -Xms2g}
             RESTORE_MODULE_STATES: 'false'
             NEXUS_USERNAME: ${NEXUS_USERNAME}
             NEXUS_PASSWORD: ${NEXUS_PASSWORD}
             TZ: ${TIMEZONE}
-            JPDA: 'true'
+            JPDA: '${JPDA:-false}'
         ports:
             - '8000:8000'
             - '8080:8080'

@@ -50,6 +50,7 @@ jobs:
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-integration-tests.yml@v2
     with:
       module_id: richtext-ckeditor5
+      module_branch: main
       testrail_project: CKEditor 5 Module
       jahia_image: ghcr.io/jahia/jahia-ee-dev:8-SNAPSHOT
       should_skip_testrail: true

@@ -21,6 +21,7 @@ jobs:
     uses: Jahia/jahia-modules-action/.github/workflows/reusable-integration-tests.yml@v2
     with:
       module_id: richtext-ckeditor5
+      module_branch: ${{ github.ref }}
       testrail_project: CKEditor 5 Module
       jahia_image: ${{ github.event.inputs.jahia_image }}
       should_skip_testrail: true

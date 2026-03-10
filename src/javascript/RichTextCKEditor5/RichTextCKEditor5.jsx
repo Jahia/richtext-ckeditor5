@@ -53,11 +53,8 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         return <span>loading...</span>;
     }
 
-    // Prioritize cnd/selector defined configuration: - field (string, richtext[ckeditor.customConfig='customConfig25'])
-    const resolvedConfigName = parsedOptions.ckeditor?.customConfig ? parsedOptions.ckeditor.customConfig : data.jcontent.richtext.config;
-
     const customConfig = {
-        ...registry.get(REGISTRY_KEY, resolvedConfigName),
+        ...registry.get(REGISTRY_KEY, data.jcontent.richtext.config),
         language: uilang,
         picker: {
             site: editorContext.site,

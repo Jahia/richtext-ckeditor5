@@ -48,12 +48,8 @@ public class GqlRichTextQuery {
     @GraphQLName("config")
     @GraphQLDescription("Returns appropriate configuration name for richtext ckeditor5")
     public String validate(@GraphQLName("path") @GraphQLNonNull String path) {
-
-        if (config == null) {
-            return "minimal";
-        }
-
         try {
+
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             JCRNodeWrapper node = session.getNode(path);
             String siteKey = node.getResolveSite().getSiteKey();

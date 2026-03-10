@@ -26,6 +26,8 @@ import org.jahia.modules.graphql.provider.dxm.osgi.annotations.GraphQLOsgiServic
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
@@ -35,7 +37,7 @@ import java.util.stream.Collectors;
 @GraphQLName("RichTextQuery")
 @GraphQLDescription("Provides functionality necessary for operation of richtext ckeditor5")
 public class GqlRichTextQuery {
-
+    private static final Logger logger = LoggerFactory.getLogger(GqlRichTextQuery.class);
     private RichTextConfig config;
 
     @Inject
@@ -58,6 +60,7 @@ public class GqlRichTextQuery {
             String configForSite = getConfigForSite(node, siteKey);
 
             if (configForSite != null) {
+                logger.debug("config for site found for sitekey {}", siteKey);
                 return configForSite;
             }
 
@@ -65,18 +68,22 @@ public class GqlRichTextQuery {
             String defaultConfig = getDefaultConfig(node);
 
             if (defaultConfig != null) {
+                logger.debug("default config found for {}", node.getPath());
                 return defaultConfig;
             }
 
             // If no config is defined by the user return default config name based on permission level
             if (node.hasPermission("view-full-wysiwyg-editor")) {
+                logger.debug("complete config found for {}", node.getPath());
                 return "complete";
             } else if (node.hasPermission("view-basic-wysiwyg-editor")) {
+                logger.debug("advanced config found for {}", node.getPath());
                 return "advanced";
             } else if (node.hasPermission("view-light-wysiwyg-editor")) {
+                logger.debug("light config found for {}", node.getPath());
                 return "light";
             }
-
+            logger.debug("minimal config found for {}", node.getPath());
             return "minimal";
 
         } catch (RepositoryException e) {

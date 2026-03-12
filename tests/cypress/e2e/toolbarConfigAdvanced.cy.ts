@@ -214,7 +214,7 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests (advanced)', () => 
         ck5field.getToolbarButton('Bold').should('exist');
     });
 
-    it('Loads default config if CND config is marlformed', function () {
+    it('Loads default config if CND config is malformed', function () {
         jcontent.createContent('jnt:badConfigArticle');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:badConfigArticle_abstract');

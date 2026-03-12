@@ -11,7 +11,7 @@ This page provides information on how to configure, integrate and extend CKEdito
 
 ## Installation
 
-CK5 is available as a module. You can download it from the [Jahia Store](https://store.jahia.com/home.html).
+CK5 is available as a module. You can download it from the [Jahia Store](https://store.jahia.com/contents/modules-repository/org/jahia/modules/richtext-ckeditor5.html).
 
 Please note that CKEditor 5 will completely replace CKEditor 4 in a later version of Jahia, but for the time being both CK4 and CK5 can run at the same time on a Jahia environment. We've maintained this possibility to ease our customers' transition and training process of their users.
 

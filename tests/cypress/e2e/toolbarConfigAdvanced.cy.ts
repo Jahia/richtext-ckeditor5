@@ -214,15 +214,15 @@ describe('Rich Text CKeditor 5 - Toolbar configuration tests (advanced)', () => 
         ck5field.getToolbarButton('Bold').should('exist');
     });
 
-    it('Loads json override config if CND config is marlformed', function () {
+    it('Loads default config if CND config is marlformed', function () {
         jcontent.createContent('jnt:badConfigArticle');
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:badConfigArticle_abstract');
         ck5field.getMenuBar().should('not.exist');
-        ck5field.getToolbarButton('Edit source').should('not.exist');
-        ck5field.getToolbarButton('Bookmark').should('not.exist');
-        ck5field.getToolbarButton('Underline').should('not.exist');
-        ck5field.getToolbarButton('Italic').should('not.exist');
+        ck5field.getToolbarButton('Edit source').should('exist');
+        ck5field.getToolbarButton('Bookmark').should('exist');
+        ck5field.getToolbarButton('Underline').should('exist');
+        ck5field.getToolbarButton('Italic').should('exist');
         ck5field.getToolbarButton('Bold').should('exist');
     });
 

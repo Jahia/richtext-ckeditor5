@@ -6,3 +6,6 @@
 
 [jnt:customArticleOverride] > jnt:content, jmix:mainResource, jmix:siteComponent, jmix:droppableContent
 - abstract (string, richtext)
+
+[jnt:badConfigArticle] > jnt:content, jmix:mainResource, jmix:siteComponent, jmix:droppableContent
+- abstract (string, richtext[ckeditor.customConfig='bigjohn'])

@@ -27,12 +27,11 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         if (editorRef.current) {
             const editor = editorRef.current;
             const data = editor.getData();
-            const valueToSet = value ?? '';
-            if (valueToSet !== data) {
-                editor.setData(valueToSet);
+            if (safeValue !== data) {
+                editor.setData(safeValue);
             }
         }
-    }, [value]);
+    }, [safeValue]);
 
     const parsedOptions = {};
     field.selectorOptions.forEach(option => {

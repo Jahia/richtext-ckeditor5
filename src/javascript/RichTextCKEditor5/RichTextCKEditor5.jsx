@@ -20,15 +20,18 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const {lang, uilang} = useContentEditorConfigContext();
     const {loading: translationsLoading, translations} = useTranslation(uilang);
 
+    // Ensure value is never null or undefined to prevent CKEditor errors
+    const safeValue = value ?? '';
+
     useEffect(() => {
         if (editorRef.current) {
             const editor = editorRef.current;
             const data = editor.getData();
-            if (value !== data) {
-                editor.setData(value);
+            if (safeValue !== data) {
+                editor.setData(safeValue);
             }
         }
-    }, [value]);
+    }, [safeValue]);
 
     const parsedOptions = {};
     field.selectorOptions.forEach(option => {
@@ -85,7 +88,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 editor={JahiaClassicEditor}
                 config={customConfig}
                 disabled={field.readOnly}
-                data={value}
+                data={safeValue}
                 onReady={editor => {
                     editorRef.current = editor;
                     editor.editing.view.change(writer => {

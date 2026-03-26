@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 import {ClassicEditor} from 'ckeditor5';
-import {isElement} from 'lodash-es';
 
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
@@ -37,12 +36,6 @@ export class JahiaClassicEditor extends ClassicEditor {
             removeToolbarItem(config, 'style');
         }
 
-        const editor = new this(sourceElementOrData, config);
-        return editor.initPlugins().then(() => {
-            editor.ui.init(isElement(sourceElementOrData) ? sourceElementOrData : null);
-            editor.data.init(editor.config.get('initialData'));
-            editor.fire('ready');
-            return editor;
-        });
+        return super.create(sourceElementOrData, config);
     }
 }

@@ -78,7 +78,8 @@ export const completeConfig = {
                 classes: true,
                 styles: true
             }
-        ]
+        ],
+        htmlIframeSandbox: false
     },
     list: {
         properties: {

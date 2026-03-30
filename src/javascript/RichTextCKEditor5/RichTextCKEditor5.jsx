@@ -12,6 +12,7 @@ import {useTranslation} from './RichTextCKEditor5.hooks';
 import './RichTextCKEditor5-overrides.css';
 import {registry} from '@jahia/ui-extender';
 import {REGISTRY_KEY} from '../RichTextCKEditor5.constants';
+import {removeToolbarItems} from '../CKEditor/config.utils';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -59,8 +60,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     // Prioritize cnd/selector defined configuration: - field (string, richtext[ckeditor.customConfig='customConfig25'])
     // if no such configuration defined or present registry, using the fallback mechanism
     let resolvedConfigName;
+    const excludeToolbarItems = data.jcontent.richtext.config.excludeToolbarItems;
     if (parsedOptions.ckeditor?.customConfig === undefined || registry.get(REGISTRY_KEY, parsedOptions.ckeditor?.customConfig) === undefined) {
-        resolvedConfigName = data.jcontent.richtext.config;
+        resolvedConfigName = data.jcontent.richtext.config.configName;
     } else {
         resolvedConfigName = parsedOptions.ckeditor.customConfig;
     }
@@ -76,6 +78,10 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             store
         }
     };
+
+    if (excludeToolbarItems.length > 0) {
+        removeToolbarItems(customConfig, excludeToolbarItems);
+    }
 
     if (translations.length > 0) {
         customConfig.translations = translations.slice();

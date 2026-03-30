@@ -7,7 +7,7 @@ import {ClassicEditor} from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
 import 'ckeditor5-premium-features/ckeditor5-premium-features.css';
 import {isProductivityMode} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
-import {removePlugin, removeToolbarItem} from '~/CKEditor/config.utils';
+import {removePlugin, removeToolbarItems} from '~/CKEditor/config.utils';
 
 export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {
@@ -26,14 +26,14 @@ export class JahiaClassicEditor extends ClassicEditor {
         if (!config.template?.definitions) {
             console.debug('Removing Template plugin and toolbar item as no definitions are provided.');
             removePlugin(config, 'Template');
-            removeToolbarItem(config, 'template');
+            removeToolbarItems(config, 'template');
         }
 
         // Remove Styles plugin, toolbar item if no definitions
         if (!config.style?.definitions) {
             console.debug('Removing Style plugin and toolbar item as no definitions are provided.');
             removePlugin(config, 'Style');
-            removeToolbarItem(config, 'style');
+            removeToolbarItems(config, 'style');
         }
 
         return super.create(sourceElementOrData, config);

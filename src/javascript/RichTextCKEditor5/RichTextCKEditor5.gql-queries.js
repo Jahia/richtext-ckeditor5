@@ -4,7 +4,10 @@ export const getCKEditorConfiguration = gql`
     query getCKEditorConfiguration($nodePath: String!) {
         jcontent {
             richtext {
-                config(path: $nodePath)
+                config(path: $nodePath) {
+                    configName
+                    excludeToolbarItems
+                }
             }
         }
     }

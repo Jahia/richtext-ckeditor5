@@ -11,7 +11,8 @@ export const clearConfig = () => {
             admin {
                 jahia {
                     configuration(pid: "org.jahia.modules.richtextCKEditor5") {
-                        remove(name: "configs")
+                        a: remove(name: "excludeToolbarItems")
+                        b: remove(name: "configs")
                     }
                 }
             }

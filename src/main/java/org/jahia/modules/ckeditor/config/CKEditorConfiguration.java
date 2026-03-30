@@ -6,11 +6,13 @@ public class CKEditorConfiguration {
     private String name;
     private String permission;
     private List<String> siteKeys;
+    private List<String> excludeToolbarItems;
 
-    public CKEditorConfiguration(String name, String permission, List<String> siteKeys) {
+    public CKEditorConfiguration(String name, String permission, List<String> siteKeys, List<String> excludeToolbarItems) {
         this.name = name;
         this.permission = permission;
         this.siteKeys = siteKeys;
+        this.excludeToolbarItems = excludeToolbarItems;
     }
 
     public String getName() {
@@ -35,5 +37,9 @@ public class CKEditorConfiguration {
 
     public void setSiteKeys(List<String> siteKeys) {
         this.siteKeys = siteKeys;
+    }
+
+    public List<String> getExcludeToolbarItems() {
+        return excludeToolbarItems;
     }
 }

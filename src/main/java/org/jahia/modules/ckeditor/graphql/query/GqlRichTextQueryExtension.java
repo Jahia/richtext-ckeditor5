@@ -28,7 +28,7 @@ public class GqlRichTextQueryExtension {
     @GraphQLField
     @GraphQLName("richtext")
     @GraphQLDescription("Main access to richtext ckeditor5 queries")
-    public static GqlRichTextQuery getHtmlFiltering() {
+    public static GqlRichTextQuery getRichTextConfig() {
         return new GqlRichTextQuery();
     }
 }

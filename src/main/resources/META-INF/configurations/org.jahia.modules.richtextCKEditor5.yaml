@@ -9,6 +9,9 @@ enabledByDefault: true
 #      - siteKey2
 #    name: "myConfig"
 #    permission: "myPermission"
+#     excludeToolbarItems:
+#       - item1
+#       - item2
 #  - siteKeys:
 #      - siteKey3
 #      - siteKey4
@@ -22,3 +25,6 @@ enabledByDefault: true
 #excludeSites:
 #  - site3
 #  - site4
+#excludeToolbarItems:
+#  - item1
+#  - item2

@@ -24,10 +24,12 @@ public class RichTextConfig implements ManagedService {
 
     private final static String INCLUDE_SITES = "includeSites";
     private final static String EXCLUDE_SITES = "excludeSites";
+    private final static String EXCLUDE_TOOLBARS = "excludeToolbarItems";
     private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
     private final static String CONFIG_TYPE = "configType";
 
     private boolean enabledByDefault = true;
+    private List<String> excludeToolbarItems  = new ArrayList<>();
     private List<String> includeSites = new ArrayList<>();
     private List<String> excludeSites = new ArrayList<>();
     private List<CKEditorConfiguration> configs = new ArrayList<>();
@@ -48,17 +50,32 @@ public class RichTextConfig implements ManagedService {
             configs = processConfigs(values.getList("configs"));
             includeSites = getListOfStrings(values.getList(INCLUDE_SITES));
             excludeSites = getListOfStrings(values.getList(EXCLUDE_SITES));
+            excludeToolbarItems = getListOfStrings(values.getList(EXCLUDE_TOOLBARS));
 
             enabledByDefault = getBoolean(dictionary, ENABLED_BY_DEFAULT);
             configType = (dictionary.get(CONFIG_TYPE) != null)
                     ? dictionary.get(CONFIG_TYPE).toString() : "complete";
-            logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, configType={}",
-                    enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), configType);
+            logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, excludeToolbarItems={}, configType={}",
+                    enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), StringUtils.join(excludeToolbarItems, ','), configType);
         }
     }
 
     public List<CKEditorConfiguration> getConfigs() {
         return configs;
+    }
+
+    public List<String> getExcludeToolbarItems() {
+        return excludeToolbarItems;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject obj = new JSONObject();
+        obj.put(ENABLED_BY_DEFAULT, enabledByDefault);
+        obj.put(INCLUDE_SITES, new JSONArray(includeSites));
+        obj.put(EXCLUDE_SITES, new JSONArray(excludeSites));
+        obj.put(EXCLUDE_TOOLBARS, new JSONArray(excludeToolbarItems));
+        obj.put(CONFIG_TYPE, configType);
+        return obj;
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {
@@ -76,15 +93,6 @@ public class RichTextConfig implements ManagedService {
         return false;
     }
 
-    public JSONObject toJSON() {
-        JSONObject obj = new JSONObject();
-        obj.put(ENABLED_BY_DEFAULT, enabledByDefault);
-        obj.put(INCLUDE_SITES, new JSONArray(includeSites));
-        obj.put(EXCLUDE_SITES, new JSONArray(excludeSites));
-        obj.put(CONFIG_TYPE, configType);
-        return obj;
-    }
-
     private List<CKEditorConfiguration> processConfigs(PropertiesList list) {
         List<CKEditorConfiguration> configs = new ArrayList<>();
 
@@ -96,7 +104,8 @@ public class RichTextConfig implements ManagedService {
                 configs.add(new CKEditorConfiguration(
                         values.getProperty("name"),
                         values.getProperty("permission"),
-                        getListOfStrings(values.getList("siteKeys")))
+                        getListOfStrings(values.getList("siteKeys")),
+                        getListOfStrings(values.getList(EXCLUDE_TOOLBARS)))
                 );
             }
         }

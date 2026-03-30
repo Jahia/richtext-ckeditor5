@@ -1,15 +1,14 @@
-export function removeToolbarItem(config, item) {
-    const removeItem = (toolbar, itemName) => {
-        const index = toolbar.findIndex(toolbarItem => toolbarItem === itemName);
-        if (index !== -1) {
-            toolbar.splice(index, 1);
-        }
+export function removeToolbarItems(config, items) {
+    const itemsToRemove = new Set(Array.isArray(items) ? items : [items]);
+
+    const filterToolbar = toolbar => {
+        return toolbar.filter(toolbarItem => !itemsToRemove.has(toolbarItem));
     };
 
     if (Array.isArray(config.toolbar)) {
-        removeItem(config.toolbar, item);
+        config.toolbar = filterToolbar(config.toolbar);
     } else if (Array.isArray(config.toolbar?.items)) {
-        removeItem(config.toolbar.items, item);
+        config.toolbar.items = filterToolbar(config.toolbar.items);
     }
 }
 

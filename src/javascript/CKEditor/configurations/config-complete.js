@@ -1,4 +1,5 @@
 import {plugins} from './plugins-complete';
+import {mentionConfig} from './mention/mentionConfig';
 
 export const completeConfig = {
     plugins,
@@ -102,5 +103,6 @@ export const completeConfig = {
                 }
             }
         }
-    }
+    },
+    ...mentionConfig
 };

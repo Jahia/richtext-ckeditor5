@@ -2,7 +2,7 @@ import {registry} from '@jahia/ui-extender';
 import {registerRichTextCKEditor5} from './RichTextCKEditor5/registerRichTextCKEditor5';
 import {registerConfig} from '~/CKEditor/registerConfig';
 
-export default function () {
+export default function ck5RegistryInit() {
     registry.add('callback', 'richtext-ckeditor5', {
         targets: ['jahiaApp-init:50'],
         callback: registerRichTextCKEditor5

@@ -44,7 +44,7 @@ function getFeedItems(queryText) {
 
 function customItemRenderer(item) {
     const itemElement = document.createElement('div');
-    itemElement.id = `macros-item-${item.id}`;
+    itemElement.id = `macros-item-${item.id.replace(/#/g, '')}`;
     itemElement.textContent = `${item.name} `;
 
     const macroElement = document.createElement('small');

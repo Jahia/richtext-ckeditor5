@@ -25,7 +25,7 @@ describe('Macros tests', () => {
         ck5field.getEditArea().click(); // Focus the editor with a real click
         ck5field.type('##');
         ck5field.getEditArea().click();
-        const suggestion = ck5field.getMacrosSuggestion('macros-item-##username');
+        const suggestion = ck5field.getMacrosSuggestion('macros-item-username');
         suggestion.click();
         ck5field.getData().then(data => {
             expect(data.indexOf('##username##') !== -1).to.be.true;

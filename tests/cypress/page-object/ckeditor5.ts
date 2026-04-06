@@ -86,4 +86,12 @@ export class RichTextCKeditor5Field extends Field {
     selectHeading(heading: string) {
         this.get().find('.ck-heading-dropdown').find('.ck-list__item').contains(heading).click();
     }
+
+    getMacrosSuggestion(id: string) {
+        return this.get()
+            .get('.ck-mentions')
+            .should('be.visible')
+            .find(`div[id="${id}"]`)
+            .should('exist');
+    }
 }

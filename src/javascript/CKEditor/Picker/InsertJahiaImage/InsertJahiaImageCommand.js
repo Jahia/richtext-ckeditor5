@@ -4,22 +4,19 @@ export class InsertJahiaImageCommand extends Command {
     constructor(editor, type) {
         super(editor);
         this.type = type;
-
-        this.isEnabled = true;
-
-        // // Remove default document listener to lower its priority.
-        // this.stopListening(this.editor.model.document, 'change');
-        //
-        // // Lower this command listener priority to be sure that refresh() will be called after link & image refresh.
-        // this.listenTo(this.editor.model.document, 'change', () => this.refresh(), {priority: 'low'});
     }
 
     refresh() {
-        //
+        const imageInsertCommand = this.editor.commands.get('imageInsert');
+        this.isEnabled = imageInsertCommand ? imageInsertCommand.isEnabled : false;
     }
 
     execute() {
         const editor = this.editor;
+
+        if (!this.isEnabled) {
+            return;
+        }
 
         const pickerConfig = editor.config.get('picker');
 

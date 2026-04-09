@@ -50,7 +50,7 @@ import {
 } from 'ckeditor5';
 import {CaseChange, Template, SourceEditingEnhanced, PasteFromOfficeEnhanced} from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
-import {ImageStyleEmbed} from '~/CKEditor/plugins';
+import {ImageStyleEmbed, MenuBarBodyPanels} from '~/CKEditor/plugins';
 
 export const plugins = [
     Alignment,
@@ -92,6 +92,7 @@ export const plugins = [
     LinkImage,
     List,
     Mention,
+    MenuBarBodyPanels,
     Paragraph,
     PasteFromOffice,
     PasteFromOfficeEnhanced,

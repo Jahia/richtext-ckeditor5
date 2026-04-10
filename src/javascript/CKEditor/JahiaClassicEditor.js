@@ -11,15 +11,12 @@ import {removePlugin, removeToolbarItems} from '~/CKEditor/config.utils';
 
 export class JahiaClassicEditor extends ClassicEditor {
     static create(sourceElementOrData, config = {}) {
-        config = {...JahiaClassicEditor.defaultConfig, ...config};
-
         if (isProductivityMode()) {
             // eslint-disable-next-line no-undef
             config.licenseKey = CKEDITOR_PRODUCTIVITY_LICENSE;
         } else {
+            console.debug('Productivity mode not enabled');
             config.licenseKey = 'GPL';
-            JahiaClassicEditor.builtinPlugins = JahiaClassicEditor.builtinPlugins
-                .filter(p => !p.isPremiumPlugin);
         }
 
         // Remove Templates plugin, toolbar item if no definitions

@@ -2,6 +2,11 @@
 ## Possible usages and options
 #
 enabledByDefault: true
+excludeMacros:
+  - sessionid
+  - devmode
+  - userprofiledata
+  - getConstant
 #configs:
 ##  Will apply first available/matching config, permission is optional
 #  - siteKeys:

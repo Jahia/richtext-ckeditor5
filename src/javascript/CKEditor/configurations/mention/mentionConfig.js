@@ -10,36 +10,73 @@ export const mentionConfig = {
     }
 };
 
-const items = [
-    {id: '##authorname', name: 'Author name', text: '##authorname##'},
-    {id: '##creationdate', name: 'Creation date', text: '##creationdate##'},
-    {id: '##keywords', name: 'Keywords', text: '##keywords##'},
-    {id: '##linktohomepage', name: 'Link to home page', text: '##linktohomepage##'},
-    {id: '##linktoparent', name: 'Link to parent', text: '##linktoparent##'},
-    {id: '##requestParameters', name: 'Request parameters', text: '##requestParameters##'},
-    {id: '##resourceBundle', name: 'Resource bundle', text: '##resourceBundle(bundleName, key)##'},
-    {id: '##username', name: 'User name', text: '##username##'}
-];
+const CACHE_DURATION = 0.5 * 60 * 1000; // 30 seconds in milliseconds
+let cachedData = null;
+let cacheTimestamp = null;
 
 function getFeedItems(queryText) {
     return new Promise(resolve => {
-        // This simulates a request
-        setTimeout(() => {
-            const itemsToDisplay = items
-                .filter(isItemMatching)
-                .slice(0, 10);
+        try {
+            const now = Date.now();
 
-            resolve(itemsToDisplay);
-        }, 100);
+            // Check if we have valid cached data
+            if (cachedData && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+                // Use cached data
+                const filteredItems = filterAndProcessItems(cachedData, queryText);
+                resolve(filteredItems);
+                return;
+            }
+
+            // Fetch fresh data
+            const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
+            const initializerURL = `${window.location.protocol}//${window.location.host}${contextPath}/cms/initializers`;
+            fetch(initializerURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Accept: 'application/json'
+                },
+                body: `initializers=choicelistmacros&name=macros&nodeuuid=${window.contextJsParameters.siteUuid}`
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+
+                console.warn('Failed to get macros, make sure a module with macros is properly deployed.');
+                return null;
+            }).then(json => {
+                if (json === null) {
+                    resolve([]);
+                } else {
+                    // Update cache
+                    cachedData = json;
+                    cacheTimestamp = Date.now();
+
+                    const filteredItems = filterAndProcessItems(json, queryText);
+                    resolve(filteredItems);
+                }
+            });
+        } catch (e) {
+            console.warn('Failed to call macros initializer', e);
+            resolve([]);
+        }
     });
+}
 
-    function isItemMatching(item) {
-        const searchString = queryText.toLowerCase();
-        return (
-            item.name.toLowerCase().includes(searchString) ||
-            item.id.toLowerCase().includes(searchString)
-        );
-    }
+function filterAndProcessItems(json, queryText) {
+    const config = window?.contextJsParameters?.config?.ckeditor5;
+    const serverItems = json.map(item => ({
+        id: item.value[0],
+        name: item.name[0].replace(/##/g, ''),
+        text: item.value[0]
+    })).filter(item => !config?.excludeMacros?.includes(item.name));
+
+    return serverItems
+        .filter(item => {
+            const searchString = queryText.toLowerCase();
+            return item.name.toLowerCase().includes(searchString);
+        })
+        .slice(0, 10);
 }
 
 function customItemRenderer(item) {

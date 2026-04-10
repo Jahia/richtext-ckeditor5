@@ -42,6 +42,7 @@ function getFeedItems(queryText) {
                     return response.json();
                 }
 
+                console.warn('Failed to get macros, make sure a module with macros is properly deployed.');
                 return null;
             }).then(json => {
                 if (json === null) {
@@ -56,7 +57,7 @@ function getFeedItems(queryText) {
                 }
             });
         } catch (e) {
-            console.error('Failed to call macros initializer', e);
+            console.warn('Failed to call macros initializer', e);
             resolve([]);
         }
     });

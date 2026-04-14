@@ -47,6 +47,8 @@ export class MenuBarBodyPanels extends Plugin {
 
     destroy() {
         for (const wrapper of this._wrappers) {
+            this.editor.ui.focusTracker.remove(wrapper);
+
             if (wrapper.parentNode) {
                 wrapper.parentNode.removeChild(wrapper);
             }
@@ -79,6 +81,11 @@ export class MenuBarBodyPanels extends Plugin {
                 wrapper.style.pointerEvents = 'none';
                 document.body.appendChild(wrapper);
                 this._wrappers.add(wrapper);
+                // Let the editor know that focus inside this wrapper is still
+                // "editor focus" — without this, clicking a menu item in the
+                // wrapper makes the editor think it lost focus, which clears
+                // the selection and prevents commands from executing.
+                this.editor.ui.focusTracker.add(wrapper);
             }
 
             const panelEl = menuView.panelView.element;

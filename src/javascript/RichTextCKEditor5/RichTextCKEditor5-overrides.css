@@ -115,22 +115,3 @@ body.ck-fullscreen {
 	display: none !important;
 }
 
-/* Companion styles for the MenuBarBodyPanels plugin (which detaches menu bar
-   panels into <body> so they escape the content editor's clipping). */
-
-/* Re-enable pointer events on the panel — its body wrapper has them
-   disabled so the menu button underneath stays clickable. */
-.ck.ck-menu-bar__menu__panel {
-    pointer-events: auto;
-}
-
-/* The default rule that hides the focus border on menu bar list buttons is
-   scoped to a `.ck-menu-bar` ancestor (`.ck.ck-menu-bar .ck-list-item-button:focus`).
-   When the panel is moved into a body wrapper that ancestor is gone, so the
-   default button focus ring leaks through. Re-apply the reset scoped to the
-   panel itself. */
-.ck.ck-menu-bar__menu__panel .ck-list-item-button:focus,
-.ck.ck-menu-bar__menu__panel .ck-list-item-button:active {
-    border-color: transparent;
-    box-shadow: none;
-}

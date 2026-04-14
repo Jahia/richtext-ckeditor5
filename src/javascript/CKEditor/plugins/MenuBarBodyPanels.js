@@ -1,17 +1,14 @@
-import {Plugin, clickOutsideHandler} from 'ckeditor5';
+import {Plugin} from 'ckeditor5';
+
+const NESTED_PANEL_HORIZONTAL_OFFSET = 5;
 
 /**
- * Moves CKEditor 5 menu bar dropdown panels into document.body when they open.
- * Without this, panels are clipped by ancestors of the editor.
+ * Fixes CKEditor 5 menu bar dropdown panels being clipped by ancestors with
+ * overflow: hidden
  */
-export class MenuBarBodyPanels extends Plugin {
+export class MenuBarFixedPanels extends Plugin {
     static get pluginName() {
-        return 'MenuBarBodyPanels';
-    }
-
-    constructor(editor) {
-        super(editor);
-        this._wrappers = new Set();
+        return 'MenuBarFixedPanels';
     }
 
     afterInit() {
@@ -21,19 +18,8 @@ export class MenuBarBodyPanels extends Plugin {
             return;
         }
 
-        menuBarView.stopListening(document, 'mousedown');
-        clickOutsideHandler({
-            emitter: menuBarView,
-            activator: () => menuBarView.isOpen,
-            callback: () => menuBarView.close(),
-            contextElements: () => [
-                ...menuBarView.children.map(child => child.element),
-                ...this._wrappers
-            ]
-        });
-
         // Sub-menus are created lazily the first time their parent menu opens,
-        // registerMenu to catch them as they appear.
+        // so we patch registerMenu to catch them as they appear.
         const originalRegisterMenu = menuBarView.registerMenu.bind(menuBarView);
         menuBarView.registerMenu = (menuView, parentMenuView) => {
             originalRegisterMenu(menuView, parentMenuView);
@@ -45,71 +31,85 @@ export class MenuBarBodyPanels extends Plugin {
         }
     }
 
-    destroy() {
-        for (const wrapper of this._wrappers) {
-            this.editor.ui.focusTracker.remove(wrapper);
-
-            if (wrapper.parentNode) {
-                wrapper.parentNode.removeChild(wrapper);
-            }
-        }
-
-        this._wrappers.clear();
-        super.destroy();
-    }
-
     _observeMenu(menuView) {
-        if (menuView._bodyPanelObserved) {
+        if (menuView._fixedPanelObserved) {
             return;
         }
 
-        menuView._bodyPanelObserved = true;
-
-        let wrapper = null;
+        menuView._fixedPanelObserved = true;
 
         menuView.on('change:isOpen', (evt, name, isOpen) => {
             if (!isOpen) {
                 return;
             }
 
-            if (!wrapper) {
-                wrapper = document.createElement('div');
-                wrapper.className = 'ck ck-reset_all ck-menu-bar__menu';
-                wrapper.dir = menuView.locale.uiLanguageDirection;
-                wrapper.style.position = 'fixed';
-                wrapper.style.zIndex = '10000';
-                wrapper.style.pointerEvents = 'none';
-                document.body.appendChild(wrapper);
-                this._wrappers.add(wrapper);
-                // Let the editor know that focus inside this wrapper is still
-                // "editor focus" — without this, clicking a menu item in the
-                // wrapper makes the editor think it lost focus, which clears
-                // the selection and prevents commands from executing.
-                this.editor.ui.focusTracker.add(wrapper);
-            }
-
-            const panelEl = menuView.panelView.element;
-            if (panelEl.parentNode !== wrapper) {
-                wrapper.appendChild(panelEl);
-            }
-
-            this._positionWrapper(menuView, wrapper);
+            this._applyFixedPosition(menuView, menuView.panelView.element);
         });
 
-        // CKEditor re-evaluates the optimal position name when the menu opens;
-        // re-run positioning whenever it changes.
         menuView.panelView.on('change:position', () => {
-            if (menuView.isOpen && wrapper) {
-                this._positionWrapper(menuView, wrapper);
+            if (menuView.isOpen) {
+                this._applyFixedPosition(menuView, menuView.panelView.element);
             }
         });
     }
 
-    _positionWrapper(menuView, wrapper) {
+    _applyFixedPosition(menuView, panelEl) {
         const buttonRect = menuView.buttonView.element.getBoundingClientRect();
-        wrapper.style.top = `${buttonRect.top}px`;
-        wrapper.style.left = `${buttonRect.left}px`;
-        wrapper.style.width = `${buttonRect.width}px`;
-        wrapper.style.height = `${buttonRect.height}px`;
+        const positionName = menuView.panelView.position;
+
+        panelEl.style.position = 'fixed';
+        panelEl.style.zIndex = '10000';
+
+        panelEl.style.top = 'auto';
+        panelEl.style.bottom = 'auto';
+        panelEl.style.left = 'auto';
+        panelEl.style.right = 'auto';
+
+        const panelRect = panelEl.getBoundingClientRect();
+
+        let top;
+        let left;
+
+        switch (positionName) {
+            case 'se':
+                top = buttonRect.bottom;
+                left = buttonRect.left;
+                break;
+            case 'sw':
+                top = buttonRect.bottom;
+                left = buttonRect.right - panelRect.width;
+                break;
+            case 'ne':
+                top = buttonRect.top - panelRect.height;
+                left = buttonRect.left;
+                break;
+            case 'nw':
+                top = buttonRect.top - panelRect.height;
+                left = buttonRect.right - panelRect.width;
+                break;
+            case 'es':
+                top = buttonRect.top;
+                left = buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET;
+                break;
+            case 'en':
+                top = buttonRect.bottom - panelRect.height;
+                left = buttonRect.right - NESTED_PANEL_HORIZONTAL_OFFSET;
+                break;
+            case 'ws':
+                top = buttonRect.top;
+                left = buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET;
+                break;
+            case 'wn':
+                top = buttonRect.bottom - panelRect.height;
+                left = buttonRect.left - panelRect.width + NESTED_PANEL_HORIZONTAL_OFFSET;
+                break;
+            default:
+                top = buttonRect.bottom;
+                left = buttonRect.left;
+        }
+
+        panelEl.style.top = `${top}px`;
+        panelEl.style.left = `${left}px`;
     }
+
 }

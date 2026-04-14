@@ -1,2 +1,2 @@
 export {ImageStyleEmbed} from './ImageStyleEmbed';
-export {MenuBarBodyPanels} from './MenuBarBodyPanels';
+export {MenuBarFixedPanels} from './MenuBarBodyPanels';

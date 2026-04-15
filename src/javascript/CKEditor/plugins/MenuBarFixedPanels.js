@@ -111,5 +111,4 @@ export class MenuBarFixedPanels extends Plugin {
         panelEl.style.top = `${top}px`;
         panelEl.style.left = `${left}px`;
     }
-
 }

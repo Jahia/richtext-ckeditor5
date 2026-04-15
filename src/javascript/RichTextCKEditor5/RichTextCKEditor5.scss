@@ -12,8 +12,9 @@
 }
 
 .wrapper {
-  overflow-y: scroll;
+  overflow-y: auto;
   min-height: 20vh;
+  height: fit-content;
 }
 
 

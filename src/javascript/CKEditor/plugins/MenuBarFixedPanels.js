@@ -60,12 +60,18 @@ export class MenuBarFixedPanels extends Plugin {
         panelEl.style.position = 'fixed';
         panelEl.style.zIndex = '10000';
 
-        panelEl.style.top = 'auto';
         panelEl.style.bottom = 'auto';
-        panelEl.style.left = 'auto';
         panelEl.style.right = 'auto';
+        panelEl.style.top = '0';
+        panelEl.style.left = '0';
 
+        // When an ancestor has a CSS transform (e.g. MUI Dialog's Slide transition
+        // in fullscreen ContentEditor), `position: fixed` resolves relative to that
+        // ancestor, not the viewport. Measure where "top: 0; left: 0" actually
+        // lands so we can subtract that offset from viewport-based coordinates.
         const panelRect = panelEl.getBoundingClientRect();
+        const offsetX = panelRect.left;
+        const offsetY = panelRect.top;
 
         let top;
         let left;
@@ -108,7 +114,7 @@ export class MenuBarFixedPanels extends Plugin {
                 left = buttonRect.left;
         }
 
-        panelEl.style.top = `${top}px`;
-        panelEl.style.left = `${left}px`;
+        panelEl.style.top = `${top - offsetY}px`;
+        panelEl.style.left = `${left - offsetX}px`;
     }
 }

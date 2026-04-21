@@ -48,7 +48,8 @@
     "@babel/traverse": "^7.23.2"
   },
   "resolutions": {
-    "fast-xml-parser": "^4.5.4"
+    "fast-xml-parser": "^4.5.4",
+    "protobufjs": "^7.5.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",

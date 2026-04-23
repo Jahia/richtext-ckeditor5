@@ -35,25 +35,25 @@ You can look at [test-richtext-config](https://github.com/Jahia/test-ckeditor5-c
 
 ### Setting up configuration
 
-Configuration setup is done via `org.jahia.modules.richtextCKEditor5.yaml` file. Configuration can be applied to specific sites by specifying 
+Configuration setup is done via `org.jahia.modules.richtextCKEditor5.cfg` file. Configuration can be applied to specific sites by specifying 
 site keys or globally by omitting site keys. Additionally, you can choose to have a permission-backed configuration, in which case only users with that permission 
 will be able to access it. Note that the system will look for first available configuration (in the order they appear). Therefor configurations with the strongest permissions must come first for them to be considered.
 
 Here's an example of configuration:
 
 ```
-configs:
-  - siteKeys:
-      - site4
-      - site5
-    name: "customConfig"
-  - siteKeys:
-      - site6
-    name: "site6Config"
-    permission: "somePermission"
-  - name: "defaultConfigWithPermission"
-    permission: "somePermissionForDefaultConfig"  
- - name: "defaultConfigWITHOUTPermission"
+configs[0].siteKeys[0]=site4
+configs[0].siteKeys[1]=site5
+configs[0].name=customConfig
+
+configs[1].siteKeys[0]=site6
+configs[1].name=site6Config
+configs[1].permission=somePermission
+
+configs[2].name=defaultConfigWithPermission
+configs[2].permission=somePermissionForDefaultConfig
+
+configs[3].name=defaultConfigWITHOUTPermission
 ```
 As long as CK5 is enabled sites _site4_ and _site5_ will always use `customConfig`.
 

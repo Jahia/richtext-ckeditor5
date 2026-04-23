@@ -104,14 +104,13 @@ This section demonstrates the ways in which CK 5 configuration can be applied in
 
 The global configuration file allows you to have control over what toolbar is displayed on what site and under what conditions.
 
-```yaml
-includeSites:
-  - site1
-  - site2
-excludeSites:
-  # This list is automatically populated when CK5 module is installed with pre-existing sites
-  - site3
-  - site4
+```
+includeSites[0]=site1
+includeSites[1]=site2
+
+# This list is automatically populated when CK5 module is installed with pre-existing sites
+excludeSites[0]=site3
+excludeSites[1]=site4
 ```
 
 Ensure that the target site is not listed under `excludeSites` when modifying other sections of the configuration file.
@@ -124,32 +123,27 @@ There are several ways to apply specific configuration:
 
 Global configuration can be applied simply by adding the name of the configuration in the configs list:
 
-```yaml
-configs:
-  - name: yourConfig
+```
+configs[0].name=yourConfig
 ```
 
 This will apply a config named `yourConfig` to all sites. Note that you still need to follow the steps in the first section to define your configuration.
 
 To apply configuration to specific sites, add an optional siteKeys list:
 
-```yaml
-configs:
-  - siteKeys:
-      - siteKey1
-      - siteKey2
-    name: yourConfig
+```
+configs[0].siteKeys[0]=siteKey1
+configs[0].siteKeys[1]=siteKey2
+configs[0].name=yourConfig
 ```
 
 If you want to check for permission add an optional permission parameter:
 
-```yaml
-configs:
-  - siteKeys:
-      - siteKey1
-      - siteKey2
-    name: yourConfig
-    permission: myPermission
+```
+configs[0].siteKeys[0]=siteKey1
+configs[0].siteKeys[1]=siteKey2
+configs[0].name=yourConfig
+configs[0].permission=myPermission
 ```
 
 The configuration order is important:
@@ -236,11 +230,9 @@ window.jahia.uiExtender.registry.add('ckeditor5-config', 'academyToolbar', acade
 
 This toolbar can then be applied to the `academy` website using the configuration file:
 
-```yaml
-configs:
-  - siteKeys:
-      - academy
-    name: academyToolbar
+```
+configs[0].siteKeys[0]=academy
+configs[0].name=academyToolbar
 ```
 
 The complete list of plugins available in the CK5 Jahia module [can be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/plugins-complete.js#L54).

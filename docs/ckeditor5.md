@@ -243,6 +243,10 @@ The configuration of the `complete` toolbar [can also be found on GitHub](https:
 
 CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.
 
+:::warning
+When integrating custom plugins, we recommend including plugins only from trusted and verified sources. Custom plugins could potentially have access to editor content and user data. Ensure that all plugins are thoroughly reviewed and come from developers you trust and to review the plugin code or documentation before integration when possible.
+:::
+
 This section assumes you already have a Jahia module set up with the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html). If that's not the case, please refer to [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html).
 
 - Install `ckeditor5` with `yarn add -D ckeditor5` in your module folder.

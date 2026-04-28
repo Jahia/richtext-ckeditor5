@@ -19,6 +19,14 @@ To add new MACROS to CKEditor 5, simply add a Groovy script with the desired fun
 
 You can learn more about MACROS by visiting [this link](https://academy.jahia.com/documentation/jahia-cms/jahia-7.3/developer/advanced-guides/customizing-the-interface-for-users/rendering-content).
 
+## Excluding MACROS
+
+You may want to exclude certain macros from the list of suggestions. To do so, edit `org.jahia.modules.richtextCKEditor5.cfg` and update the `excludeMacros` list:
+
+```aiignore
+excludeMacros[0]=sessionid
+```
+
 ## How MACROS Is Integrated
 The MACROS functionality is made available with the help of the [mentions plugin](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html) provided by CKEditor. The following configuration is used to set it up:
 

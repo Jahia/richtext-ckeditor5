@@ -29,7 +29,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.2.0.0</version>
+        <version>8.2.0.7</version>
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.12.0</version>
+            <version>3.18.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -102,16 +102,32 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>io.github.graphql-java</groupId>
+            <artifactId>graphql-java-annotations</artifactId>
+            <version>${graphql-java-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>jcontent</artifactId>
             <version>3.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.graphql-java</groupId>
-            <artifactId>graphql-java-annotations</artifactId>
-            <version>${graphql-java-annotations.version}</version>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+            <version>${jersey.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>bedrockruntime</artifactId>
+            <version>2.41.14</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>auth</artifactId>
+            <version>2.41.14</version>
         </dependency>
     </dependencies>
 
@@ -154,19 +170,19 @@
                             org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.node;version="[3.1,4)",
-                            org.jahia.osgi,
-                            org.jahia.services.content,
                             org.osgi.framework;version="[1.8,2)",
                             org.slf4j;version="[1.7,2)",
                             *
                         </Import-Package>
+                        <JAX-RS-Alias>/ckeditor5</JAX-RS-Alias>
+                        <JAX-RS-Application>org.jahia.modules.ckeditor.ai.api.AIProxyApplication</JAX-RS-Application>
                     </instructions>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.13.4</version>
+                <version>1.15.4</version>
                 <executions>
                     <execution>
                         <id>npm install node and yarn</id>
@@ -175,7 +191,7 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v22.14.0</nodeVersion>
+                            <nodeVersion>v24.13.0</nodeVersion>
                             <yarnVersion>v1.22.21</yarnVersion>
                         </configuration>
                     </execution>

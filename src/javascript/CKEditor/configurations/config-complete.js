@@ -107,40 +107,14 @@ export const completeConfig = {
             }
         }
     },
-    ...mentionConfig,
     ai: {
         assistant: {
             adapter: {
                 openAI: {
                     apiUrl: '/modules/ckeditor5/ai-proxy'
-                    // requestHeaders: {
-                    //     // Paste your OpenAI API key in place of YOUR_OPENAI_API_KEY:
-                    //     Authorization: 'Bearer YOUR_OPENAI_API_KEY'
-                    // }
-                },
-                aws: {
-                    apiUrl: '/modules/ckeditor5/ai-proxy'
-                    // bedrockClientConfig: {
-                    //     // Fill in your service region, for example, 'us-west-2'.
-                    //     region: 'eu-west-1',
-                    //     credentials: {
-                    //         // Paste your credentials in place of YOUR_ACCESS_KEY_ID and YOUR_SECRET_ACCESS_KEY.
-                    //         accessKeyId: 'YOUR_ACCESS_KEY_ID',
-                    //         secretAccessKey: 'YOUR_SECRET_ACCESS_KEY'
-                    //     }
-                    // },
-                    // requestParameters: {
-                    //     // model: 'arn:aws:bedrock:eu-west-1:602599330770:inference-profile/eu.anthropic.claude-3-5-sonnet-20240620-v1:0',
-                    //     model: 'eu.anthropic.claude-sonnet-4-5-20250929-v1:0',
-                    //     max_tokens_to_sample: 500,
-                    //     temperature: 1,
-                    //     top_k: 250,
-                    //     top_p: 1,
-                    //     anthropic_version: 'bedrock-2023-05-31',
-                    //     stream: true
-                    // }
                 }
             }
         }
-    }
+    },
+    ...mentionConfig
 };

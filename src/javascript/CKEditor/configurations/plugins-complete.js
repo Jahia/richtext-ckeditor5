@@ -54,8 +54,7 @@ import {
     SourceEditingEnhanced,
     PasteFromOfficeEnhanced,
     AIAssistant,
-    OpenAITextAdapter,
-    AWSTextAdapter
+    OpenAITextAdapter
 } from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
 import {ImageStyleEmbed, MenuBarFixedPanels} from '~/CKEditor/plugins';
@@ -64,7 +63,6 @@ export const plugins = [
     AIAssistant,
     Alignment,
     Autoformat,
-    AWSTextAdapter,
     BlockQuote,
     Bold,
     Bookmark,

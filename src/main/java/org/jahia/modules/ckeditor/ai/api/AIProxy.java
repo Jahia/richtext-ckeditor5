@@ -33,27 +33,18 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.HttpURLConnection;
 
-@Path("/ckeditor5")
 @Produces(MediaType.APPLICATION_JSON)
 public class AIProxy {
 
+    public static final String MAPPING = "/ai-proxy";
+
     private final Logger logger = LoggerFactory.getLogger(AIProxy.class);
 
-    @GET
-    public Response hello() {
-        return Response.status(Response.Status.OK)
-                .entity(new JSONObject().put("message", "Hello from CK5 module!").toString())
-                .build();
-    }
-
-
     @POST
-    @Path("/ai-proxy")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response forwardRequest(String data) {
-        String apiType = "aws"; // TODO to be fetched from config
+        String apiType = "openai"; // TODO to be fetched from config
 
         AIServiceLookupUtil lookupUtil = BundleUtils.getOsgiService(AIServiceLookupUtil.class, null);
         AIProxyService aiService = lookupUtil.getAIProxyService(apiType);

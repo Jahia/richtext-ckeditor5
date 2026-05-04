@@ -67,8 +67,21 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         resolvedConfigName = parsedOptions.ckeditor.customConfig;
     }
 
+    const registryConfig = registry.get(REGISTRY_KEY, resolvedConfigName);
     const customConfig = {
-        ...registry.get(REGISTRY_KEY, resolvedConfigName),
+        ai: {
+            assistant: {
+                adapter: {
+                    openAI: {
+                        apiUrl: '/modules/ckeditor5/ai-proxy',
+                        requestHeaders: async () => ({
+                            'X-Jahia-Path': editorContext.path
+                        })
+                    }
+                }
+            }
+        },
+        ...registryConfig,
         language: uilang,
         picker: {
             site: editorContext.site,

@@ -107,14 +107,5 @@ export const completeConfig = {
             }
         }
     },
-    ai: {
-        assistant: {
-            adapter: {
-                openAI: {
-                    apiUrl: '/modules/ckeditor5/ai-proxy'
-                }
-            }
-        }
-    },
     ...mentionConfig
 };

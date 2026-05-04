@@ -23,14 +23,21 @@
  */
 package org.jahia.modules.ckeditor.ai.api;
 
+import org.jahia.api.Constants;
 import org.jahia.modules.ckeditor.ai.AIProxyService;
 import org.jahia.modules.ckeditor.ai.AIServiceLookupUtil;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -38,12 +45,20 @@ import javax.ws.rs.core.Response;
 public class AIProxy {
 
     public static final String MAPPING = "/ai-proxy";
+    private static final String PERMISSION = "wysiwyg-editor-toolbar";
 
     private final Logger logger = LoggerFactory.getLogger(AIProxy.class);
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response forwardRequest(String data) {
+    public Response forwardRequest(String data, @Context HttpHeaders headers) {
+        String nodePath = headers.getHeaderString("X-Jahia-Path");
+        if (nodePath == null || nodePath.isEmpty() || !hasPermission(nodePath)) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(new JSONObject().put("error", "Unauthorized").toString())
+                    .build();
+        }
+
         String apiType = "openai"; // TODO to be fetched from config
 
         AIServiceLookupUtil lookupUtil = BundleUtils.getOsgiService(AIServiceLookupUtil.class, null);
@@ -60,6 +75,22 @@ public class AIProxy {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(new JSONObject().put("error", e.getMessage()).toString())
                     .build();
+        }
+    }
+
+    /**
+     * Checks if the current user has permission to use the AI proxy.
+     * Uses the edit workspace session (ensures user is an editor) and
+     * verifies the wysiwyg-editor-toolbar permission on the given node.
+     */
+    private boolean hasPermission(String nodePath) {
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
+            JCRNodeWrapper node = session.getNode(nodePath);
+            return node.hasPermission(PERMISSION);
+        } catch (RepositoryException e) {
+            logger.error("Error checking permission for path: {}", nodePath, e);
+            return false;
         }
     }
 

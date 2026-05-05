@@ -24,7 +24,6 @@
 package org.jahia.modules.ckeditor.ai;
 
 import org.jahia.modules.ckeditor.config.ConfigUtil;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
@@ -53,6 +52,7 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     private boolean isEnabled;
     private String apiKey;
     private String apiUrl;
+    private JSONObject requestParams;
 
     @Override
     public boolean isEnabled() {
@@ -77,6 +77,18 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
         apiKey = ConfigUtil.getString(props, "ai.apiKey", "");
         apiUrl = ConfigUtil.getString(props, "ai.apiUrl", "https://api.openai.com/v1/chat/completions");
 
+        String requestParamsStr = ConfigUtil.getString(props, "ai.requestParams", null);
+        if (requestParamsStr != null && !requestParamsStr.trim().isEmpty()) {
+            try {
+                requestParams = new JSONObject(requestParamsStr);
+            } catch (org.json.JSONException e) {
+                logger.warn("Failed to parse ai.requestParams, using empty defaults: {}", e.getMessage());
+                requestParams = new JSONObject();
+            }
+        } else {
+            requestParams = new JSONObject();
+        }
+
         logger.info("OpenAI service enabled: {}, API key configured: {}", isEnabled, (apiKey != null && !apiKey.isEmpty()));
         logger.debug("API URL: {}", apiUrl);
     }
@@ -90,9 +102,17 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     @Override
     public Response handleResponse(String data) throws IOException {
         JSONObject requestJson = new JSONObject(data);
+
+        // Merge config request params as defaults (request data takes precedence)
+        for (String key : requestParams.keySet()) {
+            if (!requestJson.has(key)) {
+                requestJson.put(key, requestParams.get(key));
+            }
+        }
+
         HttpURLConnection conn = getURLConnection();
-        conn.getOutputStream().write(data.getBytes(StandardCharsets.UTF_8));
-        boolean isStreamingReq = requestJson.getBoolean("stream");
+        conn.getOutputStream().write(requestJson.toString().getBytes(StandardCharsets.UTF_8));
+        boolean isStreamingReq = requestJson.optBoolean("stream", false);
         return isStreamingReq ? handleStreamingResponse(conn) : handleJsonResponse(conn);
     }
 

@@ -26,6 +26,7 @@ package org.jahia.modules.ckeditor.ai.api;
 import org.jahia.api.Constants;
 import org.jahia.modules.ckeditor.ai.AIProxyService;
 import org.jahia.modules.ckeditor.ai.AIServiceLookupUtil;
+import org.jahia.modules.ckeditor.config.RichTextConfig;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -59,20 +60,18 @@ public class AIProxy {
                     .build();
         }
 
-        String apiType = "openai"; // TODO to be fetched from config
-
-        AIServiceLookupUtil lookupUtil = BundleUtils.getOsgiService(AIServiceLookupUtil.class, null);
-        AIProxyService aiService = lookupUtil.getAIProxyService(apiType);
-        Response errorResponse = validateAIService(aiService, apiType);
-        if (errorResponse != null) {
-            return errorResponse;
-        }
-
         try {
+            RichTextConfig richTextConfig = getRequiredService(RichTextConfig.class);
+            String apiType = richTextConfig.getAiType();
+
+            AIServiceLookupUtil lookupUtil = getRequiredService(AIServiceLookupUtil.class);
+            AIProxyService aiService = lookupUtil.getAIProxyService(apiType);
+            validateAIService(aiService, apiType);
+
             return aiService.handleResponse(data);
         } catch (Exception e) {
             logger.error("Error processing AI request", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity(new JSONObject().put("error", e.getMessage()).toString())
                     .build();
         }
@@ -100,21 +99,21 @@ public class AIProxy {
      * @param apiType the API type being requested
      * @return Response with error if validation fails, null if validation passes
      */
-    private Response validateAIService(AIProxyService aiService, String apiType) {
-        String error = null;
+    private void validateAIService(AIProxyService aiService, String apiType) {
         if (aiService == null) {
-            error = "AI service not found for type: " + apiType;
-        } else if (!aiService.isEnabled()) {
-            error = "AI service is disabled";
+            throw new RuntimeException("AI service not found for type: " + apiType);
+        }
+        if (!aiService.isEnabled()) {
+            throw new RuntimeException("AI service is disabled");
+        }
+    }
+
+    private <T> T getRequiredService(Class<T> serviceClass) {
+        T service = BundleUtils.getOsgiService(serviceClass, null);
+        if (service == null) {
+            throw new RuntimeException(serviceClass.getSimpleName() + " service not available");
         }
 
-        if (error != null) {
-            logger.error(error);
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE)
-                    .type(MediaType.APPLICATION_JSON)
-                    .entity(new JSONObject().put("error", error).toString())
-                    .build();
-        }
-        return null;
+        return service;
     }
 }

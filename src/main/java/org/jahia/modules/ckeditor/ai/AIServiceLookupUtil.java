@@ -24,11 +24,13 @@
 package org.jahia.modules.ckeditor.ai;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jahia.modules.ckeditor.config.RichTextConfig;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,9 @@ public class AIServiceLookupUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(AIServiceLookupUtil.class);
     private BundleContext bundleContext;
+
+    @Reference
+    private RichTextConfig richTextConfig;
 
     @Activate
     public void activate(BundleContext bundleContext) {
@@ -85,6 +90,16 @@ public class AIServiceLookupUtil {
             logger.error("Unable to fetch AIProxyService. Invalid filter syntax: {}", filter, e);
         }
         return null;
+    }
+
+    public boolean isAIEnabled() {
+        if (richTextConfig == null) {
+            logger.warn("RichTextConfig not available, AI disabled");
+            return false;
+        }
+
+        AIProxyService aiService = getAIProxyService(richTextConfig.getAiType());
+        return aiService != null && aiService.isEnabled();
     }
 
 }

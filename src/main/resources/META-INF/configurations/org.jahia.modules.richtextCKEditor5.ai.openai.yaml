@@ -1,10 +1,7 @@
-##############################################################################
-# AI Assistant Proxy - OpenAI Configuration
-##############################################################################
+# default configuration
 
-# Enable/disable AI proxy
-ai.enabled: true
-ai.type: "openai"
+# Enable/disable this AI configuration
+ai.enabled: false
 
 # OpenAI API Key (get from https://platform.openai.com/api-keys)
 ai.apiKey: "YOUR_OPENAI_API_KEY"
@@ -12,8 +9,8 @@ ai.apiKey: "YOUR_OPENAI_API_KEY"
 # API Endpoint URL
 ai.apiUrl: "https://api.openai.com/v1/chat/completions"
 
-ai.requestParams: |
-  {
-    "Content-Type": "application/json",
-    "temperature": 0.7
-  }
+# Override additional request parameters when calling the OpenAI API as string to be parsed as JSON (optional)
+#ai.requestParams: |
+#  {
+#    "temperature": 0.7
+#  }

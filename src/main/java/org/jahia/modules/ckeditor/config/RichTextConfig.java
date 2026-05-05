@@ -28,6 +28,7 @@ public class RichTextConfig implements ManagedService {
     private final static String EXCLUDE_MACROS = "excludeMacros";
     private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
     private final static String CONFIG_TYPE = "configType";
+    private final static String AI_TYPE = "aiType";
 
     private boolean enabledByDefault = true;
     private List<String> excludeToolbarItems  = new ArrayList<>();
@@ -36,6 +37,7 @@ public class RichTextConfig implements ManagedService {
     private List<String> excludeSites = new ArrayList<>();
     private List<CKEditorConfiguration> configs = new ArrayList<>();
     private String configType = "complete";
+    private String aiType = "openai";
 
     private static final Logger logger = LoggerFactory.getLogger(RichTextConfig.class);
 
@@ -58,6 +60,8 @@ public class RichTextConfig implements ManagedService {
             enabledByDefault = getBoolean(dictionary, ENABLED_BY_DEFAULT);
             configType = (dictionary.get(CONFIG_TYPE) != null)
                     ? dictionary.get(CONFIG_TYPE).toString() : "complete";
+            aiType = (dictionary.get(AI_TYPE) != null)
+                    ? dictionary.get(AI_TYPE).toString() : "openai";
             logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, excludeToolbarItems={}, excludeMacros={}, configType={}",
                     enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), StringUtils.join(excludeToolbarItems, ','), StringUtils.join(excludeMacros, ','), configType);
         }
@@ -73,6 +77,10 @@ public class RichTextConfig implements ManagedService {
 
     public List<String> getExcludeMacros() {
         return excludeMacros;
+    }
+
+    public String getAiType() {
+        return aiType;
     }
 
     public JSONObject toJSON() {

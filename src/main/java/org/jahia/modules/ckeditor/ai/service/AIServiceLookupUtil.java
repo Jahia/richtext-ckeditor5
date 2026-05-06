@@ -21,7 +21,7 @@
  *
  * ==========================================================================================
  */
-package org.jahia.modules.ckeditor.ai;
+package org.jahia.modules.ckeditor.ai.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jahia.modules.ckeditor.config.RichTextConfig;

@@ -1,4 +1,4 @@
-package org.jahia.modules.ckeditor.ai;
+package org.jahia.modules.ckeditor.ai.service;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -12,5 +12,5 @@ public interface AIProxyService {
 
     boolean isEnabled();
 
-    Response handleResponse(String data) throws IOException;
+    Response handleRequest(String requestData) throws InterruptedException, IOException;
 }

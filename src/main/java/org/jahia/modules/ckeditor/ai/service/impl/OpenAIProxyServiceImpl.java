@@ -21,22 +21,25 @@
  *
  * ==========================================================================================
  */
-package org.jahia.modules.ckeditor.ai;
+package org.jahia.modules.ckeditor.ai.service.impl;
 
+import org.jahia.modules.ckeditor.ai.service.AIProxyService;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.*;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.Designate;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
+import java.time.Duration;
 
 @Component(
         service = {AIProxyService.class},
@@ -44,37 +47,20 @@ import java.util.Scanner;
         configurationPid = AIProxyService.PARENT_PID + "." + OpenAIProxyServiceImpl.API_TYPE,
         property = {"aiType=" + OpenAIProxyServiceImpl.API_TYPE}
 )
-@Designate(ocd = OpenAIProxyServiceImpl.OpenAIConfig.class)
+@Designate(ocd = OpenAIConfigMetatype.class)
 public class OpenAIProxyServiceImpl implements AIProxyService {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAIProxyServiceImpl.class);
 
     public static final String API_TYPE = "openai";
 
-    @ObjectClassDefinition(
-            name = "CKEditor5 OpenAI Proxy Configuration",
-            description = "Configuration for the OpenAI proxy service used by the CKEditor 5 AI assistant")
-    public @interface OpenAIConfig {
-        @AttributeDefinition(name = "Enabled", description = "Enable or disable this AI configuration. Hides AI-related toolbars.")
-        boolean ai_enabled() default false;
-
-        // From https://platform.openai.com/api-keys
-        @AttributeDefinition(name = "API Key", description = "OpenAI API Key")
-        String ai_apiKey() default "YOUR_OPEN_API_KEY_HERE";
-
-        @AttributeDefinition(name = "API URL", description = "OpenAI API endpoint URL")
-        String ai_apiUrl() default "https://api.openai.com/v1/chat/completions";
-
-        @AttributeDefinition(
-                name = "Request Parameters",
-                description = "Additional override request parameters as a JSON string (optional)")
-        String ai_requestParams() default "";
-    }
-
     private boolean isEnabled;
     private String apiKey;
     private String apiUrl;
     private JSONObject requestParams;
+    private Duration requestTimeout;
+    private Duration streamingTimeout;
+    private HttpClient httpClient;
 
     @Override
     public boolean isEnabled() {
@@ -87,12 +73,14 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
 
     @Activate
     @Modified
-    public void activate(OpenAIConfig config) {
+    public void activate(OpenAIConfigMetatype config) {
         logger.info("Configuring OpenAI Proxy Service activated with PID: {}", API_TYPE);
 
         isEnabled = config.ai_enabled();
         apiKey = config.ai_apiKey();
         apiUrl = config.ai_apiUrl();
+        requestTimeout = Duration.ofSeconds(config.ai_requestTimeout());
+        streamingTimeout = Duration.ofSeconds(config.ai_streamingTimeout());
 
         String requestParamsStr = config.ai_requestParams();
         if (requestParamsStr != null && !requestParamsStr.trim().isEmpty()) {
@@ -106,6 +94,11 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
             requestParams = new JSONObject();
         }
 
+        // Single HttpClient instance reuses connections (HTTP keep-alive / HTTP/2 multiplexing)
+        httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(config.ai_connectTimeout()))
+                .build();
+
         logger.info("OpenAI service enabled: {}, API key configured: {}", isEnabled, (apiKey != null && !apiKey.isEmpty()));
         logger.debug("API URL: {}", apiUrl);
     }
@@ -113,43 +106,51 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     @Deactivate
     public void deactivate() {
         logger.info("OpenAI Proxy Service deactivated: {}", API_TYPE);
+        httpClient = null;
     }
 
     @Override
-    public Response handleResponse(String data) throws IOException {
-        JSONObject requestJson = new JSONObject(data);
+    public Response handleRequest(String requestData) throws InterruptedException, IOException {
+        JSONObject requestJson = new JSONObject(requestData);
 
         // Override request params from configuration
         for (String key : requestParams.keySet()) {
             requestJson.put(key, requestParams.get(key));
         }
 
-        HttpURLConnection conn = getURLConnection();
-        conn.getOutputStream().write(requestJson.toString().getBytes(StandardCharsets.UTF_8));
         boolean isStreamingReq = requestJson.optBoolean("stream", false);
-        return isStreamingReq ? handleStreamingResponse(conn) : handleJsonResponse(conn);
+        HttpRequest request = getHttpRequest(requestJson, isStreamingReq);
+        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+        int statusCode = response.statusCode();
+
+        if (statusCode >= 200 && statusCode < 300) {
+            return isStreamingReq ? handleStreamingResponse(response) : handleJsonResponse(response);
+        }
+
+        // Read and forward the error body from OpenAI
+        try (InputStream errorStream = response.body()) {
+            String errorBody = new String(errorStream.readAllBytes(), StandardCharsets.UTF_8);
+            logger.warn("OpenAI API returned status {}: {}", statusCode, errorBody);
+            return Response.status(statusCode).entity(errorBody).build();
+        }
     }
 
-    public HttpURLConnection getURLConnection() throws IOException {
-        URL url = new URL(apiUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Authorization", "Bearer " + getApiKey());
-        conn.setDoOutput(true);
-        return conn;
+    public HttpRequest getHttpRequest(JSONObject requestJson, boolean isStreaming) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(apiUrl))
+                .timeout(isStreaming ? streamingTimeout : requestTimeout)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
+                .POST(HttpRequest.BodyPublishers.ofString(requestJson.toString(), StandardCharsets.UTF_8))
+                .build();
     }
 
-    private Response handleJsonResponse(HttpURLConnection conn) throws IOException {
-        InputStream responseStream = conn.getInputStream();
-        Scanner s = new Scanner(responseStream).useDelimiter("\\A");
-        String responseBody = s.hasNext() ? s.next() : "";
-        return Response.ok(responseBody).build();
+    private Response handleJsonResponse(HttpResponse<InputStream> response) {
+        return Response.ok(response.body()).build();
     }
 
-    private Response handleStreamingResponse(HttpURLConnection conn) throws IOException {
-        InputStream responseStream = conn.getInputStream();
-        return Response.ok(responseStream)
+    private Response handleStreamingResponse(HttpResponse<InputStream> response) {
+        return Response.ok(response.body())
                 .type("text/event-stream")
                 .header("Cache-Control", "no-cache")
                 .header("Connection", "keep-alive")

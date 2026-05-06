@@ -1,5 +1,5 @@
 <%@ page import="org.jahia.modules.ckeditor.config.RichTextConfig"%>
-<%@ page import="org.jahia.modules.ckeditor.ai.AIServiceLookupUtil"%>
+<%@ page import="org.jahia.modules.ckeditor.ai.service.AIServiceLookupUtil"%>
 <%@ page import="org.jahia.osgi.BundleUtils"%>
 <%@ page language="java" contentType="text/javascript" %>
 

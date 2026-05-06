@@ -24,8 +24,8 @@
 package org.jahia.modules.ckeditor.ai.api;
 
 import org.jahia.api.Constants;
-import org.jahia.modules.ckeditor.ai.AIProxyService;
-import org.jahia.modules.ckeditor.ai.AIServiceLookupUtil;
+import org.jahia.modules.ckeditor.ai.service.AIProxyService;
+import org.jahia.modules.ckeditor.ai.service.AIServiceLookupUtil;
 import org.jahia.modules.ckeditor.config.RichTextConfig;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -54,7 +54,7 @@ public class AIProxy {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response forwardRequest(String data, @Context HttpHeaders headers) {
         String nodePath = headers.getHeaderString("X-Jahia-Path");
-        if (nodePath == null || nodePath.isEmpty() || !hasPermission(nodePath)) {
+        if (!hasPermission(nodePath)) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(new JSONObject().put("error", "Unauthorized").toString())
                     .build();
@@ -68,8 +68,11 @@ public class AIProxy {
             AIProxyService aiService = lookupUtil.getAIProxyService(apiType);
             validateAIService(aiService, apiType);
 
-            return aiService.handleResponse(data);
+            return aiService.handleRequest(data);
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             logger.error("Error processing AI request", e);
             return Response.status(Response.Status.SERVICE_UNAVAILABLE)
                     .entity(new JSONObject().put("error", e.getMessage()).toString())
@@ -83,6 +86,10 @@ public class AIProxy {
      * verifies the wysiwyg-editor-toolbar permission on the given node.
      */
     private boolean hasPermission(String nodePath) {
+        if (nodePath == null || nodePath.trim().isEmpty()) {
+            return false;
+        }
+
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
             JCRNodeWrapper node = session.getNode(nodePath);
@@ -101,17 +108,17 @@ public class AIProxy {
      */
     private void validateAIService(AIProxyService aiService, String apiType) {
         if (aiService == null) {
-            throw new RuntimeException("AI service not found for type: " + apiType);
+            throw new ServiceUnavailableException("AI service not found for type: " + apiType);
         }
         if (!aiService.isEnabled()) {
-            throw new RuntimeException("AI service is disabled");
+            throw new ServiceUnavailableException("AI service is disabled");
         }
     }
 
     private <T> T getRequiredService(Class<T> serviceClass) {
         T service = BundleUtils.getOsgiService(serviceClass, null);
         if (service == null) {
-            throw new RuntimeException(serviceClass.getSimpleName() + " service not available");
+            throw new ServiceUnavailableException(serviceClass.getSimpleName() + " service not available");
         }
 
         return service;

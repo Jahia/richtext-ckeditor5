@@ -6,8 +6,11 @@ import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +31,8 @@ public class RichTextConfig implements ManagedService {
     private final static String EXCLUDE_MACROS = "excludeMacros";
     private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
     private final static String CONFIG_TYPE = "configType";
+    private final static String CKEDITOR4_INSTALLED = "ckeditor4Installed";
+    private final static String CKEDITOR4_BUNDLE_SYMBOLIC_NAME = "ckeditor";
     private final static String AI_TYPE = "aiType";
 
     private boolean enabledByDefault = true;
@@ -41,8 +46,15 @@ public class RichTextConfig implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(RichTextConfig.class);
 
+    private BundleContext bundleContext;
+
     public RichTextConfig() {
         super();
+    }
+
+    @Activate
+    public void activate(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
     @Override
@@ -91,7 +103,20 @@ public class RichTextConfig implements ManagedService {
         obj.put(EXCLUDE_TOOLBARS, new JSONArray(excludeToolbarItems));
         obj.put(EXCLUDE_MACROS, new JSONArray(excludeMacros));
         obj.put(CONFIG_TYPE, configType);
+        obj.put(CKEDITOR4_INSTALLED, isCkeditor4Installed());
         return obj;
+    }
+
+    private boolean isCkeditor4Installed() {
+        if (bundleContext == null) {
+            return true;
+        }
+        for (Bundle bundle : bundleContext.getBundles()) {
+            if (CKEDITOR4_BUNDLE_SYMBOLIC_NAME.equals(bundle.getSymbolicName()) && bundle.getState() == Bundle.ACTIVE) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {

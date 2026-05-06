@@ -66,19 +66,6 @@ public class AIServiceLookupUtil {
 
             if (refs == null || refs.isEmpty()) {
                 logger.warn("No AI proxy service found for apiType '{}'", apiType);
-                // List all available AIProxyService instances for debugging
-//                Collection<ServiceReference<AIProxyService>> allRefs =
-//                        bundleContext.getServiceReferences(AIProxyService.class, null);
-//                if (allRefs != null && !allRefs.isEmpty()) {
-//                    logger.info("Available AI proxy services:");
-//                    for (ServiceReference<AIProxyService> ref : allRefs) {
-//                        logger.info("  - service.pid: {}, component.name: {}",
-//                                ref.getProperty("service.pid"),
-//                                ref.getProperty("component.name"));
-//                    }
-//                } else {
-//                    logger.warn("No AI proxy services registered at all");
-//                }
                 return null;
             }
 

@@ -22,7 +22,7 @@ export function removePlugin(config, pluginName) {
 /**
  * Returns a custom proxy configuration for OpenAI assistant integration based on the provided node path and CKEditor configuration.
  * This also removes the AI-related toolbar items from the CKEditor configuration if the AI integration is disabled in the openai OSGi configuration.
- * 
+ *
  * @param nodePath
  * @param config
  * @returns OpenAI assistant proxy configuration

@@ -23,9 +23,11 @@
  */
 package org.jahia.modules.ckeditor.ai;
 
-import org.jahia.modules.ckeditor.config.ConfigUtil;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.*;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +36,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Scanner;
 
 @Component(
@@ -43,11 +44,32 @@ import java.util.Scanner;
         configurationPid = AIProxyService.PARENT_PID + "." + OpenAIProxyServiceImpl.API_TYPE,
         property = {"aiType=" + OpenAIProxyServiceImpl.API_TYPE}
 )
+@Designate(ocd = OpenAIProxyServiceImpl.OpenAIConfig.class)
 public class OpenAIProxyServiceImpl implements AIProxyService {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAIProxyServiceImpl.class);
 
     public static final String API_TYPE = "openai";
+
+    @ObjectClassDefinition(
+            name = "CKEditor5 OpenAI Proxy Configuration",
+            description = "Configuration for the OpenAI proxy service used by the CKEditor 5 AI assistant")
+    public @interface OpenAIConfig {
+        @AttributeDefinition(name = "Enabled", description = "Enable or disable this AI configuration. Hides AI-related toolbars.")
+        boolean ai_enabled() default false;
+
+        // From https://platform.openai.com/api-keys
+        @AttributeDefinition(name = "API Key", description = "OpenAI API Key")
+        String ai_apiKey() default "YOUR_OPEN_API_KEY_HERE";
+
+        @AttributeDefinition(name = "API URL", description = "OpenAI API endpoint URL")
+        String ai_apiUrl() default "https://api.openai.com/v1/chat/completions";
+
+        @AttributeDefinition(
+                name = "Request Parameters",
+                description = "Additional override request parameters as a JSON string (optional)")
+        String ai_requestParams() default "";
+    }
 
     private boolean isEnabled;
     private String apiKey;
@@ -65,19 +87,14 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
 
     @Activate
     @Modified
-    public void activate(Map<String, String> props) {
-        if (!API_TYPE.equals(props.get("aiType"))) {
-            return;
-        }
+    public void activate(OpenAIConfig config) {
         logger.info("Configuring OpenAI Proxy Service activated with PID: {}", API_TYPE);
-        logger.debug("Configuration properties: {}", props);
 
-        // Basic settings
-        isEnabled = ConfigUtil.getBoolean(props, "ai.enabled", false);
-        apiKey = ConfigUtil.getString(props, "ai.apiKey", "");
-        apiUrl = ConfigUtil.getString(props, "ai.apiUrl", "https://api.openai.com/v1/chat/completions");
+        isEnabled = config.ai_enabled();
+        apiKey = config.ai_apiKey();
+        apiUrl = config.ai_apiUrl();
 
-        String requestParamsStr = ConfigUtil.getString(props, "ai.requestParams", null);
+        String requestParamsStr = config.ai_requestParams();
         if (requestParamsStr != null && !requestParamsStr.trim().isEmpty()) {
             try {
                 requestParams = new JSONObject(requestParamsStr);
@@ -94,20 +111,17 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     }
 
     @Deactivate
-    public void deactivate(Map<String, String> props) {
-        String pid = props.get("aiType");
-        logger.info("OpenAI Proxy Service deactivated: {}", pid);
+    public void deactivate() {
+        logger.info("OpenAI Proxy Service deactivated: {}", API_TYPE);
     }
 
     @Override
     public Response handleResponse(String data) throws IOException {
         JSONObject requestJson = new JSONObject(data);
 
-        // Merge config request params as defaults (request data takes precedence)
+        // Override request params from configuration
         for (String key : requestParams.keySet()) {
-            if (!requestJson.has(key)) {
-                requestJson.put(key, requestParams.get(key));
-            }
+            requestJson.put(key, requestParams.get(key));
         }
 
         HttpURLConnection conn = getURLConnection();

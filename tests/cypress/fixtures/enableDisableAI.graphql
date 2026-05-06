@@ -1,0 +1,9 @@
+mutation enableDisableAI($isEnabled: String!) {
+  admin {
+    jahia {
+      configuration(pid: "org.jahia.modules.richtextCKEditor5.ai.openai") {
+        value(name: "ai.enabled", value: $isEnabled)
+      }
+    }
+  }
+}

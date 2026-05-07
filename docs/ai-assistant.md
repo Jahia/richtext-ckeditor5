@@ -19,7 +19,7 @@ This architecture ensures that:
 - Only users with CK5 richtext editor permissions can use the AI Assistant
 - Request parameters can be centrally managed by administrators
 
-Currently, only OpenAI requests is supported through the proxy endpoint.
+Currently, only OpenAI requests is supported through the proxy endpoint. AI toolbar buttons, when enabled in the backend, are available in the `complete` and `advanced` configurations. See [CK5 configuration](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/configuring-and-customizing-ckeditor-menu/ckeditor-5.html#Configuration) documentation for more details.
 
 ## Prerequisites
 

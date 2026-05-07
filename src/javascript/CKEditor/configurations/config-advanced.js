@@ -4,6 +4,9 @@ export const advancedConfig = {
     ...completeConfig,
     toolbar: {
         items: [
+            'aiCommands',
+            'aiAssistant',
+            '|',
             'undo',
             'redo',
             'sourceEditing',

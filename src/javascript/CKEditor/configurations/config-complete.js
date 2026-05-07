@@ -5,6 +5,9 @@ export const completeConfig = {
     plugins,
     toolbar: {
         items: [
+            'aiCommands',
+            'aiAssistant',
+            '|',
             'undo',
             'redo',
             'sourceEditingEnhanced',

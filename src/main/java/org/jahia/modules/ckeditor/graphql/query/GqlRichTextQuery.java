@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

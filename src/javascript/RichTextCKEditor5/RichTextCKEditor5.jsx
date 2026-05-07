@@ -11,8 +11,8 @@ import {set} from '~/RichTextCKEditor5/RichTextCKEditor5.utils';
 import {useTranslation} from './RichTextCKEditor5.hooks';
 import './RichTextCKEditor5-overrides.css';
 import {registry} from '@jahia/ui-extender';
-import {REGISTRY_KEY} from '../RichTextCKEditor5.constants';
-import {removeToolbarItems} from '../CKEditor/config.utils';
+import {REGISTRY_KEY} from '~/RichTextCKEditor5.constants';
+import {getAIConfig, removeToolbarItems} from '~/CKEditor/config.utils';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -67,8 +67,10 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         resolvedConfigName = parsedOptions.ckeditor.customConfig;
     }
 
+    const registryConfig = registry.get(REGISTRY_KEY, resolvedConfigName);
     const customConfig = {
-        ...registry.get(REGISTRY_KEY, resolvedConfigName),
+        ...getAIConfig(editorContext.path, registryConfig),
+        ...registryConfig,
         language: uilang,
         picker: {
             site: editorContext.site,

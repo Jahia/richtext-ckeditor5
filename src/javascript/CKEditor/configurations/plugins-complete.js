@@ -48,11 +48,19 @@ import {
     TextTransformation,
     Underline
 } from 'ckeditor5';
-import {CaseChange, Template, SourceEditingEnhanced, PasteFromOfficeEnhanced} from 'ckeditor5-premium-features';
+import {
+    CaseChange,
+    Template,
+    SourceEditingEnhanced,
+    PasteFromOfficeEnhanced,
+    AIAssistant,
+    OpenAITextAdapter
+} from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
 import {ImageStyleEmbed, MenuBarFixedPanels} from '~/CKEditor/plugins';
 
 export const plugins = [
+    AIAssistant,
     Alignment,
     Autoformat,
     BlockQuote,
@@ -93,6 +101,7 @@ export const plugins = [
     List,
     Mention,
     MenuBarFixedPanels,
+    OpenAITextAdapter,
     Paragraph,
     PasteFromOffice,
     PasteFromOfficeEnhanced,

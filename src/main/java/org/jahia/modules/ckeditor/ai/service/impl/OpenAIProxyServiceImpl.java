@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -146,11 +147,28 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     }
 
     private Response handleJsonResponse(HttpResponse<InputStream> response) {
-        return Response.ok(response.body()).build();
+        StreamingOutput streamingOutput = output -> {
+            try (InputStream input = response.body()) {
+                input.transferTo(output); // 8KB buffer
+            }
+        };
+        return Response.ok(streamingOutput).type(MediaType.APPLICATION_JSON).build();
     }
 
     private Response handleStreamingResponse(HttpResponse<InputStream> response) {
-        return Response.ok(response.body())
+        // We avoid buffering the entire response in memory by default, and flush each read SSE chunk immediately
+        StreamingOutput streamingOutput = output -> {
+            try (InputStream input = response.body()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = input.read(buffer)) != -1) {
+                    output.write(buffer, 0, bytesRead);
+                    output.flush();
+                }
+            }
+        };
+
+        return Response.ok(streamingOutput)
                 .type("text/event-stream")
                 .header("Cache-Control", "no-cache")
                 .header("Connection", "keep-alive")

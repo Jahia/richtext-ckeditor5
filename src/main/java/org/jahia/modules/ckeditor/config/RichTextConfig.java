@@ -1,16 +1,15 @@
 package org.jahia.modules.ckeditor.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.util.PropertiesList;
 import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,15 +45,8 @@ public class RichTextConfig implements ManagedService {
 
     private static final Logger logger = LoggerFactory.getLogger(RichTextConfig.class);
 
-    private BundleContext bundleContext;
-
     public RichTextConfig() {
         super();
-    }
-
-    @Activate
-    public void activate(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
     @Override
@@ -108,15 +100,8 @@ public class RichTextConfig implements ManagedService {
     }
 
     private boolean isCkeditor4Installed() {
-        if (bundleContext == null) {
-            return true;
-        }
-        for (Bundle bundle : bundleContext.getBundles()) {
-            if (CKEDITOR4_BUNDLE_SYMBOLIC_NAME.equals(bundle.getSymbolicName()) && bundle.getState() == Bundle.ACTIVE) {
-                return true;
-            }
-        }
-        return false;
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(CKEDITOR4_BUNDLE_SYMBOLIC_NAME, null);
+        return bundle != null && bundle.getState() == Bundle.ACTIVE;
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {

@@ -31,6 +31,14 @@ export function getAIConfig(nodePath, config) {
     const isAIEnabled = Boolean(window?.contextJsParameters?.config?.ckeditor5?.aiEnabled);
     if (!isAIEnabled) {
         removeToolbarItems(config, ['aiCommands', 'aiAssistant']);
+        if (config.menuBar) {
+            config.menuBar.removeItems = [
+                ...(config.menuBar.removeItems ?? []),
+                'menuBar:aiCommands',
+                'menuBar:aiAssistant'
+            ];
+        }
+
         return {};
     }
 

@@ -40,6 +40,9 @@ describe('AI Assistant tests', () => {
             ck5field.getToolbarButton('AI Assistant').should('not.exist');
             ck5field.getToolbarButton('AI Commands').should('not.exist');
 
+            ck5field.assertMenuBarDoesNotContain('Tools', 'AI Assistant');
+            ck5field.assertMenuBarDoesNotContain('Tools', 'AI Commands');
+
             ckeditor5.cancelAndDiscard();
         });
 
@@ -59,6 +62,10 @@ describe('AI Assistant tests', () => {
 
             ck5field.getToolbarButton('AI Assistant').should('be.visible');
             ck5field.getToolbarButton('AI Commands').should('be.visible');
+
+            ck5field.clickMenuItemByLabel('Tools');
+            ck5field.getMenuSubItemByLabel('AI Assistant').should('be.visible');
+            ck5field.getMenuSubItemByLabel('AI Commands').should('be.visible');
 
             ckeditor5.cancelAndDiscard();
         });

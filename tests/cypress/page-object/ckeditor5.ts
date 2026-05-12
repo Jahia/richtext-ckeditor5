@@ -83,6 +83,23 @@ export class RichTextCKeditor5Field extends Field {
         return this.get().find('.ck-menu-bar').find('ul.ck-list li.ck-list__item button.ck-list-item-button').contains(label);
     }
 
+    assertMenuBarDoesNotContain(parentMenuLabel: string, label: string): void {
+        this.get().find('div.ck-menu-bar__menu_top-level > button.ck-menu-bar__menu__button').then($buttons => {
+            const $parentBtn = $buttons.filter((_, el) => el.textContent?.trim() === parentMenuLabel);
+            if ($parentBtn.length === 0) {
+                // Parent menu is absent entirely — child item cannot be present
+                return;
+            }
+
+            // Parent menu exists — open it and verify the label is not among its items
+            cy.wrap($parentBtn).click();
+            this.get()
+                .find('.ck-menu-bar')
+                .find('ul.ck-list li.ck-list__item button.ck-list-item-button')
+                .should('not.contain', label, {timeout: 10000});
+        });
+    }
+
     selectHeading(heading: string) {
         this.get().find('.ck-heading-dropdown').find('.ck-list__item').contains(heading).click();
     }

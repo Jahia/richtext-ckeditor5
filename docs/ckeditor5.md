@@ -25,6 +25,8 @@ Once the CK5 module is started, every new website created on the platform will u
 
 To activate CK5 on a pre-existing website, the first thing to do is to remove this site from the exclude list in the cfg file.
 
+If the CK4 module (`ckeditor`) is not installed at all, CK5 is used unconditionally for every site, regardless of `enabledByDefault`, `includeSites` or `excludeSites` — there is no CK4 fallback to honor.
+
 ## Configuration
 
 A configuration is the name given to a specific CK5 toolbar and its underlying plugins.

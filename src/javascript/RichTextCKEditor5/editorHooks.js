@@ -11,6 +11,12 @@ export const editorOnBeforeContextHook = async editContext => {
         const siteKey = editContext.siteInfo.path.split('/')[2];
         const config = contextJsParameters.config.ckeditor5;
 
+        if (config.ckeditor4Installed === false) {
+            registry.addOrReplace('selectorType', 'RichText', registry.get('selectorType', 'RichText5'));
+            resolve();
+            return;
+        }
+
         if (config.excludeSites.includes(siteKey) && config.includeSites.includes(siteKey)) {
             console.warn('The site is marked to be used with both CKEditor 4 and 5, version 5 will be used. See configuration for details.');
         }
@@ -26,6 +32,10 @@ export const editorOnBeforeContextHook = async editContext => {
 };
 
 export const editorOnCloseHook = () => {
+    if (contextJsParameters.config.ckeditor5.ckeditor4Installed === false) {
+        return;
+    }
+
     if (originalRichText) {
         registry.addOrReplace('selectorType', 'RichText', originalRichText);
     }

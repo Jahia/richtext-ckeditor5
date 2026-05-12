@@ -1,11 +1,13 @@
 package org.jahia.modules.ckeditor.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.modulemanager.util.PropertiesList;
 import org.jahia.services.modulemanager.util.PropertiesManager;
 import org.jahia.services.modulemanager.util.PropertiesValues;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.osgi.framework.Bundle;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.annotations.Component;
@@ -28,6 +30,8 @@ public class RichTextConfig implements ManagedService {
     private final static String EXCLUDE_MACROS = "excludeMacros";
     private final static String ENABLED_BY_DEFAULT = "enabledByDefault";
     private final static String CONFIG_TYPE = "configType";
+    private final static String CKEDITOR4_INSTALLED = "ckeditor4Installed";
+    private final static String CKEDITOR4_BUNDLE_SYMBOLIC_NAME = "ckeditor";
     private final static String AI_TYPE = "aiType";
 
     private boolean enabledByDefault = true;
@@ -91,7 +95,13 @@ public class RichTextConfig implements ManagedService {
         obj.put(EXCLUDE_TOOLBARS, new JSONArray(excludeToolbarItems));
         obj.put(EXCLUDE_MACROS, new JSONArray(excludeMacros));
         obj.put(CONFIG_TYPE, configType);
+        obj.put(CKEDITOR4_INSTALLED, isCkeditor4Installed());
         return obj;
+    }
+
+    private boolean isCkeditor4Installed() {
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(CKEDITOR4_BUNDLE_SYMBOLIC_NAME, null);
+        return bundle != null && bundle.getState() == Bundle.ACTIVE;
     }
 
     private boolean getBoolean(Dictionary<String, ?> properties, String key) {

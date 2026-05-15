@@ -9,6 +9,10 @@ describe('Language tests', () => {
     before(function () {
         createSite(siteKeyEn);
         cy.loginAndStoreSession(); // Edit in chief
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey: siteKeyEn}
+        });
     });
 
     after(function () {

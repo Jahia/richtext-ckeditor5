@@ -1,0 +1,18 @@
+p.red-paragraph {
+    color: rgb(220, 38, 38);
+    font-weight: bold;
+}
+
+h2.highlight {
+    background-color: rgb(255, 235, 59);
+    padding: 4px 8px;
+}
+
+p.boxed.padded {
+    border: 2px solid black;
+    padding: 12px;
+}
+
+.always-on {
+    font-style: italic;
+}

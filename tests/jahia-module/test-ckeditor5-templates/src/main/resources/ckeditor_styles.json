@@ -1,0 +1,8 @@
+{
+  "templateStylesheet": "/styles/templates.css",
+  "templates": [
+    { "name": "Red Paragraph", "element": "p", "classes": ["red-paragraph"] },
+    { "name": "Highlighted Heading", "element": "h2", "classes": ["highlight"] },
+    { "name": "Boxed Block", "element": "p", "classes": ["boxed", "padded"] }
+  ]
+}

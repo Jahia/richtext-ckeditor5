@@ -78,5 +78,6 @@
 
     <modules>
         <module>test-ckeditor5-config</module>
+        <module>test-ckeditor5-templates</module>
   </modules>
 </project>

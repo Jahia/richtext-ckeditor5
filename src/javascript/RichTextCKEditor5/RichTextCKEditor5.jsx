@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import * as PropTypes from 'prop-types';
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {JahiaClassicEditor} from '~/CKEditor/JahiaClassicEditor';
@@ -13,6 +13,7 @@ import './RichTextCKEditor5-overrides.css';
 import {registry} from '@jahia/ui-extender';
 import {REGISTRY_KEY} from '~/RichTextCKEditor5.constants';
 import {getAIConfig, removeToolbarItems} from '~/CKEditor/config.utils';
+import scopeCss from 'scope-css';
 
 export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
     const editorRef = useRef();
@@ -49,6 +50,55 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         }
     );
 
+    const styleTemplates = data?.jcontent?.richtext?.config?.styleTemplates;
+    const stylesheetUrl = styleTemplates?.stylesheet || null;
+    const [stylesheetEl, setStylesheetEl] = useState(null);
+
+    useEffect(() => {
+        if (!stylesheetUrl) {
+            setStylesheetEl(null);
+            return undefined;
+        }
+
+        let cancelled = false;
+        fetch(stylesheetUrl)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
+                return res.text();
+            })
+            .then(css => {
+                if (cancelled) {
+                    return;
+                }
+
+                const scoped = scopeCss(css, '.ck-content');
+                const el = document.createElement('style');
+                el.textContent = scoped;
+                el.setAttribute('data-jahia-ck5-styles', stylesheetUrl);
+                setStylesheetEl(el);
+            })
+            .catch(err => {
+                console.warn(`Failed to load CK5 template stylesheet ${stylesheetUrl}:`, err);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [stylesheetUrl]);
+
+    useEffect(() => {
+        if (!stylesheetEl) {
+            return undefined;
+        }
+
+        document.head.append(stylesheetEl);
+        return () => {
+            stylesheetEl.remove();
+        };
+    }, [stylesheetEl]);
+
     if (error) {
         return <span>error</span>;
     }
@@ -83,6 +133,17 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
 
     if (excludeToolbarItems.length > 0) {
         removeToolbarItems(customConfig, excludeToolbarItems);
+    }
+
+    if (styleTemplates?.definitions?.length > 0) {
+        customConfig.style = {
+            ...(customConfig.style || {}),
+            definitions: styleTemplates.definitions.map(d => ({
+                name: d.name,
+                element: d.element,
+                classes: d.classes
+            }))
+        };
     }
 
     if (translations.length > 0) {

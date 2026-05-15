@@ -104,6 +104,12 @@ export class RichTextCKeditor5Field extends Field {
         this.get().find('.ck-heading-dropdown').find('.ck-list__item').contains(heading).click();
     }
 
+    selectStyle(name: string) {
+        // The Style dropdown lives in the toolbar. Open it, then click the entry matching `name`.
+        this.getToolbarButton('Styles').click();
+        cy.get('.ck-style-grid__button').contains(name).should('be.visible').click();
+    }
+
     getMacrosSuggestion(id: string) {
         return this.get()
             .get('.ck-mentions')

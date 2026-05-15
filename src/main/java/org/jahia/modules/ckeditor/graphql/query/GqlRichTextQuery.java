@@ -21,6 +21,7 @@ import graphql.annotations.annotationTypes.GraphQLName;
 import graphql.annotations.annotationTypes.GraphQLNonNull;
 import org.jahia.modules.ckeditor.config.CKEditorConfiguration;
 import org.jahia.modules.ckeditor.config.RichTextConfig;
+import org.jahia.modules.ckeditor.styletemplates.StyleTemplatesResolver;
 import org.jahia.modules.graphql.provider.dxm.DataFetchingException;
 import org.jahia.modules.graphql.provider.dxm.osgi.annotations.GraphQLOsgiService;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -59,12 +60,14 @@ public class GqlRichTextQuery {
             // Global excludeToolbarItems will be used if no specific config has them defined
             List<String> globalExcludeItems = config.getExcludeToolbarItems();
 
+            GqlRichTextStyleTemplates styleTemplates = StyleTemplatesResolver.resolve(node);
+
             // Find all available configs for this siteKey and see if any of them can be used
             CKEditorConfiguration configForSite = getConfigForSite(node, siteKey);
 
             if (configForSite != null) {
                 logger.debug("config for site found for sitekey {}", siteKey);
-                return new GqlRichTextConfigResult(configForSite.getName(), configForSite.getExcludeToolbarItems().isEmpty() ? globalExcludeItems :  configForSite.getExcludeToolbarItems());
+                return new GqlRichTextConfigResult(configForSite.getName(), configForSite.getExcludeToolbarItems().isEmpty() ? globalExcludeItems :  configForSite.getExcludeToolbarItems(), styleTemplates);
             }
 
             // Find all available default configs (configs without siteKeys) and see if any of them can be used
@@ -72,22 +75,22 @@ public class GqlRichTextQuery {
 
             if (defaultConfig != null) {
                 logger.debug("default config found for {}", node.getPath());
-                return new GqlRichTextConfigResult(defaultConfig.getName(), defaultConfig.getExcludeToolbarItems().isEmpty() ? globalExcludeItems :  defaultConfig.getExcludeToolbarItems());
+                return new GqlRichTextConfigResult(defaultConfig.getName(), defaultConfig.getExcludeToolbarItems().isEmpty() ? globalExcludeItems :  defaultConfig.getExcludeToolbarItems(), styleTemplates);
             }
 
             // If no config is defined by the user return default config name based on permission level
             if (node.hasPermission("view-full-wysiwyg-editor")) {
                 logger.debug("complete config found for {}", node.getPath());
-                return new GqlRichTextConfigResult("complete", globalExcludeItems);
+                return new GqlRichTextConfigResult("complete", globalExcludeItems, styleTemplates);
             } else if (node.hasPermission("view-basic-wysiwyg-editor")) {
                 logger.debug("advanced config found for {}", node.getPath());
-                return new GqlRichTextConfigResult("advanced", globalExcludeItems);
+                return new GqlRichTextConfigResult("advanced", globalExcludeItems, styleTemplates);
             } else if (node.hasPermission("view-light-wysiwyg-editor")) {
                 logger.debug("light config found for {}", node.getPath());
-                return new GqlRichTextConfigResult("light", globalExcludeItems);
+                return new GqlRichTextConfigResult("light", globalExcludeItems, styleTemplates);
             }
             logger.debug("minimal config found for {}", node.getPath());
-            return new GqlRichTextConfigResult("minimal", globalExcludeItems);
+            return new GqlRichTextConfigResult("minimal", globalExcludeItems, styleTemplates);
 
         } catch (RepositoryException e) {
             throw new DataFetchingException(e);

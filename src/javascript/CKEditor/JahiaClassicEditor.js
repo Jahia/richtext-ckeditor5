@@ -26,9 +26,12 @@ export class JahiaClassicEditor extends ClassicEditor {
             removeToolbarItems(config, 'template');
         }
 
-        // Remove Styles plugin, toolbar item if no definitions
-        if (!config.style?.definitions) {
-            console.debug('Removing Style plugin and toolbar item as no definitions are provided.');
+        // Remove Styles plugin, toolbar item if no definitions, or if the
+        // toolbar omits the style item (no point keeping the plugin loaded
+        // when there's no UI binding for it).
+        const toolbarItems = config.toolbar?.items || config.toolbar || [];
+        if (!config.style?.definitions || !toolbarItems.includes('style')) {
+            console.debug('Removing Style plugin and toolbar item.');
             removePlugin(config, 'Style');
             removeToolbarItems(config, 'style');
         }

@@ -7,6 +7,14 @@ export const getCKEditorConfiguration = gql`
                 config(path: $nodePath) {
                     configName
                     excludeToolbarItems
+                    styleTemplates {
+                        stylesheet
+                        definitions {
+                            name
+                            element
+                            classes
+                        }
+                    }
                 }
             }
         }

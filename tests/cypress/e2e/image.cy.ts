@@ -33,6 +33,12 @@ describe('Image tests', () => {
             children: [imageText]
         });
         addNode({...imageText, parentPathOrId: `/sites/${siteKey}/contents`});
+
+        cy.loginAndStoreSession();
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey}
+        });
     });
 
     after(() => {

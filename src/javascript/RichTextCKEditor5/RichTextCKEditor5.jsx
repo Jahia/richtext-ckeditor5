@@ -89,8 +89,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         customConfig.translations = translations.slice();
     }
 
+    const richtextMaxHeight = window?.contextJsParameters?.config?.ckeditor5?.richtextMaxHeight;
     return (
-        <div className={styles.unreset}>
+        <div className={styles.unreset} style={richtextMaxHeight ? {'--ck-editor-max-height': `${richtextMaxHeight}px`} : undefined}>
             <CKEditor
                 id={id}
                 editor={JahiaClassicEditor}
@@ -100,6 +101,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
                 onReady={editor => {
                     editorRef.current = editor;
                     editor.editing.view.change(writer => {
+                        // Applied to [contenteditable="true"] element, which is the main editing area of CKEditor
                         writer.addClass(styles.wrapper, editor.editing.view.document.getRoot());
                     });
                 }}

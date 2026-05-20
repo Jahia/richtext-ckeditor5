@@ -33,6 +33,7 @@ public class RichTextConfig implements ManagedService {
     private final static String CKEDITOR4_INSTALLED = "ckeditor4Installed";
     private final static String CKEDITOR4_BUNDLE_SYMBOLIC_NAME = "ckeditor";
     private final static String AI_TYPE = "aiType";
+    private final static String RICHTEXT_MAX_HEIGHT = "richtextMaxHeight";
 
     private boolean enabledByDefault = true;
     private List<String> excludeToolbarItems  = new ArrayList<>();
@@ -42,6 +43,7 @@ public class RichTextConfig implements ManagedService {
     private List<CKEditorConfiguration> configs = new ArrayList<>();
     private String configType = "complete";
     private String aiType = "openai";
+    private String richtextMaxHeight = null;
 
     private static final Logger logger = LoggerFactory.getLogger(RichTextConfig.class);
 
@@ -66,8 +68,9 @@ public class RichTextConfig implements ManagedService {
                     ? dictionary.get(CONFIG_TYPE).toString() : "complete";
             aiType = (dictionary.get(AI_TYPE) != null)
                     ? dictionary.get(AI_TYPE).toString() : "openai";
-            logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, excludeToolbarItems={}, excludeMacros={}, configType={}",
-                    enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), StringUtils.join(excludeToolbarItems, ','), StringUtils.join(excludeMacros, ','), configType);
+            richtextMaxHeight = parsePositiveValue(dictionary, RICHTEXT_MAX_HEIGHT);
+            logger.debug("Richtext configuration updated: enabledByDefault={}, includeSites={}, excludeSites={}, excludeToolbarItems={}, excludeMacros={}, configType={}, richtextMaxHeight={}",
+                    enabledByDefault, StringUtils.join(includeSites, ','), StringUtils.join(excludeSites, ','), StringUtils.join(excludeToolbarItems, ','), StringUtils.join(excludeMacros, ','), configType, richtextMaxHeight);
         }
     }
 
@@ -87,6 +90,10 @@ public class RichTextConfig implements ManagedService {
         return aiType;
     }
 
+    public String getRichtextMaxHeight() {
+        return richtextMaxHeight;
+    }
+
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
         obj.put(ENABLED_BY_DEFAULT, enabledByDefault);
@@ -96,6 +103,9 @@ public class RichTextConfig implements ManagedService {
         obj.put(EXCLUDE_MACROS, new JSONArray(excludeMacros));
         obj.put(CONFIG_TYPE, configType);
         obj.put(CKEDITOR4_INSTALLED, isCkeditor4Installed());
+        if (richtextMaxHeight != null) {
+            obj.put(RICHTEXT_MAX_HEIGHT, richtextMaxHeight);
+        }
         return obj;
     }
 
@@ -141,5 +151,36 @@ public class RichTextConfig implements ManagedService {
 
     private List<String> getListOfStrings(PropertiesList list) {
         return list.getStructuredList().stream().map(obj -> Objects.toString(obj, null)).collect(Collectors.toList());
+    }
+
+    /**
+     * Parses an optional positive integer value from the configuration dictionary.
+     * Only digits are accepted — any other characters are stripped before parsing.
+     * Returns null if the key is absent, blank, or does not result in a positive integer.
+     */
+    private String parsePositiveValue(Dictionary<String, ?> properties, String key) {
+        if (properties == null || properties.get(key) == null) {
+            return null;
+        }
+        String raw = properties.get(key).toString().trim();
+        if (raw.isEmpty()) {
+            return null;
+        }
+        // Sanitize: keep digits only
+        String sanitized = raw.replaceAll("[^0-9]", "");
+        if (sanitized.isEmpty()) {
+            logger.warn("Invalid value for {}: '{}'. Expected a positive integer (number of pixels).", key, raw);
+            return null;
+        }
+        try {
+            int intValue = Integer.parseInt(sanitized);
+            if (intValue > 0) {
+                return String.valueOf(intValue);
+            }
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid value for {}: '{}'. Expected a positive integer (number of pixels).", key, raw);
+        }
+        logger.warn("Ignoring non-positive value for {}: '{}'.", key, raw);
+        return null;
     }
 }

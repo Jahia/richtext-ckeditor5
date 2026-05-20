@@ -59,7 +59,6 @@ describe('Rich Text CKEditor 5 - richtextMaxHeight config', () => {
     // Helper methods
 
     const setRichtextMaxHeight = (value: string) => {
-
         cy.apollo({
             mutation: gql`
                 mutation SetRichtextMaxHeight($value: String!) {
@@ -88,7 +87,7 @@ describe('Rich Text CKEditor 5 - richtextMaxHeight config', () => {
                         }
                     }
                 }
-            `,
-        })
-    }
+            `
+        });
+    };
 });

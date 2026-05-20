@@ -8,11 +8,6 @@ describe('AI Assistant tests', () => {
 
     before(function () {
         createSite(siteKey);
-        cy.loginAndStoreSession();
-        cy.apollo({
-            mutationFile: 'updateIncludeSites.graphql',
-            variables: {siteKey}
-        });
     });
 
     after(function () {

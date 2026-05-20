@@ -34,12 +34,6 @@ describe('Link tests', () => {
                 {name: 'j:templateName', value: '2-column'}
             ]
         });
-
-        cy.loginAndStoreSession();
-        cy.apollo({
-            mutationFile: 'updateIncludeSites.graphql',
-            variables: {siteKey}
-        });
     });
 
     after(function () {

@@ -26,3 +26,7 @@
     - 'mvn:org.jahia.test/test-ckeditor5-config'
   autoStart: true
   uninstallPreviousVersion: true
+
+- editConfiguration: 'org.jahia.modules.richtextCKEditor5'
+  properties:
+    enabledByDefault: 'true'

@@ -53,11 +53,6 @@ export const setupToolbarConfig = () => {
 
     cy.loginAndStoreSession(); // Edit in chief
 
-    cy.apollo({
-        mutationFile: 'disableEnableCK5.graphql',
-        variables: {isEnabled: 'true'}
-    });
-
     enableModule('test-ckeditor5-config', siteKey);
 };
 
@@ -68,10 +63,6 @@ export const teardownToolbarConfig = () => {
         method: 'POST',
         failOnStatusCode: false,
         timeout: 30000
-    });
-    cy.apollo({
-        mutationFile: 'disableEnableCK5.graphql',
-        variables: {isEnabled: 'true'}
     });
     deleteSite(siteKey);
 };

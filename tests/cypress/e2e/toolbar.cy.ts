@@ -9,7 +9,6 @@ describe('Toolbar tests', () => {
 
     before(function () {
         createSite(siteKey);
-        cy.loginAndStoreSession(); // Edit in chief
     });
 
     after(function () {

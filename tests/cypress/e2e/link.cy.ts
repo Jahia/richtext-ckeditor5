@@ -36,6 +36,10 @@ describe('Link tests', () => {
         });
 
         cy.loginAndStoreSession();
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey}
+        });
     });
 
     after(function () {

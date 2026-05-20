@@ -11,6 +11,10 @@ describe('Image picker tests', () => {
         createSite(siteKey);
         uploadFile('vacation.jpg', `/sites/${siteKey}/files/bootstrap`, 'vacation', 'image/jpeg');
         cy.loginAndStoreSession();
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey}
+        });
     });
 
     after(function () {

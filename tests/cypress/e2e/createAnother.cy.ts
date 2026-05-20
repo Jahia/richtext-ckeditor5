@@ -9,6 +9,10 @@ describe('Create another tests', () => {
     before(function () {
         createSite(siteKey);
         cy.loginAndStoreSession();
+        cy.apollo({
+            mutationFile: 'updateIncludeSites.graphql',
+            variables: {siteKey}
+        });
     });
 
     after(function () {

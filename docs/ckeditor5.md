@@ -160,6 +160,17 @@ Apart from this site key ordering, the first configuration that satisfies all co
 
 **Set the most powerful toolbars first,** so that users with broader permissions do not get matched to configurations intended for more restricted roles.
 
+### Editor Max Height
+
+By default, the editor content area grows to fit its content with no upper limit. You can cap this height by setting `richtextMaxHeight` in the global configuration file:
+
+```
+# Accepts a positive integer (pixels)
+richtextMaxHeight=500
+```
+
+Once the content exceeds this height, the editor becomes scrollable.
+
 #### CND configuration
 
 Configuration can also be defined at the CND level. In this case, the configuration is applied directly to the specified field within the content definition, overriding any global or site-specific configuration.

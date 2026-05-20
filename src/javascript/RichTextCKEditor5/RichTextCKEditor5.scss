@@ -15,6 +15,7 @@
   overflow-y: auto;
   min-height: 20vh;
   height: fit-content;
+  max-height: var(--ck-editor-max-height, none);
 }
 
 

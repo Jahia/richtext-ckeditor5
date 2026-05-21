@@ -6,13 +6,13 @@ services:
         deploy:
           resources:
             limits:
-              memory: 4gb
+              memory: 6gb
         environment:
             JAHIA_LICENSE: ${JAHIA_LICENSE}
             SUPER_USER_PASSWORD: ${SUPER_USER_PASSWORD}
             PROCESSING_SERVER: 'true'
             JAHIA_PROPERTIES: ${JAHIA_PROPERTIES}
-            CATALINA_OPTS: ${CATALINA_OPTS:--Xmx2g -Xms2g}
+            CATALINA_OPTS: ${CATALINA_OPTS:--Xmx3g -Xms2g -XX:+HeapDumpOnOutOfMemoryError}
             RESTORE_MODULE_STATES: 'false'
             NEXUS_USERNAME: ${NEXUS_USERNAME}
             NEXUS_PASSWORD: ${NEXUS_PASSWORD}

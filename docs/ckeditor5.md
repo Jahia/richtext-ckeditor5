@@ -21,9 +21,13 @@ CK4 is not supported anymore by its vendor, hence no bug fixes will be provided 
 
 ### Initialization Behavior
 
-Once the CK5 module is started, every new website created on the platform will use CK5 by default. All previously existing websites are automatically added in a list of exclusions, to let users continue to use CK4 and not force any change on the platform.
+By default, CK4 will be used, if available, to ensure the best backward compatibility. 
 
-To activate CK5 on a pre-existing website, the first thing to do is to remove this site from the exclude list in the cfg file.
+To enable for all sites, flip `enabledByDefault` to `true` in the configuration file. 
+
+To enable for specific sites, add their keys to the `includeSites` list in the configuration file and keep `enabledByDefault` as `false`.
+
+To disable for specific sites, add their keys to the `excludeSites` list in the configuration file and keep `enabledByDefault` as `true`.
 
 If the CK4 module (`ckeditor`) is not installed at all, CK5 is used unconditionally for every site, regardless of `enabledByDefault`, `includeSites` or `excludeSites` — there is no CK4 fallback to honor.
 
@@ -110,7 +114,6 @@ The global configuration file allows you to have control over what toolbar is di
 includeSites[0]=site1
 includeSites[1]=site2
 
-# This list is automatically populated when CK5 module is installed with pre-existing sites
 excludeSites[0]=site3
 excludeSites[1]=site4
 ```
@@ -156,6 +159,17 @@ The configuration order is important:
 Apart from this site key ordering, the first configuration that satisfies all configuration requirements will be used.
 
 **Set the most powerful toolbars first,** so that users with broader permissions do not get matched to configurations intended for more restricted roles.
+
+### Editor Max Height
+
+By default, the editor content area grows to fit its content with no upper limit. You can cap this height by setting `richtextMaxHeight` in the global configuration file:
+
+```
+# Accepts a positive integer (pixels)
+richtextMaxHeight=500
+```
+
+Once the content exceeds this height, the editor becomes scrollable.
 
 #### CND configuration
 

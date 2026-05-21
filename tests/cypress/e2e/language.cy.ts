@@ -8,7 +8,6 @@ describe('Language tests', () => {
 
     before(function () {
         createSite(siteKeyEn);
-        cy.loginAndStoreSession(); // Edit in chief
     });
 
     after(function () {

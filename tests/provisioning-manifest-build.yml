@@ -27,3 +27,7 @@
     - 'mvn:org.jahia.modules/jcontent'
   autoStart: true
   uninstallPreviousVersion: true
+
+- editConfiguration: 'org.jahia.modules.richtextCKEditor5'
+  properties:
+    enabledByDefault: 'true'

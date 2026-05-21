@@ -13,11 +13,11 @@ CKEditor 5 supports MACROS out of the box, and no special effort, such as plugin
 ![Macros Suggestions List](images/usingMacros/macrosSuggestionsList.png)
 
 ## Adding New MACROS
-To add new MACROS to CKEditor 5, simply add a Groovy script with the desired functionality to a module under `<your_module>/src/main/resources/WEB-INF/macros/testmacros.groovy`, deploy the module, and enable it on your site. Then, when you type `##tes`, you should see your MACROS in the suggestions. Simply select one, and when your RichText is rendered, it will replace the MACROS placeholder with whatever your Groovy file outputs.
+To add new MACROS to CKEditor 5, simply add a Groovy script with the desired functionality to a module under `<your_module>/src/main/resources/WEB-INF/macros/testmacros.groovy` (example: [username.groovy](https://github.com/Jahia/macros/blob/eb69d4b9b657b1491b91dd4a50fa3b8cabc13841/src/main/resources/WEB-INF/macros/username.groovy)), deploy the module, and enable it on your site. Then, when you type `##tes`, you should see your MACROS in the suggestions. Simply select one, and when your RichText is rendered, it will replace the MACROS placeholder with whatever your Groovy file outputs.
 
 ![Macros Suggestions List](images/usingMacros/macrosSuggestionsListNarrowed.png)
 
-You can learn more about MACROS by visiting [this link](https://academy.jahia.com/documentation/jahia-cms/jahia-7.3/developer/advanced-guides/customizing-the-interface-for-users/rendering-content).
+You can learn more about MACROS by visiting [this link](https://academy.jahia.com/documentation/jahia-cms/jahia-7.3/developer/advanced-guides/customizing-the-interface-for-users/rendering-content#macros).
 
 ## Excluding MACROS
 

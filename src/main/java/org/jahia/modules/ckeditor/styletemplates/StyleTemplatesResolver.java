@@ -19,7 +19,6 @@ import org.apache.commons.io.IOUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.modules.ckeditor.graphql.query.GqlRichTextStyleDefinition;
 import org.jahia.modules.ckeditor.graphql.query.GqlRichTextStyleTemplates;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +27,6 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import java.io.IOException;
@@ -66,13 +64,7 @@ public final class StyleTemplatesResolver {
         if (node == null) {
             return null;
         }
-        String templatesSet = resolveTemplatesSet(node);
-        if (templatesSet == null) {
-            return null;
-        }
-        JahiaTemplatesPackage pkg = ServicesRegistry.getInstance()
-                .getJahiaTemplateManagerService()
-                .getTemplatePackageById(templatesSet);
+        JahiaTemplatesPackage pkg = resolveTemplatePackage(node);
         if (pkg == null || pkg.getBundle() == null) {
             return null;
         }
@@ -85,34 +77,33 @@ public final class StyleTemplatesResolver {
         try (InputStream in = res.openStream()) {
             json = IOUtils.toString(in, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            logger.warn("Failed to read {} from templates-set {}: {}", CONFIG_FILE, templatesSet, e.getMessage());
+            logger.warn("Failed to read {} from templates-set {}: {}", CONFIG_FILE, pkg.getId(), e.getMessage());
             return null;
         }
         ParsedTemplates parsed = parseDefinitions(json);
         if (parsed == null) {
-            logger.warn("Invalid {} in templates-set {} - style templates will not be loaded", CONFIG_FILE, templatesSet);
+            logger.warn("Invalid {} in templates-set {} - style templates will not be loaded", CONFIG_FILE, pkg.getId());
             return null;
         }
         String stylesheetUrl = null;
         if (parsed.stylesheet != null) {
             String relPath = parsed.stylesheet.startsWith("/") ? parsed.stylesheet : "/" + parsed.stylesheet;
             if (bundle.getResource(relPath) != null) {
-                stylesheetUrl = "/modules/" + pkg.getId() + relPath;
+                stylesheetUrl = pkg.getRootFolderPath() + relPath;
             } else {
                 logger.warn("templateStylesheet '{}' declared in {} does not exist in bundle - skipping stylesheet",
-                        parsed.stylesheet, templatesSet);
+                        parsed.stylesheet, pkg.getId());
             }
         }
         return new GqlRichTextStyleTemplates(stylesheetUrl, parsed.definitions);
     }
 
-    private static String resolveTemplatesSet(JCRNodeWrapper node) {
+    private static JahiaTemplatesPackage resolveTemplatePackage(JCRNodeWrapper node) {
         try {
-            return node.getResolveSite().getPropertyAsString("j:templatesSet");
-        } catch (PathNotFoundException e) {
-            return null;
+            // getTemplatePackage() resolves j:templatesSet and caches the package on the site node.
+            return node.getResolveSite().getTemplatePackage();
         } catch (RepositoryException e) {
-            logger.warn("Failed to resolve j:templatesSet for node {}: {}", safePath(node), e.getMessage());
+            logger.warn("Failed to resolve templates-set package for node {}: {}", safePath(node), e.getMessage());
             return null;
         }
     }
@@ -186,6 +177,10 @@ public final class StyleTemplatesResolver {
             return null;
         }
         JSONArray classesArr = (JSONArray) classesObj;
+        if (classesArr.length() == 0) {
+            logger.warn("ckeditor_styles.json: templates[{}].classes must not be empty", index);
+            return null;
+        }
         List<String> classes = new ArrayList<>(classesArr.length());
         for (int i = 0; i < classesArr.length(); i++) {
             Object c = classesArr.opt(i);

@@ -46,7 +46,7 @@ If the file is missing, malformed, or violates the schema below, the feature is 
 | `templates` | `array` | optional | Style template definitions exposed in the toolbar dropdown. |
 | `templates[].name` | `string` | required | Label shown to contributors in the dropdown. |
 | `templates[].element` | `string` | required | HTML element the style applies to (`p`, `h1`, `h2`, `div`, ...). The contributor must place their caret inside an element of this type for the style to be applicable. |
-| `templates[].classes` | `string[]` | required | CSS classes that get applied to the element when the style is selected. |
+| `templates[].classes` | `string[]` | required | CSS classes that get applied to the element when the style is selected. The array must be non-empty and every entry must be a non-empty string — a missing, empty, or partially-invalid `classes` array rejects the whole definition (and therefore the entire `ckeditor_styles.json`). |
 
 Either field can be omitted independently: a configuration with only `templateStylesheet` loads the CSS without showing a dropdown; a configuration with only `templates` shows the dropdown without an associated stylesheet.
 
@@ -102,7 +102,7 @@ Any of the following collapses to "feature off" for that site:
 - The declared module is not installed/active.
 - The bundle does not contain `/ckeditor_styles.json`.
 - The JSON cannot be parsed.
-- The schema is violated (missing required field, wrong type, empty `name`, ...).
+- The schema is violated (missing required field, wrong type, empty `name`, empty `classes` array, an empty or non-string entry inside `classes`, ...).
 - `templateStylesheet` points to a file that does not exist in the bundle. (In this case templates are still loaded; only the stylesheet is skipped.)
 
 In all these cases the editor falls back to its default behavior — no dropdown, no extra stylesheet — and the failure is recorded as a `WARN` log entry under `org.jahia.modules.ckeditor.styletemplates`.

@@ -12,7 +12,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>${fn:escapeXml(renderContext.mainResource.node.displayableName)}</title>
     <link rel="stylesheet" type="text/css"
-          href="<c:url value='/modules/test-ckeditor5-templates/styles/templates.css'/>"/>
+          href="<c:url value='/modules/test-ckeditor5-templates/css/templates.css'/>"/>
 </head>
 <body>
 <div class="ck-content">

@@ -31,7 +31,7 @@ If the file is missing, malformed, or violates the schema below, the feature is 
 
 ```json
 {
-  "templateStylesheet": "/styles/templates.css",
+  "templateStylesheet": "/css/templates.css",
   "templates": [
     { "name": "Red Paragraph",       "element": "p",  "classes": ["red-paragraph"] },
     { "name": "Highlighted Heading", "element": "h2", "classes": ["highlight"] },
@@ -42,13 +42,15 @@ If the file is missing, malformed, or violates the schema below, the feature is 
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| `templateStylesheet` | `string` | optional | Path of a CSS file inside the templates-set bundle. When present, the file is fetched, automatically scoped (see below), and injected into the document for every editor instance. |
+| `templateStylesheet` | `string` | optional | Path of a CSS file inside the templates-set bundle. When present, the file is fetched, automatically scoped (see below), and injected into the document for every editor instance. The path must live under a folder that the module exposes as a static resource (see note below). |
 | `templates` | `array` | optional | Style template definitions exposed in the toolbar dropdown. |
 | `templates[].name` | `string` | required | Label shown to contributors in the dropdown. |
 | `templates[].element` | `string` | required | HTML element the style applies to (`p`, `h1`, `h2`, `div`, ...). The contributor must place their caret inside an element of this type for the style to be applicable. |
 | `templates[].classes` | `string[]` | required | CSS classes that get applied to the element when the style is selected. The array must be non-empty and every entry must be a non-empty string — a missing, empty, or partially-invalid `classes` array rejects the whole definition (and therefore the entire `ckeditor_styles.json`). |
 
 Either field can be omitted independently: a configuration with only `templateStylesheet` loads the CSS without showing a dropdown; a configuration with only `templates` shows the dropdown without an associated stylesheet.
+
+> **Note — the stylesheet must be statically served.** The editor fetches the CSS over HTTP from `/modules/<your-templates-set>/<templateStylesheet>`. A module only serves files from folders declared in its `Jahia-Static-Resources` manifest header, which by default is `/css,/icons,/images,/img,/javascript`. Put your stylesheet under one of those folders (for example `/css/templates.css`) — a file under an undeclared folder such as `/styles` will return `404` and the stylesheet will be silently skipped.
 
 ## CSS scoping (automatic)
 
@@ -79,7 +81,7 @@ The recommended approach is to reference the very same CSS file from your templa
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <head>
     <link rel="stylesheet" type="text/css"
-          href="<c:url value='/modules/my-templates-set/styles/templates.css'/>"/>
+          href="<c:url value='/modules/my-templates-set/css/templates.css'/>"/>
 </head>
 ```
 

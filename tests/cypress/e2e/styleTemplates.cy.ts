@@ -4,7 +4,7 @@ import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 import gql from 'graphql-tag';
 
 const STYLE_MARKER = 'red-paragraph';
-const STYLESHEET_PATH = '/modules/test-ckeditor5-templates/styles/templates.css';
+const STYLESHEET_PATH = '/modules/test-ckeditor5-templates/css/templates.css';
 
 const clearConfig = () => {
     cy.apollo({
@@ -70,7 +70,7 @@ describe('Rich Text CKeditor 5 - Style templates', () => {
             .should('include', STYLE_MARKER)
             .and('include', '.ck-content');
 
-        ck5field.getToolbarButton('Styles').should('exist');
+        ck5field.getStyleDropdown().should('exist');
         ce.cancel();
     });
 
@@ -108,7 +108,7 @@ describe('Rich Text CKeditor 5 - Style templates', () => {
         const ckeditor5 = new Ckeditor5();
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 
-        ck5field.getToolbarButton('Styles').should('not.exist');
+        ck5field.getStyleDropdown().should('not.exist');
         cy.get(styleTagSelector, {timeout: 10000})
             .should('exist')
             .invoke('text')
@@ -123,7 +123,7 @@ describe('Rich Text CKeditor 5 - Style templates', () => {
         const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
 
         ck5field.getEditArea().should('be.visible');
-        ck5field.getToolbarButton('Styles').should('not.exist');
+        ck5field.getStyleDropdown().should('not.exist');
         cy.get(styleTagSelector).should('not.exist');
         ce.cancel();
     });

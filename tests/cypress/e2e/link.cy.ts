@@ -1,6 +1,6 @@
 import {JContent} from '@jahia/jcontent-cypress/dist/page-object';
 import {Picker} from '@jahia/jcontent-cypress/dist/page-object/picker';
-import {addNode, createSite, deleteSite, getComponentByAttr} from '@jahia/cypress';
+import {addNode, createSite, deleteSite, getComponentByAttr, uploadFile} from '@jahia/cypress';
 import {Ckeditor5, RichTextCKeditor5Field} from '../page-object/ckeditor5';
 
 const openLinkPicker = ck5field => {
@@ -34,6 +34,13 @@ describe('Link tests', () => {
                 {name: 'j:templateName', value: '2-column'}
             ]
         });
+        // Folder with a '+' in its name + a file inside, to test URL-encoding of picker paths
+        addNode({
+            parentPathOrId: `/sites/${siteKey}/files`,
+            name: 'test + test',
+            primaryNodeType: 'jnt:folder'
+        });
+        uploadFile('placeholder.jpg', `/sites/${siteKey}/files/test + test`, 'test.jpg', 'image/jpeg');
     });
 
     after(function () {
@@ -122,5 +129,28 @@ describe('Link tests', () => {
         picker.getTable().getRowByName('css').get().dblclick();
         picker.getTable().getRowByName('bootstrap.css').get().click();
         picker.select();
+    });
+
+    it('should insert a file link from a folder whose name contains "+" without validation error', () => {
+        JContent.visit(siteKey, 'en', `content-folders/contents/${textName}`).editContent();
+        const ck5field: RichTextCKeditor5Field = ckeditor5.getRichTextCKeditor5Field('jnt:bigText_text');
+        ck5field.getEditArea().contains('my text').click('center');
+
+        openLinkPicker(ck5field);
+
+        ck5field.getBalloonToolbarButton('Edit link').should('be.visible').click();
+        ck5field.getBalloonButton('Jahia internal files').should('be.visible').click();
+
+        const picker = getComponentByAttr(Picker, 'data-sel-role', 'picker-dialog');
+        picker.getTable().getRowByName('test + test').get().dblclick();
+        picker.getTable().getRowByName('test.jpg').get().click();
+        picker.select();
+
+        cy.log('Path must be URL-encoded so the server can resolve it: \' \' -> %20, \'+\' -> %2B');
+        ck5field.getEditArea().find('a')
+            .should('have.attr', 'href')
+            .and('contain', `${encodeURIComponent('test + test')}/test.jpg`);
+
+        ckeditor5.save();
     });
 });

@@ -1,4 +1,5 @@
 import {Command} from 'ckeditor5';
+import {encodePath} from '../../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
 export class InsertJahiaImageCommand extends Command {
     constructor(editor, type) {
@@ -43,7 +44,7 @@ export class InsertJahiaImageCommand extends Command {
                         });
                     }
 
-                    editor.execute('imageInsert', {source: `${contentPicker ? contentPrefix : filePrefix}${pickerResult.path}${contentPicker ? '.html' : ''}`});
+                    editor.execute('imageInsert', {source: `${contentPicker ? contentPrefix : filePrefix}${encodePath(pickerResult.path)}${contentPicker ? '.html' : ''}`});
                 });
             },
             ...pickerConfig

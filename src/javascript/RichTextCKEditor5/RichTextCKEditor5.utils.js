@@ -57,6 +57,16 @@ export const set = (target, path, value) => {
     }
 };
 
+/**
+ * URL-encode each segment of a Jahia node path (preserving '/' separators) so that
+ * special characters such as '+' and spaces in folder/file names survive server-side
+ * link resolution. Inverse of the decodeURIComponent done in JahiaLinkProvider.getPickerValue.
+ *
+ * @param {string} path the raw node path returned by the picker, e.g. /sites/x/files/test + test/f.pdf
+ * @returns {string} the path with each segment URL-encoded
+ */
+export const encodePath = path => path.split('/').map(encodeURIComponent).join('/');
+
 export const isProductivityMode = () => {
     /**
      * CKEDITOR_PRODUCTIVITY_LICENSE is inserted as a literal string by webpack using define plugin.

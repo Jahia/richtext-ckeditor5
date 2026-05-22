@@ -1,5 +1,5 @@
 import {Plugin, LinkUI} from 'ckeditor5';
-import {loadTranslations} from '../../RichTextCKEditor5/RichTextCKEditor5.utils';
+import {encodePath, loadTranslations} from '../../RichTextCKEditor5/RichTextCKEditor5.utils';
 
 export class JahiaLinkProvider extends Plugin {
     static contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
@@ -74,7 +74,7 @@ export class JahiaLinkProvider extends Plugin {
         // Editorial link picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
-                const url = `${JahiaLinkProvider.contentPrefix}${pickerResults[0].path}.html`;
+                const url = `${JahiaLinkProvider.contentPrefix}${encodePath(pickerResults[0].path)}.html`;
                 editor.execute('link', url);
             },
             type: 'editoriallink',
@@ -92,7 +92,7 @@ export class JahiaLinkProvider extends Plugin {
         // File picker config
         window.CE_API.openPicker({
             setValue: pickerResults => {
-                const url = `${JahiaLinkProvider.filePrefix}${pickerResults[0].path}`;
+                const url = `${JahiaLinkProvider.filePrefix}${encodePath(pickerResults[0].path)}`;
                 editor.execute('link', url);
             },
             type: 'file',

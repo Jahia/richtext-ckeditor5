@@ -85,7 +85,7 @@ describe('Rich Text CKeditor 5 - Style templates', () => {
         ck5field.selectStyle('Red Paragraph');
 
         ck5field.getData().should('include', 'class="red-paragraph"');
-        ce.cancel();
+        ce.cancelAndDiscard();
     });
 
     it('Keeps the stylesheet loaded when the style toolbar item is excluded', function () {

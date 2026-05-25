@@ -11,10 +11,16 @@ import java.util.List;
 public class GqlRichTextConfigResult {
     private String configName;
     private List<String> excludeToolbarItems;
+    private GqlRichTextStyleTemplates styleTemplates;
 
     public GqlRichTextConfigResult(String configName, List<String> excludeToolbarItems) {
+        this(configName, excludeToolbarItems, null);
+    }
+
+    public GqlRichTextConfigResult(String configName, List<String> excludeToolbarItems, GqlRichTextStyleTemplates styleTemplates) {
         this.configName = configName;
         this.excludeToolbarItems = excludeToolbarItems;
+        this.styleTemplates = styleTemplates;
     }
 
     @GraphQLField
@@ -29,5 +35,12 @@ public class GqlRichTextConfigResult {
     @GraphQLDescription("List of toolbar items to exclude")
     public List<String> getExcludeToolbarItems() {
         return excludeToolbarItems;
+    }
+
+    @GraphQLField
+    @GraphQLName("styleTemplates")
+    @GraphQLDescription("Style templates resolved from the site's templates-set, or null when none are configured or the configuration is invalid")
+    public GqlRichTextStyleTemplates getStyleTemplates() {
+        return styleTemplates;
     }
 }

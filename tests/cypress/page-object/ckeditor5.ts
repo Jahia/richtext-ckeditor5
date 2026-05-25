@@ -104,6 +104,19 @@ export class RichTextCKeditor5Field extends Field {
         this.get().find('.ck-heading-dropdown').find('.ck-list__item').contains(heading).click();
     }
 
+    // The CK5 style feature renders as a text-label dropdown (`.ck-style-dropdown`) with no
+    // tooltip, so it cannot be located through getToolbarButton (which matches data-cke-tooltip-text).
+    getStyleDropdown(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().find('.ck-toolbar__items').find('.ck-style-dropdown');
+    }
+
+    selectStyle(name: string) {
+        // Open the Style dropdown, then click the entry matching `name`. The styles grid is
+        // created lazily on first open, so it only exists after the button is clicked.
+        this.getStyleDropdown().find('button.ck-dropdown__button').click();
+        cy.get('.ck-style-grid__button').contains(name).should('be.visible').click();
+    }
+
     getMacrosSuggestion(id: string) {
         return this.get()
             .get('.ck-mentions')

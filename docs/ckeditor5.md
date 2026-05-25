@@ -255,6 +255,10 @@ The complete list of plugins available in the CK5 Jahia module [can be found on 
 
 The configuration of the `complete` toolbar [can also be found on GitHub](https://github.com/Jahia/richtext-ckeditor5/blob/main/src/javascript/CKEditor/configurations/config-complete.js).
 
+### Style Templates
+
+Templates-set modules can ship a `ckeditor_styles.json` file that exposes a CSS-only "Styles" dropdown to contributors. See [Style Templates](style-templates) for the JSON shape, the automatic CSS scoping, and the published-page rendering requirements.
+
 ## Building a Custom Plugin
 
 CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.

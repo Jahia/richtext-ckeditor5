@@ -61,6 +61,7 @@
     "@babel/preset-react": "^7.9.4",
     "@ckeditor/ckeditor5-dev-translations": "^47.1.1",
     "@ckeditor/ckeditor5-dev-utils": "^47.1.1",
+    "@cyclonedx/webpack-plugin": "^3.6.1",
     "@jahia/eslint-config": "^2.1.0",
     "@jahia/webpack-config": "^1.1.0",
     "babel-jest": "^26.3.0",

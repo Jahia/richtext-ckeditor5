@@ -18,6 +18,15 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const getModuleFederationConfig = require('@jahia/webpack-config/getModuleFederationConfig');
 const packageJson = require('./package.json');
 require('dotenv').config({ path: './.env' });
+const {CycloneDxWebpackPlugin} = require('@cyclonedx/webpack-plugin');
+
+/** @type {import('@cyclonedx/webpack-plugin').CycloneDxWebpackPluginOptions} */
+const cycloneDxWebpackPluginOptions = {
+    specVersion: '1.4',
+    rootComponentType: 'library',
+    outputLocation: './bom',
+    validateResults: false
+};
 
 console.log('Building with CKEditor license:', process.env.CKEDITOR_PRODUCTIVITY_LICENSE ? 'Available' : 'Not found');
 module.exports = (env, argv) => {
@@ -155,7 +164,8 @@ module.exports = (env, argv) => {
             }),
             new webpack.DefinePlugin({
                 CKEDITOR_PRODUCTIVITY_LICENSE: JSON.stringify(process.env.CKEDITOR_PRODUCTIVITY_LICENSE)
-            })
+            }),
+            new CycloneDxWebpackPlugin(cycloneDxWebpackPluginOptions)
         ],
         mode: _argv.mode ?  _argv.mode : 'development',
     };

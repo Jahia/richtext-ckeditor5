@@ -15,7 +15,9 @@
     "clean": "rimraf *.log src/main/resources/javascript/apps",
     "clean:all": "yarn clean && rimraf node_modules node",
     "lint": "eslint --ext js,jsx .",
-    "lint:fix": "eslint --ext js,jsx --fix ."
+    "lint:fix": "eslint --ext js,jsx --fix .",
+    "sync-pom": "sync-pom-version",
+    "sync-pom-tests": "sync-pom-version --package-file=tests/package.json"
   },
   "jahia": {
     "remotes": {

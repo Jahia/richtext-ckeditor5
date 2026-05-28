@@ -52,19 +52,23 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>ckeditor5-test-module-root</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <groupId>org.jahia.test</groupId>
-    <artifactId>test-ckeditor5-config</artifactId>
-    <name>test-ckeditor5-config</name>
+    <artifactId>test-ckeditor5-templates</artifactId>
+    <name>test-ckeditor5-templates</name>
     <packaging>bundle</packaging>
-    <description>This is the custom module (test-ckeditor5-config) for running on a Jahia server.</description>
+    <description>Template set fixture for testing the CKEditor 5 style templates feature.</description>
 
     <scm>
         <connection>scm:dummy:uri</connection>
         <developerConnection>scm:dummy:uri</developerConnection>
     </scm>
+
+    <properties>
+        <jahia-depends>default</jahia-depends>
+    </properties>
 
     <repositories>
         <repository>
@@ -89,7 +93,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Jahia-Depends>default</Jahia-Depends>
+                        <Jahia-Module-Type>templatesSet</Jahia-Module-Type>
                     </instructions>
                 </configuration>
             </plugin>

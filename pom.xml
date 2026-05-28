@@ -212,6 +212,16 @@
                             <arguments>sync-pom</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>sync-pom-tests</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>sync-pom-tests</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

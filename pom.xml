@@ -202,7 +202,35 @@
                             <arguments>${yarn.arguments}</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>sync-pom</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>sync-pom</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>sync-pom-tests</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>sync-pom-tests</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <preparationGoals>clean verify frontend:yarn@sync-pom frontend:yarn@sync-pom-tests scm:checkin@package-json</preparationGoals>
+                    <completionGoals>frontend:yarn@sync-pom frontend:yarn@sync-pom-tests scm:checkin@package-json</completionGoals>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.cyclonedx</groupId>

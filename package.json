@@ -15,7 +15,9 @@
     "clean": "rimraf *.log src/main/resources/javascript/apps",
     "clean:all": "yarn clean && rimraf node_modules node",
     "lint": "eslint --ext js,jsx .",
-    "lint:fix": "eslint --ext js,jsx --fix ."
+    "lint:fix": "eslint --ext js,jsx --fix .",
+    "sync-pom": "sync-pom-version",
+    "sync-pom-tests": "sync-pom-version --package-file=tests/package.json"
   },
   "jahia": {
     "remotes": {
@@ -42,6 +44,7 @@
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
     "scope-css": "^1.2.1",
+    "sync-pom-version-to-package": "^1.6.1",
     "uuid": "^9.0.0"
   },
   "overrides": {

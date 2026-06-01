@@ -33,7 +33,7 @@
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (richtext-ckeditor5) for running on a Jahia server.</description>
 
@@ -46,7 +46,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFE18lGgVcfoT3eeVyzx7l1552vbmAhUAhrYtwvcNMgUbaTSP8TnbnS4mXk0=</jahia-module-signature>
+        <jahia-module-signature>MC4CFQCRn14j+VAQ47hoBACPaBIdvYBrIwIVAItB0vLp8v+/fS58itCupz5aDtPH</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
+            <version>3.12.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

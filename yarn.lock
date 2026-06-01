@@ -3249,9 +3249,9 @@
     eslint-plugin-react-hooks "^4.6.0"
 
 "@jahia/ui-extender@^1.1.1":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@jahia/ui-extender/-/ui-extender-1.2.0.tgz#a1e7d9fe18ea7889b96cd30920f4c64fbdbd08ed"
-  integrity sha512-5/6zrxiBL+ED84tUdLy3aWAlp9pr1y8oqVh5rbBtUvCR/OlNkrw6TaclHXBtqQZJRQBtd5EkcQrhRkK8FgBbSg==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@jahia/ui-extender/-/ui-extender-1.3.0.tgz#798fb023643bfb00f961e1e32a60686a2766acd2"
+  integrity sha512-qJqjEy95tc1jdwdVMkCSrQmJ0HJvCcNqYVS1kqQ7V97+ao8thqJMSaJyh3dRbxzN+aaEgZI0cAJp3wWkj8O5sQ==
 
 "@jahia/webpack-config@^1.1.0":
   version "1.1.1"

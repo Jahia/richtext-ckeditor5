@@ -1,7 +1,7 @@
 {
   "name": "@jahia/richtext-ckeditor5-cypress",
   "private": false,
-  "version": "1.0.1",
+  "version": "1.1.0-SNAPSHOT",
   "scripts": {
     "instrument": "nyc instrument --compact=false cypress instrumented",
     "e2e:ci": "cypress run --browser chrome",

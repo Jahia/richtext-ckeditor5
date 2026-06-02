@@ -1,7 +1,7 @@
 {
   "name": "richtext-ckeditor5",
   "description": "CKEditor 5 integration",
-  "version": "1.0.1",
+  "version": "1.1.0-SNAPSHOT",
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "build": "yarn webpack",

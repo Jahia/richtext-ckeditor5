@@ -1,5 +1,11 @@
 # richtext-ckeditor5 Changelog
 
+## 1.1.0
+
+* Mask openai key in config (#340)
+
+* Downgrade org.apache.commons#commons-lang3 from 3.18.0 to 3.12.0 for compatibility.
+
 ## 1.0.0
 
 ### New Features

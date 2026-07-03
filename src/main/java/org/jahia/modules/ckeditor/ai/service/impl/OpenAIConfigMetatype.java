@@ -24,6 +24,7 @@
 package org.jahia.modules.ckeditor.ai.service.impl;
 
 import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(
@@ -36,7 +37,7 @@ public @interface OpenAIConfigMetatype {
     boolean ai_enabled() default false;
 
     // From https://platform.openai.com/api-keys
-    @AttributeDefinition(name = "API Key", description = "OpenAI API Key")
+    @AttributeDefinition(name = "API Key", description = "OpenAI API Key", type = AttributeType.PASSWORD)
     String ai_apiKey() default "YOUR_OPEN_API_KEY_HERE";
 
     @AttributeDefinition(name = "API URL", description = "OpenAI API endpoint URL")

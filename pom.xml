@@ -46,7 +46,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFE18lGgVcfoT3eeVyzx7l1552vbmAhUAhrYtwvcNMgUbaTSP8TnbnS4mXk0=</jahia-module-signature>
+        <jahia-module-signature>MC0CFQCLAsBIs0teMzTq087KEdXHzcdYtQIUHiUJX7VmMLLVBXEM7fveI4EjANw=</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.18.0</version>
+            <version>3.12.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -220,6 +220,23 @@
                         </goals>
                         <configuration>
                             <arguments>sync-pom-tests</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>package-json</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>checkin</goal>
+                        </goals>
+                        <configuration>
+                            <includes>package.json,tests/package.json</includes>
+                            <message>[maven-scm-plugin] [skip ci] synchronize package.json</message>
                         </configuration>
                     </execution>
                 </executions>

@@ -50,7 +50,11 @@ public class GqlRichTextQuery {
     @GraphQLField
     @GraphQLName("config")
     @GraphQLDescription("Returns appropriate configuration for richtext ckeditor5")
-    public GqlRichTextConfigResult validate(@GraphQLName("path") @GraphQLNonNull String path) {
+    public GqlRichTextConfigResult validate(
+        @GraphQLName("path") 
+        @GraphQLNonNull 
+        @GraphQLDescription("Node path for which to retrieve the configuration") String path
+    ) {
         try {
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();

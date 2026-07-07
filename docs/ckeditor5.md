@@ -62,7 +62,7 @@ The goal of this section is to give a good understanding of how configurations a
 :::info
 If you are working on a module using the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html), you can import and use `registry` from the `@jahia/ui-extender` package instead of accessing it from `window`. [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html)
 
-If you intend to import the `ckeditor5` package from npm within your module, you'll need to declare it as a remote module in your `webpack.config.js` file: `remote: { ckeditor5: 'appShell.remotes.ckeditor5' }`. This will ensure that your module uses the same instance of CKEditor 5 as all other modules.
+If you intend to import the `ckeditor5` package from npm within your module, you'll need to declare it as a remote module in your `webpack.config.js` file: `remote: { ckeditor5: 'appShell.remotes.richtextCkeditor5' }`. This will ensure that your module uses the same instance of CKEditor 5 as all other modules.
 :::
 
 All CKEditor 5 configurations live under the `ckeditor5-config` type in the registry. A configuration is an object containing the list of plugins, the toolbar buttons and optional plugin-specific configuration.
@@ -280,7 +280,7 @@ This section assumes you already have a Jahia module set up with the [Jahia UI e
     mergeWebpackConfig(commonConfig, {
       remotes: {
         '@jahia/jcontent': 'appShell.remotes.jcontent',
-        'ckeditor5': 'appShell.remotes.ckeditor5', // Add this line
+        'ckeditor5': 'appShell.remotes.richtextCkeditor5', // Add this line
       },
     })
   ),

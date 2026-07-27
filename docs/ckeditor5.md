@@ -106,7 +106,7 @@ The CKEditor website has an interactive tool to create custom configurations: [C
 
 Everything above assumes your module is built on the Jahia UI extensions tech stack, which gives it module federation — the ability to share the `ckeditor5` and `@jahia/ui-extender` packages with the rest of the Jahia UI at runtime.
 
-Some modules do not have that, most notably [JavaScript Modules](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/javascript-modules.html): they ship plain scripts, so they can neither `import` from `ckeditor5` nor build against `@jahia/ui-extender`. For those, CK5 exposes a hook that hands you both.
+Some modules do not have that, most notably JavaScript Modules: they ship plain scripts, so they can neither `import` from `ckeditor5` nor build against `@jahia/ui-extender`. For those, CK5 exposes a hook that hands you both.
 
 Push a callback onto the `window.jahiaCk5Init` array. CK5 calls every registered callback on the `jahiaApp-init:99.5` hook — after the four default configurations are registered — and passes it the shared `ckeditor5` namespace along with the registry:
 
@@ -128,7 +128,7 @@ Push a callback onto the `window.jahiaCk5Init` array. CK5 calls every registered
 });
 ```
 
-Use the `??=` idiom shown above rather than assigning a fresh array: it lets your script and the CK5 module load in any order, and it does not discard callbacks pushed by other modules.
+Use the `??=` idiom shown above rather than assigning a fresh array (`window.jahiaCk5Init = [...]`): several modules can register callbacks, in an order you do not control, and assigning would discard the ones pushed before yours.
 
 Then declare that script as an app of your module and make sure it is packaged and reachable over HTTP, in your `package.json`:
 
@@ -144,7 +144,7 @@ Then declare that script as an app of your module and make sure it is packaged a
 }
 ```
 
-Adjust `files` and `static-resources` to keep the entries your module already declares — both accept several values.
+`files` is an array and `static-resources` a comma-separated string, so add `javascript` and `/javascript` to whatever your module already declares rather than replacing it: `"files": [..., "javascript"]` and `"static-resources": "...,/javascript"`.
 
 The `ckeditor5` namespace passed to your callback holds the same exports as the [`ckeditor5` npm package](https://ckeditor.com/docs/ckeditor5/latest/api/index.html), so you can build custom plugins this way too, without any bundler setup:
 

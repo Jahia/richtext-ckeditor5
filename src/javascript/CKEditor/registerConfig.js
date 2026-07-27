@@ -26,10 +26,17 @@ export function registerUserConfigs() {
     }
 
     for (const hook of hooks) {
-        if (typeof hook === 'function') {
-            hook({ckeditor5, registry});
-        } else {
+        if (typeof hook !== 'function') {
             console.error('Ignoring non-function hook in window.jahiaCk5Init. Ensure your bootstrap script looks like this: `(window.jahiaCk5Init ??= []).push(/* callback function */)`. Bogus hook:', hook);
+            continue;
+        }
+
+        // Hooks come from third-party modules: keep a faulty one from breaking
+        // app initialization or the hooks registered after it.
+        try {
+            hook({ckeditor5, registry});
+        } catch (error) {
+            console.error('A hook registered in window.jahiaCk5Init threw an error, its configurations may be missing. Faulty hook:', hook, error);
         }
     }
 }

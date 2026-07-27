@@ -102,6 +102,78 @@ Your custom toolbar can now be applied using `richtext[ckeditor.customConfig='bo
 The CKEditor website has an interactive tool to create custom configurations: [CK5 builder tool](https://ckeditor.com/ckeditor-5/builder/).
 :::
 
+### Registering Configurations Without UI Extensions
+
+Everything above assumes your module is built on the Jahia UI extensions tech stack, which gives it module federation — the ability to share the `ckeditor5` and `@jahia/ui-extender` packages with the rest of the Jahia UI at runtime.
+
+Some modules do not have that, most notably [JavaScript Modules](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/javascript-modules.html): they ship plain scripts, so they can neither `import` from `ckeditor5` nor build against `@jahia/ui-extender`. For those, CK5 exposes a hook that hands you both.
+
+Push a callback onto the `window.jahiaCk5Init` array. CK5 calls every registered callback on the `jahiaApp-init:99.5` hook — after the four default configurations are registered — and passes it the shared `ckeditor5` namespace along with the registry:
+
+```javascript
+// File: javascript/apps/app.js
+
+(window.jahiaCk5Init ??= []).push(function ({ ckeditor5, registry }) {
+  /** A custom configuration with only the bold button */
+  const boldOnly = {
+    // Inherit plugins and config from the minimal configuration
+    ...registry.get('ckeditor5-config', 'minimal'),
+    // Override toolbar to have only the bold button
+    toolbar: {
+      items: ['bold'],
+    },
+  };
+
+  registry.add('ckeditor5-config', 'boldOnly', boldOnly);
+});
+```
+
+Use the `??=` idiom shown above rather than assigning a fresh array: it lets your script and the CK5 module load in any order, and it does not discard callbacks pushed by other modules.
+
+Then declare that script as an app of your module and make sure it is packaged and reachable over HTTP, in your `package.json`:
+
+```json
+{
+  "jahia": {
+    "apps": {
+      "jahia": "javascript/apps/app.js"
+    }
+  },
+  "files": ["javascript"],
+  "static-resources": "/javascript"
+}
+```
+
+Adjust `files` and `static-resources` to keep the entries your module already declares — both accept several values.
+
+The `ckeditor5` namespace passed to your callback holds the same exports as the [`ckeditor5` npm package](https://ckeditor.com/docs/ckeditor5/latest/api/index.html), so you can build custom plugins this way too, without any bundler setup:
+
+```javascript
+(window.jahiaCk5Init ??= []).push(function ({ ckeditor5, registry }) {
+  const { Plugin, ButtonView } = ckeditor5;
+
+  class Timestamp extends Plugin {
+    /* See "Building a Custom Plugin" below */
+  }
+
+  const minimalConfig = registry.get('ckeditor5-config', 'minimal');
+  registry.add('ckeditor5-config', 'customConfig', {
+    ...minimalConfig,
+    plugins: minimalConfig.plugins.concat([Timestamp]),
+    toolbar: {
+      items: minimalConfig.toolbar.items.concat(['timestamp']),
+      shouldNotGroupWhenFull: true,
+    },
+  });
+});
+```
+
+:::info
+Callbacks are isolated from one another: if one throws, CK5 logs the error to the browser console and carries on with the remaining ones. A module with a broken callback loses its own configurations, not everyone else's.
+:::
+
+The configurations you register this way are ordinary `ckeditor5-config` entries, so they are applied exactly like the others — see below.
+
 ### Applying a Configuration
 
 This section demonstrates the ways in which CK 5 configuration can be applied in Jahia.
@@ -268,6 +340,10 @@ When integrating custom plugins, we recommend including plugins only from truste
 :::
 
 This section assumes you already have a Jahia module set up with the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html). If that's not the case, please refer to [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html).
+
+:::info
+If your module is not built on that stack — a JavaScript Module, for instance — you can write the very same plugin without any bundler setup by using the `window.jahiaCk5Init` hook described in [Registering Configurations Without UI Extensions](#registering-configurations-without-ui-extensions). The two steps below are only needed to make the `ckeditor5` import below resolve at runtime.
+:::
 
 - Install `ckeditor5` with `yarn add -D ckeditor5` in your module folder.
 

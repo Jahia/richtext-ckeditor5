@@ -3,4 +3,6 @@
 richtext-ckeditor5: minor
 ---
 
-Let modules without module federation, such as JavaScript Modules, register custom configurations and plugins through the new `window.jahiaCk5Init` hook (#336)
+Let modules without module federation, such as JavaScript Modules, register custom configurations and plugins through the new `window.jahiaCk5Init` hook. (#336)
+
+Read the documentation here: [CKEditor 5 on Jahia Academy.](https://academy.jahia.com/documentation/jahia-cms/jahia-8-2/developer/extending-and-customizing-jahia-ui/configuring-and-customizing-ckeditor/ckeditor-5#configuration)

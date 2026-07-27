@@ -36,7 +36,7 @@ export function registerUserConfigs() {
         try {
             hook({ckeditor5, registry});
         } catch (error) {
-            console.error('A hook registered in window.jahiaCk5Init threw an error, its configurations may be missing. Faulty hook:', hook, error);
+            console.error('A hook registered in window.jahiaCk5Init threw an error. Faulty hook:', hook, error);
         }
     }
 }

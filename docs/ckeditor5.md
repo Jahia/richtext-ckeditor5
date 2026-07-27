@@ -104,14 +104,14 @@ The CKEditor website has an interactive tool to create custom configurations: [C
 
 ### Registering Configurations Without UI Extensions
 
-Everything above assumes your module is built on the Jahia UI extensions tech stack, which gives it module federation — the ability to share the `ckeditor5` and `@jahia/ui-extender` packages with the rest of the Jahia UI at runtime.
+Everything above assumes your module is built on the Jahia UI extensions tech stack, which gives it module federation (the ability to share the `ckeditor5` and `@jahia/ui-extender` packages with the rest of the Jahia UI at runtime).
 
 Some modules do not have that, most notably JavaScript Modules: they ship plain scripts, so they can neither `import` from `ckeditor5` nor build against `@jahia/ui-extender`. For those, CK5 exposes a hook that hands you both.
 
-Push a callback onto the `window.jahiaCk5Init` array. CK5 calls every registered callback on the `jahiaApp-init:99.5` hook — after the four default configurations are registered — and passes it the shared `ckeditor5` namespace along with the registry:
+Push a callback onto the `window.jahiaCk5Init` array and Jahia will call every registered callback on the `jahiaApp-init:99.5` hook (after the four default configurations are registered) and pass it the shared `ckeditor5` namespace along with the registry:
 
 ```javascript
-// File: javascript/apps/app.js
+// File: javascript/apps/ck5.js
 
 (window.jahiaCk5Init ??= []).push(function ({ ckeditor5, registry }) {
   /** A custom configuration with only the bold button */
@@ -128,23 +128,25 @@ Push a callback onto the `window.jahiaCk5Init` array. CK5 calls every registered
 });
 ```
 
-Use the `??=` idiom shown above rather than assigning a fresh array (`window.jahiaCk5Init = [...]`): several modules can register callbacks, in an order you do not control, and assigning would discard the ones pushed before yours.
+Use the `??=` syntax shown above rather than assigning a fresh array (`window.jahiaCk5Init = [...]`): several modules can register callbacks, in an order you do not control, and assigning would discard the ones pushed before yours.
 
-Then declare that script as an app of your module and make sure it is packaged and reachable over HTTP, in your `package.json`:
+Then declare that script as a client-side app of your module in `javascript/apps/jahia.json`:
 
 ```json
 {
   "jahia": {
     "apps": {
-      "jahia": "javascript/apps/app.js"
+      "jahia": "javascript/apps/ck5.js"
     }
-  },
-  "files": ["javascript"],
-  "static-resources": "/javascript"
+  }
 }
 ```
 
+Finally make sure the script is exposed over HTTP by adding or merging `"static-resources": "/javascript"` and `"files": ["javascript"]` to your root `package.json`.
+
+:::info
 `files` is an array and `static-resources` a comma-separated string, so add `javascript` and `/javascript` to whatever your module already declares rather than replacing it: `"files": [..., "javascript"]` and `"static-resources": "...,/javascript"`.
+:::
 
 The `ckeditor5` namespace passed to your callback holds the same exports as the [`ckeditor5` npm package](https://ckeditor.com/docs/ckeditor5/latest/api/index.html), so you can build custom plugins this way too, without any bundler setup:
 
@@ -340,10 +342,6 @@ When integrating custom plugins, we recommend including plugins only from truste
 :::
 
 This section assumes you already have a Jahia module set up with the [Jahia UI extensions tech stack](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/jahia-ui-under-the-hood.html). If that's not the case, please refer to [Get started with UI extensions.](/cms/{mode}/{lang}/sites/academy/home/documentation/jahia/8_2/developer/extending-and-customizing-jahia-ui/extending-jahia-ui.html).
-
-:::info
-If your module is not built on that stack — a JavaScript Module, for instance — you can write the very same plugin without any bundler setup by using the `window.jahiaCk5Init` hook described in [Registering Configurations Without UI Extensions](#registering-configurations-without-ui-extensions). The two steps below are only needed to make the `ckeditor5` import below resolve at runtime.
-:::
 
 - Install `ckeditor5` with `yarn add -D ckeditor5` in your module folder.
 

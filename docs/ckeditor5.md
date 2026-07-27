@@ -102,6 +102,80 @@ Your custom toolbar can now be applied using `richtext[ckeditor.customConfig='bo
 The CKEditor website has an interactive tool to create custom configurations: [CK5 builder tool](https://ckeditor.com/ckeditor-5/builder/).
 :::
 
+### Registering Configurations Without UI Extensions
+
+Everything above assumes your module is built on the Jahia UI extensions tech stack, which gives it module federation (the ability to share the `ckeditor5` and `@jahia/ui-extender` packages with the rest of the Jahia UI at runtime).
+
+Some modules do not have that, most notably JavaScript Modules: they ship plain scripts, so they can neither `import` from `ckeditor5` nor build against `@jahia/ui-extender`. For those, CK5 exposes a hook that hands you both.
+
+Push a callback onto the `window.jahiaCk5Init` array and Jahia will call every registered callback on the `jahiaApp-init:99.5` hook (after the four default configurations are registered) and pass it the shared `ckeditor5` namespace along with the registry:
+
+```javascript
+// File: javascript/apps/ck5.js
+
+(window.jahiaCk5Init ??= []).push(function ({ ckeditor5, registry }) {
+  /** A custom configuration with only the bold button */
+  const boldOnly = {
+    // Inherit plugins and config from the minimal configuration
+    ...registry.get('ckeditor5-config', 'minimal'),
+    // Override toolbar to have only the bold button
+    toolbar: {
+      items: ['bold'],
+    },
+  };
+
+  registry.add('ckeditor5-config', 'boldOnly', boldOnly);
+});
+```
+
+Use the `??=` syntax shown above rather than assigning a fresh array (`window.jahiaCk5Init = [...]`): several modules can register callbacks, in an order you do not control, and assigning would discard the ones pushed before yours.
+
+Then declare that script as a client-side app of your module in `javascript/apps/jahia.json`:
+
+```json
+{
+  "jahia": {
+    "apps": {
+      "jahia": "javascript/apps/ck5.js"
+    }
+  }
+}
+```
+
+Finally make sure the script is exposed over HTTP by adding or merging `"static-resources": "/javascript"` and `"files": ["javascript"]` to your root `package.json`.
+
+:::info
+`files` is an array and `static-resources` a comma-separated string, so add `javascript` and `/javascript` to whatever your module already declares rather than replacing it: `"files": [..., "javascript"]` and `"static-resources": "...,/javascript"`.
+:::
+
+The `ckeditor5` namespace passed to your callback holds the same exports as the [`ckeditor5` npm package](https://ckeditor.com/docs/ckeditor5/latest/api/index.html), so you can build custom plugins this way too, without any bundler setup:
+
+```javascript
+(window.jahiaCk5Init ??= []).push(function ({ ckeditor5, registry }) {
+  const { Plugin, ButtonView } = ckeditor5;
+
+  class Timestamp extends Plugin {
+    /* See "Building a Custom Plugin" below */
+  }
+
+  const minimalConfig = registry.get('ckeditor5-config', 'minimal');
+  registry.add('ckeditor5-config', 'customConfig', {
+    ...minimalConfig,
+    plugins: minimalConfig.plugins.concat([Timestamp]),
+    toolbar: {
+      items: minimalConfig.toolbar.items.concat(['timestamp']),
+      shouldNotGroupWhenFull: true,
+    },
+  });
+});
+```
+
+:::info
+Callbacks are isolated from one another: if one throws, CK5 logs the error to the browser console and carries on with the remaining ones. A module with a broken callback loses its own configurations, not everyone else's.
+:::
+
+The configurations you register this way are ordinary `ckeditor5-config` entries, so they are applied exactly like the others — see below.
+
 ### Applying a Configuration
 
 This section demonstrates the ways in which CK 5 configuration can be applied in Jahia.

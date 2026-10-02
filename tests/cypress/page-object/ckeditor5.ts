@@ -18,6 +18,15 @@ export class RichTextCKeditor5Field extends Field {
         });
     }
 
+    appendText(text: string) {
+        this.getEditArea().then($myElement => {
+            const ckeditorInstance = $myElement.prop('ckeditorInstance');
+            ckeditorInstance.model.change(writer => {
+                writer.insertText(text, ckeditorInstance.model.document.getRoot().getChild(0), 'end');
+            });
+        });
+    }
+
     getData(): Cypress.Chainable<string> {
         return this.getEditArea().then($myElement => {
             const ckeditorInstance = $myElement.prop('ckeditorInstance');

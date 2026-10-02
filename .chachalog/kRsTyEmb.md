@@ -3,4 +3,4 @@
 richtext-ckeditor5: patch
 ---
 
-Fixed resized images losing their natural size and other attributes when the content is edited again
+Fixed resized images losing their natural size and other attributes when the content is edited again (#356)

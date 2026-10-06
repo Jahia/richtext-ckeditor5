@@ -28,6 +28,10 @@ describe('Image resize URL tests', () => {
             value: `<p>Inline image text <img src="${filesPath}/placeholder.jpg" width="500" height="325"></p>`
         },
         {
+            name: 'sizes-image',
+            value: `<p>Sizes image text</p><figure class="image image_resized" style="width:552px;"><img style="aspect-ratio:640/427;height:auto;width:552px;" src="${filesPath}/vacation.jpg?w=552" srcset="${filesPath}/vacation.jpg 640w" sizes="100vw" width="552" height="368"></figure>`
+        },
+        {
             name: 'external-image',
             value: `<p>External image text</p><figure class="image image_resized" style="width:300px;"><img style="aspect-ratio:640/427;height:auto;width:300px;" src="${externalSrc.replace('&', '&amp;')}" width="640" height="427"></figure>`
         }
@@ -206,6 +210,19 @@ describe('Image resize URL tests', () => {
         getStoredText('block-image').then(text => {
             const img = getImage(text);
             shouldHaveImage(img, `${filesPath}/vacation.jpg?w=300`, '300', '200');
+            expect(img.attr('srcset')).to.equal(undefined);
+            expect(img.attr('sizes')).to.equal(undefined);
+        });
+    });
+
+    it('should remove a stored srcset and sizes when saving another change', () => {
+        const {ce, ck5field} = editText('Sizes image text');
+        ck5field.appendText(' edited');
+        ce.save();
+
+        getStoredText('sizes-image').then(text => {
+            const img = getImage(text);
+            shouldHaveImage(img, `${filesPath}/vacation.jpg?w=552`, '552', '368');
             expect(img.attr('srcset')).to.equal(undefined);
             expect(img.attr('sizes')).to.equal(undefined);
         });

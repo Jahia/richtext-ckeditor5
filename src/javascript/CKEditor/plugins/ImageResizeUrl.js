@@ -19,6 +19,14 @@ export class ImageResizeUrl extends Plugin {
         const contextPath = (window.contextJsParameters && window.contextJsParameters.contextPath) || '';
         this.filesPrefix = `${contextPath}/files/`;
         this.imageUtils = editor.plugins.get('ImageUtils');
+        this.fileWidths = new Map();
+
+        // The model width can come from the HTML width attribute, so the file is loaded to read its width before a resize
+        editor.conversion.for('editingDowncast').add(dispatcher => {
+            ['imageBlock', 'imageInline'].forEach(imageType => {
+                dispatcher.on(`attribute:src:${imageType}`, (evt, data) => this.loadFileWidth(data.attributeNewValue));
+            });
+        });
 
         // Restore the original URL and natural size in the model, once the resized width is converted
         editor.conversion.for('upcast').add(dispatcher => {
@@ -39,6 +47,24 @@ export class ImageResizeUrl extends Plugin {
 
     isJahiaFile(src) {
         return Boolean(src) && src.startsWith(this.filesPrefix);
+    }
+
+    // 0 or undefined until the file is loaded
+    getFileWidth(src) {
+        return this.fileWidths.get(setWidthParam(src, null));
+    }
+
+    loadFileWidth(src) {
+        const fileUrl = this.isJahiaFile(src) && setWidthParam(src, null);
+        if (!fileUrl || this.fileWidths.has(fileUrl)) {
+            return;
+        }
+
+        this.fileWidths.set(fileUrl, 0);
+        // Image is the CKEditor plugin in this module, not the DOM image
+        const img = new window.Image();
+        img.addEventListener('load', () => this.fileWidths.set(fileUrl, img.naturalWidth), {once: true});
+        img.src = fileUrl;
     }
 }
 
@@ -84,9 +110,10 @@ function downcastResizedImage(evt, data, conversionApi) {
     const width = Math.round(resizedWidth);
     const naturalWidth = Number(modelElement.getAttribute('width'));
     const naturalHeight = Number(modelElement.getAttribute('height'));
+    const fileWidth = this.getFileWidth(src);
 
-    // A w above the natural width would make a URL-based resizer enlarge the image
-    conversionApi.writer.setAttribute('src', setWidthParam(src, naturalWidth > 0 ? Math.min(width, naturalWidth) : width), viewImage);
+    // A w above the width of the file would make a URL-based resizer enlarge the image
+    conversionApi.writer.setAttribute('src', setWidthParam(src, fileWidth > 0 ? Math.min(width, fileWidth) : width), viewImage);
 
     // The browser loads a srcset candidate instead of the src, so the srcset would hide the sized src
     conversionApi.writer.removeAttribute('srcset', viewImage);

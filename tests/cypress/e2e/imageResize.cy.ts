@@ -70,7 +70,10 @@ describe('Image resize URL tests', () => {
 
     // The dialog input takes the editing area width as max, which can be below the width a test needs
     const resizeImageWithCommand = (ck5field: RichTextCKeditor5Field, width: string) => {
-        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        // The plugin reads the width of the file once the editor has loaded the image
+        ck5field.getEditArea().find('img').should('be.visible')
+            .and($img => expect($img.prop('naturalWidth')).to.be.greaterThan(0))
+            .click('center');
         ck5field.getEditArea().then($editArea => $editArea.prop('ckeditorInstance').execute('resizeImage', {width}));
     };
 
@@ -178,6 +181,17 @@ describe('Image resize URL tests', () => {
             const img = getImage(text);
             shouldHaveImage(img, `${filesPath}/vacation.jpg?w=640`, '800', '534');
             expect(img.attr('style')).to.contain('aspect-ratio:640/427').and.contain('width:800px');
+        });
+    });
+
+    it('should cap the width in the URL at the width of the file, not at the width attribute', () => {
+        const {ce, ck5field} = editText('Block image text');
+        ck5field.type(`<figure class="image"><img src="${filesPath}/vacation.jpg" width="320" height="214"></figure>`);
+        resizeImageWithCommand(ck5field, '500px');
+        ce.save();
+
+        getStoredText('block-image').then(text => {
+            shouldHaveImage(getImage(text), `${filesPath}/vacation.jpg?w=500`, '500', '334');
         });
     });
 

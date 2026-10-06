@@ -68,6 +68,12 @@ describe('Image resize URL tests', () => {
         getComponent(ResizeImage).shouldBeVisible().setResizeWidth(width);
     };
 
+    // The dialog input takes the editing area width as max, which can be below the width a test needs
+    const resizeImageWithCommand = (ck5field: RichTextCKeditor5Field, width: string) => {
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        ck5field.getEditArea().then($editArea => $editArea.prop('ckeditorInstance').execute('resizeImage', {width}));
+    };
+
     const resizeToOriginal = (ck5field: RichTextCKeditor5Field) => {
         ck5field.getEditArea().find('img').should('be.visible').click('center');
         ck5field.getBalloonToolbarButton('Resize image to the original size').click();
@@ -161,6 +167,44 @@ describe('Image resize URL tests', () => {
         getStoredText('inline-image').then(text => {
             shouldHaveImage(getImage(text), `${filesPath}/placeholder.jpg`, '500', '325');
         });
+    });
+
+    it('should cap the width in the URL at the natural width of the image', () => {
+        const {ce, ck5field} = editText('Block image text');
+        resizeImageWithCommand(ck5field, '800px');
+        ce.save();
+
+        getStoredText('block-image').then(text => {
+            const img = getImage(text);
+            shouldHaveImage(img, `${filesPath}/vacation.jpg?w=640`, '800', '534');
+            expect(img.attr('style')).to.contain('aspect-ratio:640/427').and.contain('width:800px');
+        });
+    });
+
+    it('should remove the srcset of a resized image', () => {
+        const {ce, ck5field} = editText('Block image text');
+        // Source editing gives the same data as setData
+        ck5field.type(`<figure class="image"><img src="${filesPath}/vacation.jpg" srcset="${filesPath}/vacation.jpg 640w" width="640" height="427"></figure>`);
+        ck5field.getData().should('contain', `srcset="${filesPath}/vacation.jpg 640w"`);
+        resizeImage(ck5field, 300);
+        ce.save();
+
+        getStoredText('block-image').then(text => {
+            const img = getImage(text);
+            shouldHaveImage(img, `${filesPath}/vacation.jpg?w=300`, '300', '200');
+            expect(img.attr('srcset')).to.equal(undefined);
+            expect(img.attr('sizes')).to.equal(undefined);
+        });
+    });
+
+    it('should export the plugin in the shared bundle', () => {
+        JContent.visit(siteKey, 'en', 'pages/home');
+        // A module that declares the ckeditor5 remote imports the shared bundle
+        cy.window().its('appShell.remotes.richtextCkeditor5')
+            .invoke('get', '.')
+            .then(factory => factory())
+            .its('ImageResizeUrl.pluginName')
+            .should('equal', 'ImageResizeUrl');
     });
 
     it('should keep the sizes of an image that was not resized in the editor', () => {

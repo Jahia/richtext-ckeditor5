@@ -26,11 +26,12 @@ export class ImageResizeUrl extends Plugin {
             dispatcher.on('element:figure', upcastResizedImage.bind(this), {priority: 'lowest'});
         });
 
-        // Reapplied after each attribute converter, as the src, width and height ones overwrite the img attributes
+        // Reapplied after each attribute converter, as the src, srcset, width, height and GHS ones overwrite the img attributes.
+        // The GHS converter has the low priority, so this one has the lowest.
         editor.conversion.for('dataDowncast').add(dispatcher => {
             ['imageBlock', 'imageInline'].forEach(imageType => {
-                ['src', 'width', 'height', 'resizedWidth'].forEach(attribute => {
-                    dispatcher.on(`attribute:${attribute}:${imageType}`, downcastResizedImage.bind(this), {priority: 'low'});
+                ['src', 'srcset', 'width', 'height', 'resizedWidth', 'htmlImgAttributes'].forEach(attribute => {
+                    dispatcher.on(`attribute:${attribute}:${imageType}`, downcastResizedImage.bind(this), {priority: 'lowest'});
                 });
             });
         });
@@ -81,11 +82,17 @@ function downcastResizedImage(evt, data, conversionApi) {
 
     const viewImage = this.imageUtils.findViewImgElement(viewElement);
     const width = Math.round(resizedWidth);
-    conversionApi.writer.setAttribute('src', setWidthParam(src, width), viewImage);
-
-    // The width and height attributes give the displayed size, the aspect-ratio style keeps the natural one
     const naturalWidth = Number(modelElement.getAttribute('width'));
     const naturalHeight = Number(modelElement.getAttribute('height'));
+
+    // A w above the natural width would make a URL-based resizer enlarge the image
+    conversionApi.writer.setAttribute('src', setWidthParam(src, naturalWidth > 0 ? Math.min(width, naturalWidth) : width), viewImage);
+
+    // The browser loads a srcset candidate instead of the src, so the srcset would hide the sized src
+    conversionApi.writer.removeAttribute('srcset', viewImage);
+    conversionApi.writer.removeAttribute('sizes', viewImage);
+
+    // The width and height attributes give the displayed size, the aspect-ratio style keeps the natural one
     if (naturalWidth > 0 && naturalHeight > 0) {
         conversionApi.writer.setAttribute('width', width, viewImage);
         conversionApi.writer.setAttribute('height', Math.round(width * naturalHeight / naturalWidth), viewImage);

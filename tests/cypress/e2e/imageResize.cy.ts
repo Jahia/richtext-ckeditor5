@@ -201,7 +201,8 @@ describe('Image resize URL tests', () => {
         JContent.visit(siteKey, 'en', 'pages/home');
         // A module that declares the ckeditor5 remote imports the shared bundle
         cy.window().its('appShell.remotes.richtextCkeditor5')
-            .invoke('get', '.')
+            // The container returns a promise, which invoke does not wait for
+            .then(container => container.get('.'))
             .then(factory => factory())
             .its('ImageResizeUrl.pluginName')
             .should('equal', 'ImageResizeUrl');

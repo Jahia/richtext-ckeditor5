@@ -259,6 +259,34 @@ The configuration of the `complete` toolbar [can also be found on GitHub](https:
 
 Templates-set modules can ship a `ckeditor_styles.json` file that exposes a CSS-only "Styles" dropdown to contributors. See [Style Templates](style-templates) for the JSON shape, the automatic CSS scoping, and the published-page rendering requirements.
 
+### Resized Images
+
+When a contributor resizes an image in pixels, the `ImageResizeUrl` plugin adds the width to the image URL as the `w` parameter. An image module that reads `w` can then serve a smaller file. The editor keeps showing the original URL, and only the saved content carries `w`:
+
+```html
+<img style="aspect-ratio:3000/1687;height:auto;width:552px;" src="/files/{workspace}/sites/mysite/files/photo.jpg?w=552" width="552" height="310">
+```
+
+The plugin follows these rules:
+
+- Only a Jahia file gets `w`, which is an image with a URL that starts with `/files/` after the context path. An external or absolute URL does not change, because a signed URL breaks when its query changes.
+- Only a resize in pixels writes `w`. A resize in percent, with `image.resizeUnit: '%'`, writes no `w`. The four default configurations resize in pixels.
+- The value of `w` is never larger than the natural width of the image. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`.
+- A resized image loses its `srcset` and `sizes` attributes. The browser loads a `srcset` candidate instead of `src`, so it would never load the resized file.
+- The "Resize image to the original size" button removes `w`.
+
+Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
+
+A CKEditor 4 resize keeps the `w` of an earlier CKEditor 5 resize. For example, an image resized to 552 pixels in CKEditor 5 and then to 800 pixels in CKEditor 4 keeps `?w=552` with `width: 800px`. The browser then shows a file of 552 pixels at 800 pixels. A new resize in CKEditor 5 writes the new width.
+
+A custom configuration needs the `ImageResizeUrl` plugin, or a resize writes no `w` and shows no warning. A configuration that copies a default configuration, as in the examples above, keeps the plugin. A configuration that builds its own plugin list imports the plugin from the `ckeditor5` remote, which the section "Building a Custom Plugin" describes:
+
+```js
+import {Image, ImageResize, ImageResizeUrl} from 'ckeditor5';
+
+const plugins = [Image, ImageResize, ImageResizeUrl];
+```
+
 ## Building a Custom Plugin
 
 CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.

@@ -287,6 +287,19 @@ import {Image, ImageResize, ImageResizeUrl} from 'ckeditor5';
 const plugins = [Image, ImageResize, ImageResizeUrl];
 ```
 
+The `ckeditor5` remote exports `ImageResizeUrl` from richtext-ckeditor5 1.1.0. A module that imports the plugin declares this minimum version in its dependencies, such as `<jahia-depends>richtext-ckeditor5=1.1.0</jahia-depends>` in its `pom.xml`. On an older version, the import gives `undefined` and the editor does not start.
+
+The npm package `ckeditor5` has no `ImageResizeUrl` export, so a TypeScript module declares the plugin type in a declaration file:
+
+```ts
+// ckeditor5-jahia.d.ts
+import type {Plugin} from 'ckeditor5';
+
+declare module 'ckeditor5' {
+    export class ImageResizeUrl extends Plugin {}
+}
+```
+
 ## Building a Custom Plugin
 
 CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.

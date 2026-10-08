@@ -74,10 +74,12 @@ describe('Image resize URL tests', () => {
 
     // The dialog input takes the editing area width as max, which can be below the width a test needs
     const resizeImageWithCommand = (ck5field: RichTextCKeditor5Field, width: string) => {
-        // The plugin reads the width of the file once the editor has loaded the image
-        ck5field.getEditArea().find('img').should('be.visible')
-            .and($img => expect($img.prop('naturalWidth')).to.be.greaterThan(0))
-            .click('center');
+        ck5field.getEditArea().find('img').should('be.visible').click('center');
+        // The plugin loads the file on its own, and caps w only once this load has ended
+        ck5field.getEditArea().should($editArea => {
+            const src = $editArea.find('img').attr('src');
+            expect($editArea.prop('ckeditorInstance').plugins.get('ImageResizeUrl').getFileWidth(src)).to.be.greaterThan(0);
+        });
         ck5field.getEditArea().then($editArea => $editArea.prop('ckeditorInstance').execute('resizeImage', {width}));
     };
 

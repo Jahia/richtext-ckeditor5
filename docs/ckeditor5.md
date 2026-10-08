@@ -271,11 +271,11 @@ The plugin follows these rules:
 
 - Only a Jahia file gets `w`, which is an image with a URL that starts with `/files/` after the context path. An external or absolute URL does not change, because a signed URL breaks when its query changes.
 - Only a resize in pixels writes `w`. A resize in percent, with `image.resizeUnit: '%'`, writes no `w`. The four default configurations resize in pixels.
-- The value of `w` is never larger than the width of the image file. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`. The editor reads the width of the file when it shows the image, and a `width` attribute in the HTML does not change this width. A resize before the editor has loaded the file writes the resized width as `w`.
+- The value of `w` is never larger than the width of the image file. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`. The editor reads the width of the file when it shows the image, and a `width` attribute in the HTML does not change this width. Until the editor has loaded the file, `w` holds the resized width, and the editor changes `w` in the content when the load ends.
 - A resized image loses its `srcset` and `sizes` attributes. The browser loads a `srcset` candidate instead of `src`, so it would never load the resized file. Known limitation: a `srcset` that a contributor wrote in source editing is lost at the first save after a resize in pixels. The editor gives no warning.
 - The "Resize image to the original size" button removes `w`.
 
-Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
+Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. The exception is an image resized above the width of its file, when its URL does not carry that width as `w`. The editor writes the capped `w` when it has loaded the file, and the Save button is then enabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
 
 A CKEditor 4 resize keeps the `w` of an earlier CKEditor 5 resize. For example, an image resized to 552 pixels in CKEditor 5 and then to 800 pixels in CKEditor 4 keeps `?w=552` with `width: 800px`. The browser then shows a file of 552 pixels at 800 pixels. A new resize in CKEditor 5 writes the new width.
 

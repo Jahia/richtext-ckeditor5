@@ -1,6 +1,7 @@
 import {Image, ImageResizeEditing, Plugin} from 'ckeditor5';
 
 const URL_PATTERN = /^([^?#]*)(?:\?([^#]*))?(#.*)?$/s;
+const IMAGE_TYPES = ['imageBlock', 'imageInline'];
 
 /**
  * Adds the resized width of Jahia images to their URL (w parameter) in the saved data.
@@ -21,9 +22,13 @@ export class ImageResizeUrl extends Plugin {
         this.imageUtils = editor.plugins.get('ImageUtils');
         this.fileWidths = new Map();
 
+        // The fileWidth attribute holds the width of the file when it caps the resized width, so the data depends on the model only
+        IMAGE_TYPES.forEach(imageType => editor.model.schema.extend(imageType, {allowAttributes: 'fileWidth'}));
+        editor.model.document.registerPostFixer(writer => this.fixChangedFileWidths(writer));
+
         // The model width can come from the HTML width attribute, so the file is loaded to read its width before a resize
         editor.conversion.for('editingDowncast').add(dispatcher => {
-            ['imageBlock', 'imageInline'].forEach(imageType => {
+            IMAGE_TYPES.forEach(imageType => {
                 dispatcher.on(`attribute:src:${imageType}`, (evt, data) => this.loadFileWidth(data.attributeNewValue));
             });
         });
@@ -37,7 +42,7 @@ export class ImageResizeUrl extends Plugin {
         // Reapplied after each attribute converter, as the src, srcset, width, height and GHS ones overwrite the img attributes.
         // The GHS converter has the low priority, so this one has the lowest.
         editor.conversion.for('dataDowncast').add(dispatcher => {
-            ['imageBlock', 'imageInline'].forEach(imageType => {
+            IMAGE_TYPES.forEach(imageType => {
                 ['src', 'srcset', 'width', 'height', 'resizedWidth', 'htmlImgAttributes'].forEach(attribute => {
                     dispatcher.on(`attribute:${attribute}:${imageType}`, downcastResizedImage.bind(this), {priority: 'lowest'});
                 });
@@ -63,8 +68,65 @@ export class ImageResizeUrl extends Plugin {
         this.fileWidths.set(fileUrl, 0);
         // Image is the CKEditor plugin in this module, not the DOM image
         const img = new window.Image();
-        img.addEventListener('load', () => this.fileWidths.set(fileUrl, img.naturalWidth), {once: true});
+        img.addEventListener('load', () => {
+            this.fileWidths.set(fileUrl, img.naturalWidth);
+            this.fixLoadedFileWidths(fileUrl);
+        }, {once: true});
         img.src = fileUrl;
+    }
+
+    // The contributor did not make this change, so undo skips it
+    fixLoadedFileWidths(fileUrl) {
+        const model = this.editor.model;
+        if (this.editor.state === 'destroyed') {
+            return;
+        }
+
+        model.enqueueChange({isUndoable: false}, writer => {
+            for (const root of model.document.getRoots()) {
+                for (const item of model.createRangeIn(root).getItems()) {
+                    if (this.imageUtils.isImage(item) && this.isJahiaFile(item.getAttribute('src')) && setWidthParam(item.getAttribute('src'), null) === fileUrl) {
+                        this.fixFileWidth(writer, item);
+                    }
+                }
+            }
+        });
+    }
+
+    fixChangedFileWidths(writer) {
+        const model = this.editor.model;
+        let changed = false;
+        for (const change of model.document.differ.getChanges()) {
+            if (change.type === 'insert' && change.name !== '$text') {
+                const range = model.createRange(change.position, change.position.getShiftedBy(change.length));
+                for (const item of range.getItems()) {
+                    changed = (this.imageUtils.isImage(item) && this.fixFileWidth(writer, item)) || changed;
+                }
+            } else if (change.type === 'attribute' && ['src', 'resizedWidth'].includes(change.attributeKey)) {
+                const item = change.range.start.nodeAfter;
+                changed = (this.imageUtils.isImage(item) && this.fixFileWidth(writer, item)) || changed;
+            }
+        }
+
+        return changed;
+    }
+
+    fixFileWidth(writer, image) {
+        const src = image.getAttribute('src');
+        const resizedWidth = getPxValue(image.getAttribute('resizedWidth'));
+        const fileWidth = this.isJahiaFile(src) ? this.getFileWidth(src) : 0;
+        const cap = fileWidth > 0 && resizedWidth > fileWidth ? fileWidth : undefined;
+        if (image.getAttribute('fileWidth') === cap) {
+            return false;
+        }
+
+        if (cap) {
+            writer.setAttribute('fileWidth', cap, image);
+        } else {
+            writer.removeAttribute('fileWidth', image);
+        }
+
+        return true;
     }
 }
 
@@ -112,7 +174,7 @@ function downcastResizedImage(evt, data, conversionApi) {
     const width = Math.round(resizedWidth);
     const naturalWidth = Number(modelElement.getAttribute('width'));
     const naturalHeight = Number(modelElement.getAttribute('height'));
-    const fileWidth = this.getFileWidth(src);
+    const fileWidth = modelElement.getAttribute('fileWidth');
 
     // A w above the width of the file would make a URL-based resizer enlarge the image
     conversionApi.writer.setAttribute('src', setWidthParam(src, fileWidth > 0 ? Math.min(width, fileWidth) : width), viewImage);

@@ -276,7 +276,9 @@ The plugin follows these rules:
 - Each save in CKEditor 5 writes `w` again from the resized width. Known limitation: a `w` that a contributor wrote by hand on an image resized in pixels is lost at the next save. For example, `?w=600` on an image with `width:300px` becomes `?w=300`, even when nobody changed the image. The editor gives no warning.
 - The "Resize image to the original size" button removes `w`.
 
-Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. The exception is an image resized above the width of its file, when its URL does not carry that width as `w`. The editor writes the capped `w` when it has loaded the file, and the Save button is then enabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
+Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
+
+An image resized above the width of its file is the one case where opening the content changes it. When its URL does not carry that width as `w`, the editor writes the capped `w` once it has loaded the file. The Save button is then enabled.
 
 A CKEditor 4 resize keeps the `w` of an earlier CKEditor 5 resize. For example, an image resized to 552 pixels in CKEditor 5 and then to 800 pixels in CKEditor 4 keeps `?w=552` with `width: 800px`. The browser then shows a file of 552 pixels at 800 pixels. A new resize in CKEditor 5 writes the new width.
 

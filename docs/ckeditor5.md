@@ -271,7 +271,7 @@ The plugin follows these rules:
 
 - Only a Jahia file gets `w`, which is an image with a URL that starts with `/files/` after the context path. An external or absolute URL does not change, because a signed URL breaks when its query changes.
 - Only a resize in pixels writes `w`. A resize in percent, with `image.resizeUnit: '%'`, writes no `w`. The four default configurations resize in pixels.
-- The value of `w` is never larger than the width of the image file. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`. The editor reads the width of the file when it shows the image, and a `width` attribute in the HTML does not change this width. Until the editor has loaded the file, `w` holds the resized width, and the editor changes `w` in the content when the load ends.
+- The value of `w` is never larger than the width of the image file. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`. The editor reads the width of the file when it shows the image, and a `width` attribute in the HTML does not change this width. Until the editor has loaded the file, `w` holds the resized width, and the editor changes `w` in the content when the load ends. When the load fails, the editor loads the file again at the next change of the content.
 - A resized image loses its `srcset` and `sizes` attributes. The browser loads a `srcset` candidate instead of `src`, so it would never load the resized file. Known limitation: a `srcset` that a contributor wrote in source editing is lost at the first save after a resize in pixels. The editor gives no warning.
 - The "Resize image to the original size" button removes `w`.
 

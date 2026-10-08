@@ -72,6 +72,8 @@ export class ImageResizeUrl extends Plugin {
             this.fileWidths.set(fileUrl, img.naturalWidth);
             this.fixLoadedFileWidths(fileUrl);
         }, {once: true});
+        // Without an entry, the next data downcast of a resized image loads the file again
+        img.addEventListener('error', () => this.fileWidths.delete(fileUrl), {once: true});
         img.src = fileUrl;
     }
 
@@ -175,6 +177,7 @@ function downcastResizedImage(evt, data, conversionApi) {
     const naturalWidth = Number(modelElement.getAttribute('width'));
     const naturalHeight = Number(modelElement.getAttribute('height'));
     const fileWidth = modelElement.getAttribute('fileWidth');
+    this.loadFileWidth(src);
 
     // A w above the width of the file would make a URL-based resizer enlarge the image
     conversionApi.writer.setAttribute('src', setWidthParam(src, fileWidth > 0 ? Math.min(width, fileWidth) : width), viewImage);

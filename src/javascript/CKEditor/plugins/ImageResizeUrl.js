@@ -85,13 +85,15 @@ function upcastResizedImage(evt, data, conversionApi) {
         return;
     }
 
-    if (hasWidthParam(src)) {
+    const hasWidth = hasWidthParam(src);
+    if (hasWidth) {
         conversionApi.writer.setAttribute('src', setWidthParam(src, null), modelElement);
     }
 
-    // The aspect-ratio style holds the natural size when it comes with the width and height attributes
+    // The aspect-ratio style holds the natural size when the plugin wrote w, or when it matches the width and height attributes
     const [width, height] = (viewImage.getStyle('aspect-ratio') || '').split('/').map(value => value.trim());
-    if (viewImage.hasAttribute('width') && viewImage.hasAttribute('height') && Number(width) > 0 && Number(height) > 0) {
+    const isNaturalSize = hasWidth || (viewImage.getAttribute('width') === width && viewImage.getAttribute('height') === height);
+    if (isNaturalSize && viewImage.hasAttribute('width') && viewImage.hasAttribute('height') && Number(width) > 0 && Number(height) > 0) {
         conversionApi.writer.setAttribute('width', width, modelElement);
         conversionApi.writer.setAttribute('height', height, modelElement);
     }

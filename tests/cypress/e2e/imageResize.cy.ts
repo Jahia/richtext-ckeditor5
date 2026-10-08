@@ -250,6 +250,11 @@ describe('Image resize URL tests', () => {
         ck5field.type(`<p>Inline <img class="image_resized" style="aspect-ratio:16/9;height:auto;width:300px;" src="${filesPath}/vacation.jpg?w=300"></p>`);
         resizeToOriginal(ck5field);
         ck5field.getEditArea().find('img').should('have.attr', 'width', '640');
+
+        // Without w in the URL, an aspect-ratio style that differs from the width and height attributes is not the natural size
+        ck5field.type(`<p>Inline <img class="image_resized" style="aspect-ratio:16/9;height:auto;width:300px;" src="${filesPath}/vacation.jpg" width="300" height="169"></p>`);
+        resizeToOriginal(ck5field);
+        ck5field.getEditArea().find('img').should('have.attr', 'width').and('not.equal', '16');
         ce.cancelAndDiscard();
     });
 

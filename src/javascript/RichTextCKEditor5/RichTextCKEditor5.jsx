@@ -12,7 +12,7 @@ import {useTranslation} from './RichTextCKEditor5.hooks';
 import './RichTextCKEditor5-overrides.css';
 import {registry} from '@jahia/ui-extender';
 import {REGISTRY_KEY} from '~/RichTextCKEditor5.constants';
-import {getAIConfig, removeToolbarItems} from '~/CKEditor/config.utils';
+import {addCreateContent, getAIConfig, removeToolbarItems} from '~/CKEditor/config.utils';
 import scopeCss from 'scope-css';
 
 // A single scoped <style> element is shared across every CK5 editor instance using the same
@@ -153,6 +153,17 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             path: editorContext.path
         }
     };
+
+    if (parsedOptions.ckeditor?.createContent === 'true') {
+        customConfig.jahiaCreateContent = {
+            mode: editorContext.mode,
+            parentUuid: editorContext.mode === 'edit' ? editorContext.nodeData?.uuid : null,
+            lang,
+            uilang,
+            client
+        };
+        addCreateContent(customConfig);
+    }
 
     if (excludeToolbarItems.length > 0) {
         removeToolbarItems(customConfig, excludeToolbarItems);

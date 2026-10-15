@@ -21,6 +21,56 @@ name, its type, and the view it renders with. Clicking the card opens a balloon 
 The editor refuses a page, a folder, a content list and the rich text itself as a reference. The card of
 a reference whose item is missing or not readable says so and shows the identifier.
 
+## Create new content
+
+The content type **Extended rich text** (`jnt:extendedRichText`) is a rich text that can hold content of
+its own. Its toolbar has a second button, **Create new content**, next to **Reference existing content**.
+In the configurations with a menu bar, the **Insert** menu holds the same entry.
+
+The button opens the content type selector of Content Editor, then a Content Editor dialog above the rich
+text. When the author saves that dialog, Jahia creates the new item as a child node of the rich text, and
+the editor inserts a reference to it at the caret, with a card like any other reference. When a card is
+selected, the new reference goes after that card and does not replace it. The caret then moves after the
+new card. With **Create another**, each save inserts one more reference, in order. The text typed before the click stays
+in the editor, unsaved, until the author saves the rich text.
+
+The selector offers the content types the author may create under the rich text. It never offers a
+folder, a content list or another extended rich text. When it has a single type, Content Editor opens
+directly. When it has none, for example because the author lacks the permission or the site restricts
+the types, the editor shows the warning "No content type can be created here." and opens nothing.
+
+The rich text must exist before it can hold a child. While the author creates a new extended rich text,
+the button is disabled, and its tooltip says "Save the rich text first to create content in it". Once
+the rich text is saved, open it again to create content in it.
+
+### Enabling the button on another type
+
+The button comes from the selector option `ckeditor.createContent='true'` of the rich-text property, not
+from the type name. A project type gets the same button with the option and a child node definition:
+
+```
+[jnt:myArticle] > jnt:content, jmix:editorialContent
+ - body (string, richtext[ckeditor.createContent='true']) internationalized
+ + * (jnt:content)
+```
+
+Without the option, the editor does not load the feature. The type `jnt:bigText` does not have it.
+
+### Content that no reference uses any more
+
+The reference and the child node are independent, like a weak reference picked in a Content Editor
+field. Removing the card, or undoing its insertion, removes the reference from the text only. The child
+node stays under the rich text, and nothing shows it any more in the rendered text. Jahia does not
+delete it.
+
+A child node also stays when:
+
+- the author saves the new item, then closes the rich text without saving it;
+- one language of the text references the item and the others do not;
+- an author creates content under the rich text from jContent, outside the editor;
+- the rich text is copied: the copy gets new child nodes, while its text still references the children of
+  the original.
+
 ## Stored HTML
 
 The text holds an empty block element:
@@ -86,8 +136,11 @@ in the picker and shows its card as missing.
 
 ## Publication and cache
 
-The referenced item is published on its own. Publishing the rich text does not publish the item, and a
-reference to an unpublished item renders nothing in live.
+A picked item is published on its own. Publishing the rich text does not publish it, and a reference to
+an unpublished item renders nothing in live.
+
+An item created with **Create new content** is a child node of the rich text, so publishing the rich text
+publishes it too.
 
 The rendered rich text depends on the item in the cache, so publishing or editing the item flushes the
 text. In live mode, a reference to an item that is not published yet also registers the item, so its
@@ -121,12 +174,20 @@ excludeToolbarItems[0]=jahiaContentReference
 This hides the toolbar button and the menu entry. The editor still loads the plugin, so the references
 already stored in a text keep their cards and round-trip unchanged. The server still renders them.
 
+`jahiaCreateContent` hides **Create new content** the same way:
+
+```properties
+excludeToolbarItems[0]=jahiaCreateContent
+```
+
 ## Limits of the proof of concept
 
 - **Weak reference.** The text holds the identifier in an HTML attribute, not in a reference property.
   Jahia does not list the text as a usage of the item, does not warn when the item is deleted, does not
-  publish the item with the text, does not remap the identifier on import, and a copy to another site
-  keeps pointing at the original item.
+  publish a picked item with the text, does not remap the identifier on import, and a copy to another
+  site keeps pointing at the original item.
+- **Children without a reference.** Jahia never deletes a child of an extended rich text that the text
+  no longer references. See [Content that no reference uses any more](#content-that-no-reference-uses-any-more).
 - **Live cache and permissions.** A reference that one reader cannot read renders as an empty string,
   and the cache keeps that result under the key of the rich text. Another reader who shares that key
   but can read the item then gets the empty result too.

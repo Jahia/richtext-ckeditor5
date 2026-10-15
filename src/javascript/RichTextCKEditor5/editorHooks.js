@@ -36,6 +36,11 @@ export const editorOnCloseHook = () => {
         return;
     }
 
+    // The exiting dialog is still in the DOM when its onExited runs, so a second one is a parent editor still open.
+    if (document.querySelectorAll('[aria-labelledby="dialog-content-editor"]').length > 1) {
+        return;
+    }
+
     if (originalRichText) {
         registry.addOrReplace('selectorType', 'RichText', originalRichText);
     }

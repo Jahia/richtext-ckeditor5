@@ -32,6 +32,26 @@ export class RichTextCKeditor5Field extends Field {
         });
     }
 
+    // Inserts at the end of the first block through the model, so the selection does not move
+    appendText(text: string) {
+        this.getEditArea().then($myElement => {
+            const ckeditorInstance = $myElement.prop('ckeditorInstance');
+            const model = ckeditorInstance.model;
+            model.change(writer => {
+                writer.insertText(text, model.document.getRoot().getChild(0), 'end');
+            });
+        });
+    }
+
+    getCreateContentButton(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.getToolbarButton('Create new content');
+    }
+
+    // In CKEditor fullscreen, the toolbar moves out of the field into a container of the body
+    getFullscreenToolbarButton(buttonName: string): Cypress.Chainable<JQuery<HTMLElement>> {
+        return cy.get('.ck-fullscreen__main-wrapper .ck-toolbar__items').find(`button[data-cke-tooltip-text^="${buttonName}"]`);
+    }
+
     getReferenceCards(): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.getEditArea().find('.jahia-content-reference-card');
     }

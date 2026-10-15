@@ -6,3 +6,7 @@
 [rtmix:ckEditorVersionSelector] mixin
  - useCkEditor4 (boolean) = true indexed=no autocreated
 
+[jnt:extendedRichText] > jnt:content, jmix:basicContent, jmix:editorialContent
+ - text (string, richtext[ckeditor.createContent='true']) primary internationalized
+ + * (jnt:content)
+

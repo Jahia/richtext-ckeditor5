@@ -13,6 +13,8 @@ export const DEFAULT_VIEW = 'default';
 
 export const REFUSED_TYPES = ['jnt:page', 'jnt:contentFolder', 'jnt:folder', 'jnt:virtualsite', 'jnt:contentList'];
 
+export const EXTENDED_RICH_TEXT = 'jnt:extendedRichText';
+
 export const isValidUuid = uuid => typeof uuid === 'string' && UUID_RE.test(uuid);
 
 export const isValidView = view => typeof view === 'string' && view !== DEFAULT_VIEW && VIEW_RE.test(view);

@@ -137,7 +137,7 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
         resolvedConfigName = parsedOptions.ckeditor.customConfig;
     }
 
-    const registryConfig = registry.get(REGISTRY_KEY, resolvedConfigName);
+    const registryConfig = {...registry.get(REGISTRY_KEY, resolvedConfigName)};
     const customConfig = {
         ...getAIConfig(editorContext.path, registryConfig),
         ...registryConfig,
@@ -148,6 +148,9 @@ export const RichTextCKEditor5 = ({field, id, value, onChange, onBlur}) => {
             uilang,
             client,
             store
+        },
+        jahiaContentReference: {
+            path: editorContext.path
         }
     };
 

@@ -259,6 +259,50 @@ The configuration of the `complete` toolbar [can also be found on GitHub](https:
 
 Templates-set modules can ship a `ckeditor_styles.json` file that exposes a CSS-only "Styles" dropdown to contributors. See [Style Templates](style-templates) for the JSON shape, the automatic CSS scoping, and the published-page rendering requirements.
 
+### Resized Images
+
+When a contributor resizes an image in pixels, the `ImageResizeUrl` plugin adds the width to the image URL as the `w` parameter. An image module that reads `w` can then serve a smaller file. The editor keeps showing the original URL, and only the saved content carries `w`:
+
+```html
+<img style="aspect-ratio:3000/1687;height:auto;width:552px;" src="/files/{workspace}/sites/mysite/files/photo.jpg?w=552" width="552" height="310">
+```
+
+The plugin follows these rules:
+
+- Only a Jahia file gets `w`, which is an image with a URL that starts with `/files/` after the context path. An external or absolute URL does not change, because a signed URL breaks when its query changes.
+- Only a resize in pixels writes `w`. A resize in percent, with `image.resizeUnit: '%'`, writes no `w`. The four default configurations resize in pixels.
+- The value of `w` is never larger than the width of the image file. An image of 400x300 pixels resized to 800 pixels gets `?w=400`, `width="800"` and `height="600"`. The editor reads the width of the file when it shows the image, and a `width` attribute in the HTML does not change this width. Until the editor has loaded the file, `w` holds the resized width, and the editor changes `w` in the content when the load ends. When the load fails, the editor loads the file again at the next change of the content.
+- A resized image loses its `srcset` and `sizes` attributes. The browser loads a `srcset` candidate instead of `src`, so it would never load the resized file. Known limitation: a `srcset` that a contributor wrote in source editing is lost at the first save after a resize in pixels. The editor gives no warning.
+- Each save in CKEditor 5 writes `w` again from the resized width. Known limitation: a `w` that a contributor wrote by hand on an image resized in pixels is lost at the next save. For example, `?w=600` on an image with `width:300px` becomes `?w=300`, even when nobody changed the image. The editor gives no warning.
+- The "Resize image to the original size" button removes `w`.
+
+Content that already exists gets `w` only when a contributor edits it in CKEditor 5 and saves it. Opening the content does not change it, and the Save button stays disabled. An image that CKEditor 4 resized, such as `style="width:450px;height:281px"`, loses its fixed height at that save and gets `height:auto`.
+
+An image resized above the width of its file is the one case where opening the content changes it. When its URL does not carry that width as `w`, the editor writes the capped `w` once it has loaded the file. The Save button is then enabled.
+
+A CKEditor 4 resize keeps the `w` of an earlier CKEditor 5 resize. For example, an image resized to 552 pixels in CKEditor 5 and then to 800 pixels in CKEditor 4 keeps `?w=552` with `width: 800px`. The browser then shows a file of 552 pixels at 800 pixels. A new resize in CKEditor 5 writes the new width.
+
+A custom configuration needs the `ImageResizeUrl` plugin, or a resize writes no `w` and shows no warning. A configuration that copies a default configuration, as in the examples above, keeps the plugin. A configuration that builds its own plugin list imports the plugin from the `ckeditor5` remote, which the section "Building a Custom Plugin" describes:
+
+```js
+import {Image, ImageResize, ImageResizeUrl} from 'ckeditor5';
+
+const plugins = [Image, ImageResize, ImageResizeUrl];
+```
+
+The `ckeditor5` remote exports `ImageResizeUrl` from richtext-ckeditor5 1.1.0. A module that imports the plugin declares this minimum version in its dependencies, such as `<jahia-depends>richtext-ckeditor5=1.1.0</jahia-depends>` in its `pom.xml`. On an older version, the import gives `undefined` and the editor does not start.
+
+The npm package `ckeditor5` has no `ImageResizeUrl` export, so a TypeScript module declares the plugin type in a declaration file:
+
+```ts
+// ckeditor5-jahia.d.ts
+import type {Plugin} from 'ckeditor5';
+
+declare module 'ckeditor5' {
+    export class ImageResizeUrl extends Plugin {}
+}
+```
+
 ## Building a Custom Plugin
 
 CKEditor 5 is highly modular and extensible. You can create your own plugins and integrate them into Jahia. The goal of this section is to give you a quick overview of how to create a custom plugin and integrate it into a custom configuration. Please refer to the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/creating-simple-plugin.html) for more details on plugin creation.

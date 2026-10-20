@@ -8,7 +8,17 @@ export function removeToolbarItems(config, items) {
     if (Array.isArray(config.toolbar)) {
         config.toolbar = filterToolbar(config.toolbar);
     } else if (Array.isArray(config.toolbar?.items)) {
-        config.toolbar.items = filterToolbar(config.toolbar.items);
+        config.toolbar = {...config.toolbar, items: filterToolbar(config.toolbar.items)};
+    }
+
+    if (config.menuBar) {
+        // CKEditor applies addItems after removeItems, so an added item must leave addItems as well.
+        const menuBarItems = new Set([...itemsToRemove].map(item => `menuBar:${item}`));
+        config.menuBar = {
+            ...config.menuBar,
+            addItems: (config.menuBar.addItems ?? []).filter(added => !menuBarItems.has(added.item)),
+            removeItems: [...new Set([...(config.menuBar.removeItems ?? []), ...menuBarItems])]
+        };
     }
 }
 
@@ -31,14 +41,6 @@ export function getAIConfig(nodePath, config) {
     const isAIEnabled = Boolean(window?.contextJsParameters?.config?.ckeditor5?.aiEnabled);
     if (!isAIEnabled) {
         removeToolbarItems(config, ['aiCommands', 'aiAssistant']);
-        if (config.menuBar) {
-            config.menuBar.removeItems = [
-                ...(config.menuBar.removeItems ?? []),
-                'menuBar:aiCommands',
-                'menuBar:aiAssistant'
-            ];
-        }
-
         return {};
     }
 

@@ -1,11 +1,11 @@
-import {ImageResizeEditing, ImageStyleEditing, Plugin, Image, DataFilter} from 'ckeditor5';
+import {ImageResizeEditing, ImageStyleEditing, Plugin, Image} from 'ckeditor5';
 
 /**
  * Embeds the styles for the resized image.
  */
 export class ImageStyleEmbed extends Plugin {
     static get requires() {
-        return [Image, DataFilter, ImageResizeEditing, ImageStyleEditing];
+        return [Image, ImageResizeEditing, ImageStyleEditing];
     }
 
     static get pluginName() {
@@ -14,20 +14,22 @@ export class ImageStyleEmbed extends Plugin {
 
     init() {
         const editor = this.editor;
-        this.dataFilter = editor.plugins.get(DataFilter);
+        this.imageUtils = editor.plugins.get('ImageUtils');
 
         // Parse any embedded float and width styling from a given element and convert it to ck5 model
         // We do this for block <figure> and inline <img> elements
+        // Only the styles written back by the downcast are consumed: the other attributes go to the image and GHS converters
         editor.conversion.for('upcast').add(dispatcher => {
-            dispatcher.on('element:figure', upcastFloat.bind(this));
-            dispatcher.on('element:figure', upcastAlignCenter.bind(this));
-            dispatcher.on('element:img', upcastFloat.bind(this), {priority: 'low'});
-            dispatcher.on('element:img', upcastWidth.bind(this), {priority: 'low'});
+            dispatcher.on('element:figure', upcastFloat);
+            dispatcher.on('element:figure', upcastAlignCenter);
+            dispatcher.on('element:img', upcastFloat, {priority: 'low'});
+            // Before the image resize converters, which would read the embedded height as a resized height
+            dispatcher.on('element:img', upcastWidth);
         });
 
         // Function handlers to embed styling when changed in the model
         editor.conversion.for('downcast').add(dispatcher => {
-            dispatcher.on('attribute:resizedWidth', setResizeStyles);
+            dispatcher.on('attribute:resizedWidth', setResizeStyles.bind(this));
             dispatcher.on('attribute:imageStyle', setFloatStyles);
             dispatcher.on('attribute:imageStyle', setAlignStyles);
         });
@@ -35,57 +37,49 @@ export class ImageStyleEmbed extends Plugin {
 }
 
 function upcastAlignCenter(evt, data, conversionApi) {
-    const viewImage = data.viewItem;
-    const alignCenter = viewImage.getStyle('text-align') === 'center';
-
-    if (!alignCenter || !conversionApi.consumable.consume(viewImage, {style: 'text-align'})) {
+    const viewFigure = data.viewItem;
+    const modelElement = data.modelRange?.start.nodeAfter;
+    if (viewFigure.getStyle('text-align') !== 'center' || !modelElement || !conversionApi.schema.checkAttribute(modelElement, 'imageStyle')) {
         return;
     }
 
-    const modelElement = data.modelRange?.start.nodeAfter;
-    if (modelElement && conversionApi.schema.checkAttribute(modelElement, 'imageStyle')) {
-        this.dataFilter.processViewAttributes(viewImage, conversionApi);
+    // The margin is written back with the alignment
+    const styles = viewFigure.getStyle('margin') === 'auto' ? ['text-align', 'margin'] : ['text-align'];
+    if (conversionApi.consumable.consume(viewFigure, {styles})) {
         conversionApi.writer.setAttribute('imageStyle', 'alignCenter', modelElement);
     }
 }
 
 function upcastFloat(evt, data, conversionApi) {
-    const viewImage = data.viewItem;
-    const float = viewImage.getStyle('float');
-
-    if (!float || !conversionApi.consumable.consume(viewImage, {style: 'float'})) {
+    const viewElement = data.viewItem;
+    const imageStyle = {left: 'alignLeft', right: 'alignRight'}[viewElement.getStyle('float')];
+    const modelElement = data.modelRange?.start.nodeAfter;
+    if (!imageStyle || !modelElement || !conversionApi.schema.checkAttribute(modelElement, 'imageStyle')) {
         return;
     }
 
-    const modelElement = data.modelRange?.start.nodeAfter;
-    if (modelElement && conversionApi.schema.checkAttribute(modelElement, 'imageStyle')) {
-        this.dataFilter.processViewAttributes(viewImage, conversionApi);
-        // Set the imageStyle attribute based on the float value
-        const styleValues = {left: 'alignLeft', right: 'alignRight'};
-        if (styleValues[float]) {
-            conversionApi.writer.setAttribute('imageStyle', styleValues[float], modelElement);
-        }
+    if (conversionApi.consumable.consume(viewElement, {styles: ['float']})) {
+        conversionApi.writer.setAttribute('imageStyle', imageStyle, modelElement);
     }
 }
 
 function upcastWidth(evt, data, conversionApi) {
     const viewImage = data.viewItem;
     const width = viewImage.getStyle('width');
-
-    if (!width || !conversionApi.consumable.consume(viewImage, {style: 'width'})) {
+    const modelElement = data.modelRange?.start.nodeAfter;
+    if (!width || !modelElement || !conversionApi.schema.checkAttribute(modelElement, 'resizedWidth')) {
         return;
     }
 
-    const modelElement = data.modelRange?.start.nodeAfter;
-    if (modelElement && conversionApi.schema.checkAttribute(modelElement, 'resizedWidth')) {
-        this.dataFilter.processViewAttributes(viewImage, conversionApi);
-        conversionApi.writer.setAttribute('resizedHeight', 'auto', modelElement);
+    // The height is written back as auto
+    const styles = viewImage.hasStyle('height') ? ['width', 'height'] : ['width'];
+    if (conversionApi.consumable.consume(viewImage, {styles})) {
         conversionApi.writer.setAttribute('resizedWidth', width, modelElement);
     }
 }
 
 function setResizeStyles(evt, data, conversionApi) {
-    const {viewImage, hasContainer} = getViewImage(data, conversionApi);
+    const {viewImage, hasContainer} = getViewImage(data, conversionApi, this.imageUtils);
     if (!viewImage) {
         return;
     }
@@ -94,7 +88,7 @@ function setResizeStyles(evt, data, conversionApi) {
         // Image has been resized; embed styling
         console.debug(`Applying width style '${data.attributeNewValue}' for ${viewImage.name}`);
         conversionApi.writer.setStyle('height', 'auto', viewImage);
-        if (hasContainer && !viewImage.getStyle('width')) {
+        if (hasContainer) {
             conversionApi.writer.setStyle('width', data.attributeNewValue, viewImage);
         }
     } else {
@@ -149,20 +143,14 @@ function setAlignStyles(evt, data, conversionApi) {
     }
 }
 
-function getViewImage(data, conversionApi) {
-    let viewImage = conversionApi.mapper.toViewElement(data.item);
-    if (!viewImage) {
-        return null;
+function getViewImage(data, conversionApi, imageUtils) {
+    const viewElement = conversionApi.mapper.toViewElement(data.item);
+    if (!viewElement) {
+        return {};
     }
 
-    // ViewImage can sometimes be a container element and not the img element (in the case of imageBlock),
-    // so we need to find the img element within this container
-    let hasContainer = !viewImage.is('element', 'img');
-    let viewContainer = null;
-    if (hasContainer) {
-        viewContainer = viewImage;
-        viewImage = [...viewImage.getChildren()].find(c => c.is('element', 'img'));
-    }
-
-    return {viewImage, viewContainer, hasContainer};
+    // ViewElement can sometimes be a container element and not the img element (in the case of imageBlock),
+    // so we need to find the img element within this container, possibly inside a link
+    const viewImage = imageUtils.findViewImgElement(viewElement);
+    return {viewImage, hasContainer: viewImage !== viewElement};
 }

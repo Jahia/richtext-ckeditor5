@@ -23,6 +23,6 @@ public class InlineEditFilter extends AbstractFilter {
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        return "<jahia path=\"" + StringEscapeUtils.escapeXml11(resource.getNode().getPath()) + "\" property=\"text\" jahiatype=\"inline\">" + super.execute(previousOut, renderContext, resource, chain) + "</jahia>";
+        return "<jahia path=\"" + StringEscapeUtils.escapeHtml4(resource.getNode().getPath()) + "\" property=\"text\" jahiatype=\"inline\">" + super.execute(previousOut, renderContext, resource, chain) + "</jahia>";
     }
 }

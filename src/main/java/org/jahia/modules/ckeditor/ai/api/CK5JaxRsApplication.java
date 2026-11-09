@@ -24,6 +24,7 @@
 package org.jahia.modules.ckeditor.ai.api;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.json.JSONObject;
 
 import javax.ws.rs.GET;
@@ -38,6 +39,9 @@ public class CK5JaxRsApplication extends ResourceConfig {
 
     public CK5JaxRsApplication() {
         super(CK5JaxRsApplication.class);
+        // No outbound buffer: Jersey otherwise holds up to 8 KB of a response to compute its Content-Length,
+        // which delays every event of the AI stream until the answer is complete.
+        property(ServerProperties.OUTBOUND_CONTENT_LENGTH_BUFFER, 0);
     }
 
     @GET

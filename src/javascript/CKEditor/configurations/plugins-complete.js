@@ -56,7 +56,7 @@ import {
     AIAssistant,
     OpenAITextAdapter
 } from 'ckeditor5-premium-features';
-import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
+import {Picker, InsertJahiaImage, JahiaContentReference, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
 import {ImageStyleEmbed, MenuBarFixedPanels} from '~/CKEditor/plugins';
 
 export const plugins = [
@@ -93,6 +93,7 @@ export const plugins = [
     Indent,
     IndentBlock,
     InsertJahiaImage,
+    JahiaContentReference,
     Italic,
     JahiaLinkProvider,
     JahiaUpload,

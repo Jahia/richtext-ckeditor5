@@ -14,6 +14,7 @@ export const lightConfig = {
             'alignment',
             '|',
             'insertJahiaImage',
+            'jahiaContentReference',
             'link',
             'bookmark',
             'insertTable',

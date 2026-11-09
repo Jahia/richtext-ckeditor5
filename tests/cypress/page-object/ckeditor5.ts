@@ -25,6 +25,38 @@ export class RichTextCKeditor5Field extends Field {
         });
     }
 
+    execute(command: string) {
+        this.getEditArea().then($myElement => {
+            const ckeditorInstance = $myElement.prop('ckeditorInstance');
+            ckeditorInstance.execute(command);
+        });
+    }
+
+    getReferenceCards(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.getEditArea().find('.jahia-content-reference-card');
+    }
+
+    getReferenceCard(index: number): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.getReferenceCards().eq(index);
+    }
+
+    // The view dropdown is the only dropdown of the reference toolbar, and its label names the current view.
+    // It builds its list on each open, so the entry only exists after the click.
+    getReferenceViewDropdown(): Cypress.Chainable<JQuery<HTMLElement>> {
+        return this.get().get('.ck-balloon-panel > .ck-balloon-rotator')
+            .should('be.visible')
+            .find('.ck-dropdown > button.ck-dropdown__button');
+    }
+
+    selectReferenceView(label: string | RegExp) {
+        this.getReferenceViewDropdown().click();
+        cy.get('.ck-balloon-panel .ck-dropdown__panel-visible')
+            .find('.ck-list__item button')
+            .contains(label)
+            .should('be.visible')
+            .click();
+    }
+
     getSourceEditingArea(): Cypress.Chainable<JQuery<HTMLElement>> {
         return this.get().find('.ck-source-editing-area');
     }

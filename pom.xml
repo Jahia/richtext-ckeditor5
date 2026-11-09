@@ -49,7 +49,7 @@
         <jahia-module-signature>MC0CFQCLAsBIs0teMzTq087KEdXHzcdYtQIUHiUJX7VmMLLVBXEM7fveI4EjANw=</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
-        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>
+        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider,genai-connector=optional</jahia-depends>
         <import-package>
             org.jahia.modules.contenteditor.graphql.api
         </import-package>
@@ -130,6 +130,12 @@
             <version>${jersey.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>genai-connector</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -167,6 +173,8 @@
                             org.apache.commons.io;version="[2.11,3)",
                             org.apache.commons.collections;version="[3.2,4)",
                             org.jahia.api,
+                            <!-- Optional: the AI assistant uses the GenAI connector only when it is installed -->
+                            org.jahia.modules.genai.api;version="[1.0,2)";resolution:=optional,
                             org.jahia.modules.graphql.provider.dxm;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",

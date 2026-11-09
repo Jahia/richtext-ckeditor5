@@ -103,6 +103,7 @@ public class RichTextConfig implements ManagedService {
         obj.put(EXCLUDE_MACROS, new JSONArray(excludeMacros));
         obj.put(CONFIG_TYPE, configType);
         obj.put(CKEDITOR4_INSTALLED, isCkeditor4Installed());
+        obj.put(AI_TYPE, aiType);
         if (richtextMaxHeight != null) {
             obj.put(RICHTEXT_MAX_HEIGHT, richtextMaxHeight);
         }

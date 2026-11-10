@@ -114,6 +114,9 @@ describe('Image tests', () => {
             .invoke('attr', 'style')
             .should('contain', 'height:auto')
             .and('contain', 'width:150px');
+        pb.getModule(`/sites/${siteKey}/home/area-main/${textName}`).get().find('img')
+            .should('have.attr', 'src')
+            .and('match', /\/placeholder\.jpg\?w=150$/);
     });
 
     it('should be able to left align and display in page builder', () => {

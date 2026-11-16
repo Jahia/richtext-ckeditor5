@@ -133,7 +133,7 @@
         <dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>genai-connector</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -174,7 +174,7 @@
                             org.apache.commons.collections;version="[3.2,4)",
                             org.jahia.api,
                             <!-- Optional: the AI assistant uses the GenAI connector only when it is installed -->
-                            org.jahia.modules.genai.api;version="[1.0,2)";resolution:=optional,
+                            org.jahia.modules.genai.api;version="[0.1,1)";resolution:=optional,
                             org.jahia.modules.graphql.provider.dxm;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",

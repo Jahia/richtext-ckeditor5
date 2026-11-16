@@ -12,5 +12,9 @@ public interface AIProxyService {
 
     boolean isEnabled();
 
-    Response handleRequest(String requestData) throws InterruptedException, IOException;
+    /**
+     * @param requestData the body that the editor sends
+     * @param siteKey     the key of the site of the edited content, or {@code null} for content under no site
+     */
+    Response handleRequest(String requestData, String siteKey) throws InterruptedException, IOException;
 }

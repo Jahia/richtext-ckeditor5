@@ -4,6 +4,7 @@ import org.jahia.modules.ckeditor.ai.service.AIProxyService;
 import org.jahia.modules.genai.api.Cancellable;
 import org.jahia.modules.genai.api.CompletionRequest;
 import org.jahia.modules.genai.api.CompletionResult;
+import org.jahia.modules.genai.api.GenAiAccessDeniedException;
 import org.jahia.modules.genai.api.GenAiException;
 import org.jahia.modules.genai.api.GenAiNotConfiguredException;
 import org.jahia.modules.genai.api.GenAiQuotaExceededException;
@@ -32,7 +33,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Answers the AI assistant through the Jahia GenAI connector.
  *
- * <p>The request body is {@code {"instructions": "...", "input": "..."}}. The response is a stream of
+ * <p>The request body is {@code {"instructions": "...", "input": "..."}}. Each completion names the site of the
+ * edited content, so the connector checks the permission {@code genaiAccess} of the user on that site. The
+ * response is a stream of
  * server-sent events with the shapes of the {@code /modules/genai/stream} endpoint of the connector:
  * {@code partial} with {@code text}, then one {@code complete} with {@code text} and {@code stopReason},
  * or one {@code error} with {@code error}.</p>
@@ -50,6 +53,8 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     private static final Logger logger = LoggerFactory.getLogger(GenAIProxyServiceImpl.class);
 
     private static final int TOO_MANY_REQUESTS = 429;
+    static final String ACCESS_DENIED = "You do not have the permission to use AI on this site. "
+            + "Ask an administrator for the permission genaiAccess.";
     private static final String PROVIDER_FAILED = "The AI provider could not complete the request.";
     // A backstop only: the timeouts of the connector end a stream long before.
     private static final long IDLE_TIMEOUT_SECONDS = 300;
@@ -79,10 +84,10 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     }
 
     @Override
-    public Response handleRequest(String requestData) {
+    public Response handleRequest(String requestData, String siteKey) {
         CompletionRequest request;
         try {
-            request = toCompletionRequest(requestData);
+            request = toCompletionRequest(requestData, siteKey);
         } catch (JSONException | IllegalArgumentException e) {
             return error(Response.Status.BAD_REQUEST.getStatusCode(), e.getMessage());
         }
@@ -91,6 +96,8 @@ public class GenAIProxyServiceImpl implements AIProxyService {
         Cancellable stream;
         try {
             stream = genAiService.stream(request, new QueueingHandler(frames));
+        } catch (GenAiAccessDeniedException e) {
+            return accessDenied();
         } catch (GenAiQuotaExceededException e) {
             return error(TOO_MANY_REQUESTS, e.getMessage());
         } catch (GenAiNotConfiguredException e) {
@@ -108,9 +115,10 @@ public class GenAIProxyServiceImpl implements AIProxyService {
                 .build();
     }
 
-    private CompletionRequest toCompletionRequest(String requestData) {
+    private CompletionRequest toCompletionRequest(String requestData, String siteKey) {
         JSONObject body = new JSONObject(requestData);
         return CompletionRequest.builder()
+                .site(siteKey)
                 .tier(tier)
                 .instructions(body.optString("instructions", null))
                 .input(body.optString("input", null))
@@ -138,6 +146,14 @@ public class GenAIProxyServiceImpl implements AIProxyService {
         } finally {
             stream.cancel();
         }
+    }
+
+    // The code lets a client tell a missing permission from another refusal.
+    private static Response accessDenied() {
+        return Response.status(Response.Status.FORBIDDEN)
+                .entity(new JSONObject().put("error", ACCESS_DENIED).put("code", "genaiAccess").toString())
+                .type("application/json")
+                .build();
     }
 
     private static Response error(int status, String message) {
@@ -175,6 +191,9 @@ public class GenAIProxyServiceImpl implements AIProxyService {
 
         // The message of a provider failure can carry details of the provider account: it goes to the log only.
         private static String clientMessage(GenAiException error) {
+            if (error instanceof GenAiAccessDeniedException) {
+                return ACCESS_DENIED;
+            }
             if (error instanceof GenAiNotConfiguredException || error instanceof GenAiQuotaExceededException) {
                 return error.getMessage();
             }

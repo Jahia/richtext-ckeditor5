@@ -1,5 +1,6 @@
 package org.jahia.modules.ckeditor.ai.service.impl;
 
+import org.jahia.modules.ckeditor.ai.frame.BrandFrame;
 import org.jahia.modules.ckeditor.ai.service.AIProxyService;
 import org.jahia.modules.genai.api.Cancellable;
 import org.jahia.modules.genai.api.CompletionRequest;
@@ -17,6 +18,9 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +33,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Answers the AI assistant through the Jahia GenAI connector.
  *
- * <p>The request body is {@code {"instructions": "...", "input": "..."}}. Each completion names the site of the
- * edited content, so the connector checks the permission {@code genaiAccess} of the user on that site. The
- * response is a stream of
- * server-sent events with the shapes of the {@code /modules/genai/stream} endpoint of the connector:
+ * <p>The request body is {@code {"instructions": "...", "input": "...", "language": "en"}}. Each completion
+ * names the site of the edited content, so the connector checks the permission {@code genaiAccess} of the user
+ * on that site. When the module editorial-frame runs, the frame of that site follows the instructions.</p>
+ *
+ * <p>The response is a stream of server-sent events with the shapes of the {@code /modules/genai/stream}
+ * endpoint of the connector:
  * {@code partial} with {@code text}, then one {@code complete} with {@code text} and {@code stopReason},
  * or one {@code error} with {@code error}.</p>
  */
@@ -55,12 +62,18 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     private static final int TOO_MANY_REQUESTS = 429;
     static final String ACCESS_DENIED = "You do not have the permission to use AI on this site. "
             + "Ask an administrator for the permission genaiAccess.";
+    private static final Pattern LANGUAGE = Pattern.compile("[a-z]{2,3}([_-][A-Za-z0-9]{2,8})*");
     private static final String PROVIDER_FAILED = "The AI provider could not complete the request.";
     // A backstop only: the timeouts of the connector end a stream long before.
     private static final long IDLE_TIMEOUT_SECONDS = 300;
 
     @Reference
     private GenAiService genAiService;
+
+    /** The editorial frame of the site, when the module editorial-frame runs. */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+            policyOption = ReferencePolicyOption.GREEDY)
+    private volatile BrandFrame brandFrame;
 
     private boolean enabled;
     private ModelTier tier;
@@ -117,13 +130,36 @@ public class GenAIProxyServiceImpl implements AIProxyService {
 
     private CompletionRequest toCompletionRequest(String requestData, String siteKey) {
         JSONObject body = new JSONObject(requestData);
+        String input = body.optString("input", null);
+        String language = body.optString("language", null);
         return CompletionRequest.builder()
                 .site(siteKey)
                 .tier(tier)
-                .instructions(body.optString("instructions", null))
-                .input(body.optString("input", null))
+                .instructions(withFrame(body.optString("instructions", null), siteKey, language, input))
+                .input(input)
                 .maxOutputTokens(maxOutputTokens)
                 .build();
+    }
+
+    /**
+     * The instructions of the editor, followed by the editorial frame of the site, which the server reads:
+     * the site comes from the edited node and the browser sends only the language, never the text of the frame.
+     */
+    String withFrame(String instructions, String siteKey, String language, String input) {
+        BrandFrame frame = brandFrame;
+        if (frame == null || siteKey == null || language == null || !LANGUAGE.matcher(language).matches()) {
+            return instructions;
+        }
+        try {
+            String text = frame.instructionsFor(siteKey, language, input);
+            if (text == null || text.isEmpty()) {
+                return instructions;
+            }
+            return (instructions == null || instructions.isEmpty() ? "" : instructions + "\n\n") + text;
+        } catch (RuntimeException e) {
+            logger.warn("The editorial frame of {} could not be read: {}", siteKey, e.getMessage());
+            return instructions;
+        }
     }
 
     /**

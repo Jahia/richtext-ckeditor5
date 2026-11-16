@@ -84,13 +84,16 @@ export class JahiaGenAITextAdapter extends OpenAITextAdapter {
         const {apiUrl, requestHeaders} = this.editor.config.get('ai.assistant.adapter.jahiaGenAI');
         const messages = await this.prepareMessages(query, context, actionId);
         const headers = typeof requestHeaders === 'function' ? await requestHeaders(actionId) : requestHeaders;
+        // The server adds the editorial frame of the site of the node: the editor sends the content language only.
+        const {lang} = this.editor.config.get('picker') || {};
 
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {...headers, 'Content-Type': 'application/json'},
             body: JSON.stringify({
                 instructions: joinContent(messages, 'system'),
-                input: joinContent(messages, 'user')
+                input: joinContent(messages, 'user'),
+                language: lang
             }),
             signal: this.abortController.signal
         });

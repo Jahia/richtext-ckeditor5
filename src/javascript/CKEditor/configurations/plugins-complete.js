@@ -57,7 +57,7 @@ import {
     OpenAITextAdapter
 } from 'ckeditor5-premium-features';
 import {Picker, InsertJahiaImage, JahiaLinkProvider, JahiaUpload} from '~/CKEditor/Picker';
-import {ImageStyleEmbed, MenuBarFixedPanels} from '~/CKEditor/plugins';
+import {ImageResizeUrl, ImageStyleEmbed, MenuBarFixedPanels} from '~/CKEditor/plugins';
 
 export const plugins = [
     AIAssistant,
@@ -86,6 +86,7 @@ export const plugins = [
     Image,
     ImageCaption,
     ImageResize,
+    ImageResizeUrl,
     ImageStyleEmbed,
     ImageStyle,
     ImageToolbar,

@@ -46,7 +46,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia-module-signature>MC0CFQCLAsBIs0teMzTq087KEdXHzcdYtQIUHiUJX7VmMLLVBXEM7fveI4EjANw=</jahia-module-signature>
+        <jahia-module-signature>MCwCFDGnR7Om48xmYQba3VhGSr6LSi0EAhQbuAl6xzdI9hDIOabzS1frFwdXSA==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
         <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>

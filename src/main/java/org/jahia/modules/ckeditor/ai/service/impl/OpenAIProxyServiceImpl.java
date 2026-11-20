@@ -111,7 +111,7 @@ public class OpenAIProxyServiceImpl implements AIProxyService {
     }
 
     @Override
-    public Response handleRequest(String requestData) throws InterruptedException, IOException {
+    public Response handleRequest(String requestData, String siteKey) throws InterruptedException, IOException {
         JSONObject requestJson = new JSONObject(requestData);
 
         // Override request params from configuration

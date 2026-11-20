@@ -29,7 +29,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.2.0.7</version>
+        <version>8.2.2.0</version>
     </parent>
     <artifactId>richtext-ckeditor5</artifactId>
     <name>RichText CKEditor5</name>
@@ -49,7 +49,7 @@
         <jahia-module-signature>MCwCFDGnR7Om48xmYQba3VhGSr6LSi0EAhQbuAl6xzdI9hDIOabzS1frFwdXSA==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
-        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider</jahia-depends>
+        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider,genai-connector=optional,editorial-frame=optional</jahia-depends>
         <import-package>
             org.jahia.modules.contenteditor.graphql.api
         </import-package>
@@ -130,6 +130,25 @@
             <version>${jersey.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>genai-connector</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Optional: the editorial frame of the site, added to the instructions when installed. -->
+        <dependency>
+            <groupId>org.jahia.pm.modules</groupId>
+            <artifactId>editorial-frame</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>
@@ -167,6 +186,10 @@
                             org.apache.commons.io;version="[2.11,3)",
                             org.apache.commons.collections;version="[3.2,4)",
                             org.jahia.api,
+                            <!-- Optional: the AI assistant uses the GenAI connector only when it is installed -->
+                            org.jahia.modules.genai.api;version="[0.1,1)";resolution:=optional,
+                            <!-- Optional: the editorial frame of the site, when the module editorial-frame runs -->
+                            org.jahia.pm.modules.editorialframe.api;version="[0.1,1)";resolution:=optional,
                             org.jahia.modules.graphql.provider.dxm;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",

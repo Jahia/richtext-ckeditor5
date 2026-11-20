@@ -54,7 +54,8 @@ public class AIProxy {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response forwardRequest(String data, @Context HttpHeaders headers) {
         String nodePath = headers.getHeaderString("X-Jahia-Path");
-        if (!hasPermission(nodePath)) {
+        JCRNodeWrapper node = editableNode(nodePath);
+        if (node == null) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(new JSONObject().put("error", "Unauthorized").toString())
                     .build();
@@ -68,7 +69,7 @@ public class AIProxy {
             AIProxyService aiService = lookupUtil.getAIProxyService(apiType);
             validateAIService(aiService, apiType);
 
-            return aiService.handleRequest(data);
+            return aiService.handleRequest(data, siteKey(node));
         } catch (Exception e) {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
@@ -81,23 +82,31 @@ public class AIProxy {
     }
 
     /**
-     * Checks if the current user has permission to use the AI proxy.
+     * Returns the node when the current user has permission to use the AI proxy on it, else null.
      * Uses the edit workspace session (ensures user is an editor) and
      * verifies the wysiwyg-editor-toolbar permission on the given node.
      */
-    private boolean hasPermission(String nodePath) {
+    private JCRNodeWrapper editableNode(String nodePath) {
         if (nodePath == null || nodePath.trim().isEmpty()) {
-            return false;
+            return null;
         }
 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE);
             JCRNodeWrapper node = session.getNode(nodePath);
-            return node.hasPermission(PERMISSION);
+            return node.hasPermission(PERMISSION) ? node : null;
         } catch (RepositoryException e) {
             logger.error("Error checking permission for path: {}", nodePath, e);
-            return false;
+            return null;
         }
+    }
+
+    /**
+     * The key of the site that holds the node, read on the server so the browser cannot name another site.
+     * Null for a node under no site: Jahia resolves such a node to systemsite, which is not its site.
+     */
+    private static String siteKey(JCRNodeWrapper node) throws RepositoryException {
+        return node.getPath().startsWith("/sites/") ? node.getResolveSite().getSiteKey() : null;
     }
 
     /**

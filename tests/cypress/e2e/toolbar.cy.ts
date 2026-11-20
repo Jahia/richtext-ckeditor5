@@ -52,6 +52,7 @@ describe('Toolbar tests', () => {
         ]);
         menuItems.set('Insert', [
             'Image',
+            'Reference existing content',
             'Table',
             'Link',
             'Bookmark',
@@ -95,6 +96,7 @@ describe('Toolbar tests', () => {
             'Text alignment',
             'Link',
             'Insert image',
+            'Reference existing content',
             'Insert table',
             'Bulleted List',
             'Increase indent',

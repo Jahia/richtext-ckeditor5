@@ -24,6 +24,7 @@ export const completeConfig = {
             'alignment',
             '|',
             'insertJahiaImage',
+            'jahiaContentReference',
             'link',
             'bookmark',
             'insertTable',
@@ -38,7 +39,13 @@ export const completeConfig = {
         shouldNotGroupWhenFull: true
     },
     menuBar: {
-        isVisible: true
+        isVisible: true,
+        addItems: [
+            {
+                item: 'menuBar:jahiaContentReference',
+                position: 'after:menuBar:insertImage'
+            }
+        ]
     },
     heading: {
         options: [

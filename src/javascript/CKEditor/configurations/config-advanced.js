@@ -23,6 +23,7 @@ export const advancedConfig = {
             'alignment',
             '|',
             'insertJahiaImage',
+            'jahiaContentReference',
             'link',
             'bookmark',
             'insertTable',

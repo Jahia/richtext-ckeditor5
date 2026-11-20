@@ -1,0 +1,15 @@
+.ck-content .jahia-content-reference-card {
+    display: block;
+    margin: 0.75em 0;
+    cursor: default;
+}
+
+.ck-content .jahia-content-reference-card .jahia-content-reference-card__body {
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.ck-content .jahia-content-reference-card .jahia-content-reference-card__body > button {
+    cursor: inherit;
+}

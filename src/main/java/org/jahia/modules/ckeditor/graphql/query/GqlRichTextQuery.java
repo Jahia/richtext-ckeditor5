@@ -19,6 +19,8 @@ import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
 import graphql.annotations.annotationTypes.GraphQLName;
 import graphql.annotations.annotationTypes.GraphQLNonNull;
+import org.apache.commons.lang3.StringUtils;
+import org.jahia.modules.ckeditor.ContentReferenceFilter;
 import org.jahia.modules.ckeditor.config.CKEditorConfiguration;
 import org.jahia.modules.ckeditor.config.RichTextConfig;
 import org.jahia.modules.ckeditor.styletemplates.StyleTemplatesResolver;
@@ -27,12 +29,23 @@ import org.jahia.modules.graphql.provider.dxm.osgi.annotations.GraphQLOsgiServic
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 @GraphQLName("RichTextQuery")
@@ -99,6 +112,63 @@ public class GqlRichTextQuery {
         } catch (RepositoryException e) {
             throw new DataFetchingException(e);
         }
+    }
+
+    @GraphQLField
+    @GraphQLName("referenceViews")
+    @GraphQLDescription("Returns the views a referenced content can be rendered with, the default view excluded")
+    public List<GqlContentReferenceView> getReferenceViews(
+        @GraphQLName("uuid")
+        @GraphQLNonNull
+        @GraphQLDescription("Identifier of the referenced content") String uuid,
+        @GraphQLName("path")
+        @GraphQLNonNull
+        @GraphQLDescription("Path of the node being edited, used to resolve the site") String path
+    ) {
+        if (!ContentReferenceFilter.isValidUuid(uuid)) {
+            return Collections.emptyList();
+        }
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            JCRNodeWrapper ref = session.getNodeByIdentifier(uuid);
+            JCRSiteNode site = session.getNode(path).getResolveSite();
+
+            Map<String, GqlContentReferenceView> views = new LinkedHashMap<>();
+            for (View view : RenderService.getInstance().getViewsSet(ref.getPrimaryNodeType(), site, "html")) {
+                String key = view.getKey();
+                if (!View.DEFAULT_VIEW_KEY.equals(key) && isViewVisible(view) && !views.containsKey(key)) {
+                    String displayName = view.getDisplayName();
+                    views.put(key, new GqlContentReferenceView(key, StringUtils.isNotEmpty(displayName) ? displayName : key));
+                }
+            }
+            return new ArrayList<>(views.values());
+        } catch (ItemNotFoundException | PathNotFoundException | AccessDeniedException e) {
+            logger.debug("No views for reference {} from {}", uuid, path, e);
+            return Collections.emptyList();
+        } catch (RepositoryException e) {
+            throw new DataFetchingException(e);
+        }
+    }
+
+    /**
+     * Same rules as TemplatesChoiceListInitializerImpl.isViewVisible, with no requested type and outside studio
+     */
+    private static boolean isViewVisible(View view) {
+        Properties properties = new Properties();
+        if (view.getDefaultProperties() != null) {
+            properties.putAll(view.getDefaultProperties());
+        }
+        if (view.getProperties() != null) {
+            properties.putAll(view.getProperties());
+        }
+        String visible = properties.getProperty(View.VISIBLE_KEY);
+        String type = properties.getProperty(View.TYPE_KEY);
+        String key = view.getKey();
+        return !View.VISIBLE_FALSE.equals(visible)
+                && !View.VISIBLE_STUDIO_ONLY.equals(visible)
+                && StringUtils.isEmpty(type)
+                && !key.startsWith("wrapper.")
+                && !key.contains("hidden.");
     }
 
     private CKEditorConfiguration getConfigForSite(JCRNodeWrapper node, String siteKey) {

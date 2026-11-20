@@ -1,9 +1,9 @@
 package org.jahia.modules.ckeditor.ai.frame;
 
 /**
- * The editorial frame of a site (voice, readers, writing rules), as the AI assistant of the editor
- * adds it to its instructions. The module editorial-frame provides it through
- * {@link EditorialFrameBridge}. Without that module, no service is registered and the instructions
+ * The brand frame of a site (voice, readers, writing rules), as the AI assistant of the editor
+ * adds it to its instructions. The module ai-assistant provides it through
+ * {@link BrandFrameBridge}. Without that module, no service is registered and the instructions
  * stay as the editor sends them.
  */
 public interface BrandFrame {

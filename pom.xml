@@ -49,7 +49,7 @@
         <jahia-module-signature>MCwCFDGnR7Om48xmYQba3VhGSr6LSi0EAhQbuAl6xzdI9hDIOabzS1frFwdXSA==</jahia-module-signature>
         <yarn.arguments>build:production</yarn.arguments>
         <nexus.maven.plugin.version>1.7.0</nexus.maven.plugin.version>
-        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider,genai-connector=optional,editorial-frame=optional</jahia-depends>
+        <jahia-depends>jcontent=3.4.1,graphql-dxm-provider,genai-connector=optional,ai-assistant=optional</jahia-depends>
         <import-package>
             org.jahia.modules.contenteditor.graphql.api
         </import-package>
@@ -136,10 +136,12 @@
             <version>0.1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!-- Optional: the editorial frame of the site, added to the instructions when installed. -->
+        <!-- Optional: the brand frame of the site, added to the instructions when ai-assistant runs. The module
+             reads only its package org.jahia.modules.aiassistant.frame.api, which the branch ai-assistant-rga
+             exports. -->
         <dependency>
-            <groupId>org.jahia.pm.modules</groupId>
-            <artifactId>editorial-frame</artifactId>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>ai-assistant</artifactId>
             <version>0.1.0-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
@@ -148,6 +150,18 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.11.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -188,8 +202,8 @@
                             org.jahia.api,
                             <!-- Optional: the AI assistant uses the GenAI connector only when it is installed -->
                             org.jahia.modules.genai.api;version="[0.1,1)";resolution:=optional,
-                            <!-- Optional: the editorial frame of the site, when the module editorial-frame runs -->
-                            org.jahia.pm.modules.editorialframe.api;version="[0.1,1)";resolution:=optional,
+                            <!-- Optional: the brand frame of the site, when the module ai-assistant runs -->
+                            org.jahia.modules.aiassistant.frame.api;version="[1.0,2)";resolution:=optional,
                             org.jahia.modules.graphql.provider.dxm;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.security;version="[3.1,4)",
                             org.jahia.modules.graphql.provider.dxm.osgi.annotations;version="[3.1,4)",

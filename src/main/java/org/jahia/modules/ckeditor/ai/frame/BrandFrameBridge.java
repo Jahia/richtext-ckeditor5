@@ -1,23 +1,23 @@
 package org.jahia.modules.ckeditor.ai.frame;
 
-import org.jahia.pm.modules.editorialframe.api.EditorialFrameService;
-import org.jahia.pm.modules.editorialframe.api.FrameContext;
-import org.jahia.pm.modules.editorialframe.api.FrameRequest;
+import org.jahia.modules.aiassistant.frame.api.BrandFrameService;
+import org.jahia.modules.aiassistant.frame.api.FrameContext;
+import org.jahia.modules.aiassistant.frame.api.FrameRequest;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * The bridge to the module editorial-frame. Its reference is mandatory, so it starts only when that
- * module runs. This class is the only one of the module that imports the API of editorial-frame.
+ * The bridge to the brand frame of the module ai-assistant. Its reference is mandatory, so it starts only when that
+ * module runs. This class is the only one of the module that imports the frame API of ai-assistant.
  */
 @Component(service = BrandFrame.class, immediate = true)
-public class EditorialFrameBridge implements BrandFrame {
+public class BrandFrameBridge implements BrandFrame {
 
     /** A command of the editor works on a selection, so the frame stays smaller than in the chat. */
     static final int FRAME_TOKENS = 2000;
 
     @Reference
-    private EditorialFrameService frames;
+    private BrandFrameService frames;
 
     @Override
     public String instructionsFor(String siteKey, String language, String text) {

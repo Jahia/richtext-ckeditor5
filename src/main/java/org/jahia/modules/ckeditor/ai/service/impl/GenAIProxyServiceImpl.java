@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  *
  * <p>The request body is {@code {"instructions": "...", "input": "...", "language": "en"}}. Each completion
  * names the site of the edited content, so the connector checks the permission {@code genaiAccess} of the user
- * on that site. When the module editorial-frame runs, the frame of that site follows the instructions.</p>
+ * on that site. When the module ai-assistant runs, the brand frame of that site follows the instructions.</p>
  *
  * <p>The response is a stream of server-sent events with the shapes of the {@code /modules/genai/stream}
  * endpoint of the connector:
@@ -70,7 +70,7 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     @Reference
     private GenAiService genAiService;
 
-    /** The editorial frame of the site, when the module editorial-frame runs. */
+    /** The brand frame of the site, when the module ai-assistant runs. */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
     private volatile BrandFrame brandFrame;
@@ -142,7 +142,7 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     }
 
     /**
-     * The instructions of the editor, followed by the editorial frame of the site, which the server reads:
+     * The instructions of the editor, followed by the brand frame of the site, which the server reads:
      * the site comes from the edited node and the browser sends only the language, never the text of the frame.
      */
     String withFrame(String instructions, String siteKey, String language, String input) {
@@ -157,7 +157,7 @@ public class GenAIProxyServiceImpl implements AIProxyService {
             }
             return (instructions == null || instructions.isEmpty() ? "" : instructions + "\n\n") + text;
         } catch (RuntimeException e) {
-            logger.warn("The editorial frame of {} could not be read: {}", siteKey, e.getMessage());
+            logger.warn("The brand frame of {} could not be read: {}", siteKey, e.getMessage());
             return instructions;
         }
     }

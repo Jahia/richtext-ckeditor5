@@ -70,10 +70,10 @@ public class GenAIProxyServiceImpl implements AIProxyService {
     @Reference
     private GenAiService genAiService;
 
-    /** The brand frame of the site, when the module ai-assistant runs. */
+    /** The brand frame of the site, when the module ai-assistant runs. Package-private for the unit tests. */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
             policyOption = ReferencePolicyOption.GREEDY)
-    private volatile BrandFrame brandFrame;
+    volatile BrandFrame brandFrame;
 
     private boolean enabled;
     private ModelTier tier;
@@ -156,7 +156,8 @@ public class GenAIProxyServiceImpl implements AIProxyService {
                 return instructions;
             }
             return (instructions == null || instructions.isEmpty() ? "" : instructions + "\n\n") + text;
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | LinkageError e) {
+            // A LinkageError: a refresh of ai-assistant during the call disposed the classes of the frame API.
             logger.warn("The brand frame of {} could not be read: {}", siteKey, e.getMessage());
             return instructions;
         }

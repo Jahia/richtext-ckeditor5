@@ -19,6 +19,14 @@ public class BrandFrameBridge implements BrandFrame {
     @Reference
     private BrandFrameService frames;
 
+    public BrandFrameBridge() {
+        // Used by OSGi.
+    }
+
+    BrandFrameBridge(BrandFrameService frames) {
+        this.frames = frames;
+    }
+
     @Override
     public String instructionsFor(String siteKey, String language, String text) {
         FrameContext context = frames.buildContext(new FrameRequest(siteKey, language, null, FRAME_TOKENS, text));
